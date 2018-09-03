@@ -1,0 +1,42 @@
+
+* {
+/*  font-size:10px; */
+}
+
+body {
+  background-color:#777;
+  padding: 0;
+  margin: 0;
+}
+
+#app {
+  margin: 10px 0 0 10px;
+}
+
+.button-esq {
+  display: inline-block;
+  background: #abe;
+  padding: 2px 5px;
+  cursor: pointer;
+}
+
+.greyOut {
+  opacity: 0.5;
+}
+
+:focus {
+    box-shadow: 2px 2px rgba(0, 250, 0, 0.9);
+}
+
+
+
+/* Hide HTML5 Up and Down arrows. */
+/*
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+*/

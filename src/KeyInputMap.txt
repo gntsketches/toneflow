@@ -1,0 +1,96 @@
+GLOBAL:
+	esc: play/pause
+	ctrl-space: play/pause
+	ctrl-t: tempo
+	ctrl-s: save
+	ctrl-r: restore
+  capslock: toggle sharps/flats
+	insert: toggle insert/overwrite 
+	shift-s: toggle entry sound
+
+	tab : next tab (wait while playing)
+	shift-tab: previous tab (wait while playing)
+
+
+	shift-0: newTune
+	shift-[1-9]: entered tunes
+	shift-q: piano-selector
+	shift-a: tracks
+	shift-z: playerQwerty
+	? : qwerty octave up
+	? : qwerty octave down
+
+
+
+TRACKS:
+	NEWTUNE ONLY:
+	 	enter: adds this
+	ENTERED ONLY:
+		enter: doubles track
+	ALL:
+		`: add random note (with random: true)
+		~: add random note (with random: false)
+		shift-l: lock track to lead track
+		(shift-m, 0-9 ?): set tuneToneIndex of editingTrackNumber to selected track number
+		shift-f: fill
+		shift-d: distributed
+		shift-b, number, enter:
+
+
+PIANOSELECT:
+	qwerty (or zxcvb): select on/off
+
+
+PIANOPLAYER:
+	qwerty: play pitches
+	u-d- arrows: bend pitch 1/2step
+	ctrl- u-d- arrows: bend pitch step
+	l-r- arrows: octave up/down
+	ctrl- u-d- arrows: 1/2 up/down
+
+
+  onkeydown(e) {
+  	   console.log(e.key);
+  			if(this.down.indexOf(e.key) === -1) { 	// this.down.indexOf(e.key) === -1 ? this.down.push(e.key) : return;  // can't use return in this way
+  				this.down.push(e.key);
+        }
+  				if(this.down.indexOf("Control") > -1) {
+  					console.log("controlling!");
+  				}
+  				if (this.down.indexOf("Escape") > -1) {
+  	        this.togglePlay();
+  			  };
+  	      switch (this.region) {
+  		      case "new-tune":
+              // Move Editor
+  			      if(this.down.indexOf("ArrowLeft") > -1) {
+  			        if (this.editingIndex > 0) { this.$store.commit('changeEditingIndex', 'decrement') }
+  			      }
+  			      else if(this.down.indexOf("ArrowRight") > -1) {
+  			        if (this.editingIndex < this.newTune.length-1) { this.$store.commit('changeEditingIndex', 'increment') }
+  			      }
+  			      else if (this.down.indexOf("Delete") > -1 ) {
+  			        if (this.editingIndex === this.newTune.length-1 ){
+                  this.$store.commit('deleteNote', 'fromEndcap')
+  			        } else {
+                  this.$store.commit('deleteNote', 'currentNote')
+  			        }
+  			      }
+  			      else if (this.down.indexOf("`") > -1) {
+  				    // Random Note
+  				      e.preventDefault();
+  			        if (this.editingIndex === this.newTune.length-1) {
+                  this.$store.dispatch('randomNote', 'fromEndcap')
+  				      } else if (this.down.indexOf("Insert") > -1) {
+                  this.$store.dispatch('randomNote', 'insert')
+  				      } else {
+                  this.$store.dispatch('randomNote', 'currentNote')
+  				      }
+  			      }
+  			      else if (this.noteKeys.indexOf(e.key) > -1) {
+  				    // Note entry
+
+
+  		      case "tunes":
+  		      default:
+  	      };
