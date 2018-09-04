@@ -689,14 +689,9 @@ export const store = new Vuex.Store({
           state[property] = retrievedState[property]
         }
       },
-      improvedLoad: (state, fileUpload) => {
+      improvedLoad: (state, loadData) => {
         // https://www.reddit.com/r/vuejs/comments/8qmw3s/looking_for_advice_on_a_saveload_function_with/?st=jj7cs5mw&sh=21b2f617
-        let retrievedState = {}
-        if (fileUpload) {
-          retrievedState = JSON.parse(fileUpload)
-        } else {
-          retrievedState = JSON.parse( localStorage.getItem( state.loadTarget ) )
-        }
+        let retrievedState = JSON.parse(loadData)
         let newStateBuilder = JSON.parse(JSON.stringify(STATEDEFAULTS))
         // properties of retrievedStatestate
         for (let retrievedProp in retrievedState) {
@@ -768,8 +763,8 @@ export const store = new Vuex.Store({
 
         console.log('state',state)
       },
-      loadScene: (state, scene) => {
-        state.scenes.push(scene)
+      loadScene: (state, loadData) => {
+        state.scenes.push(JSON.parse(loadData))
       },
 
     },
@@ -1484,7 +1479,7 @@ export const store = new Vuex.Store({
         const promptData = prompt("Save this file as:", context.state.fileName)
         const fileName = (promptData === null) ? '' : promptData.trim()
         if (fileName !== '') {  // are there other bogus values that promptData might get?
-          const fileNameKey = 'TF3_'+fileName
+          const fileNameKey = 'TF3_' + fileName
           context.commit('changeFileName', fileName)
           context.commit('changeLoadTarget', fileNameKey)
     	    localStorage.setItem( fileNameKey, JSON.stringify(context.state) )
@@ -1494,14 +1489,22 @@ export const store = new Vuex.Store({
         const promptData = prompt("Save this scene as:", context.getters.activeSceneTitle)
         const fileName = (promptData === null) ? '' : promptData.trim()
         if (fileName !== '') {  // are there other bogus values that promptData might get?
-          const sceneNameKey = 'TF3S_'+fileName
+          const sceneNameKey = 'TF3_S_' + fileName
           //context.commit('changeLoadTarget', fileNameKey)
-    	    localStorage.setItem( sceneNameKey, JSON.stringify(context.state) )
+    	    localStorage.setItem( sceneNameKey, JSON.stringify(context.state.scenes[context.state.editingSceneNumber]) )
         }
     	},
       load: (context, loadData) => {
         console.log(loadData)
-        context.commit('improvedLoad', loadData)
+        let parsedLoadData = JSON.parse(loadData)
+        console.log(parsedLoadData)
+        if (parsedLoadData.hasOwnProperty('fileName')) {
+          context.commit('improvedLoad', loadData)
+        } else if (parsedLoadData.hasOwnProperty('title')) {
+          console.log("title!")
+          context.commit('loadScene', loadData)
+        }
+
 
         context.state.scenes.forEach( (scene, index) => {
           context.dispatch('initializeSceneAudio', index)
@@ -1515,9 +1518,19 @@ export const store = new Vuex.Store({
         const fileName = (promptData === null) ? '' : promptData.trim()
         if (fileName !== '') {  // are there other bogus values that promptData might get?
           const exportObj = JSON.stringify(context.state)
-          downloadObjectAsJson(exportObj, fileName)
+          const compositionNameKey = 'TF3_' + fileName
+          downloadObjectAsJson(exportObj, compositionNameKey)
         }
     	},
+      downloadScene: context => {
+        const promptData = prompt("Download this scene as:", context.getters.activeSceneTitle)
+        const fileName = (promptData === null) ? '' : promptData.trim()
+        if (fileName !== '') {  // are there other bogus values that promptData might get?
+          const exportObj = JSON.stringify(context.state.scenes[context.state.editingSceneNumber])
+          const sceneNameKey = 'TF3_S_' + fileName
+          downloadObjectAsJson(exportObj, sceneNameKey)
+        }
+      },
 
 
     } // end actions

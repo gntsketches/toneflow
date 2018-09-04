@@ -3,43 +3,31 @@
 * CURRENT
 **********************************************************************************************************************/
 
-- GITHUB
-- Save/Load scenes as well as compositions
-- New sounds!
-  - needs to initializeSceneAudio, so will need professional feedback about that...
-  - Modulations to include Root notes and chords (as well as scales)
-
-
- 
-Now:
-
--and github
+- GITHUB!
   - https://guides.github.com/activities/hello-world/
 
-- export/ import
-  - https://www.reddit.com/r/javascript/comments/925uxe/can_you_importexport_localstorage_via_url/?st=jk31bus7&sh=509faee5
-  - https://gist.github.com/andjosh/7867934
-  - https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
-  - https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file
+- Modulations to include Root notes and chords (as well as scales) ,
+  - will want a "use-all" option
+  - put Remember, Return, Fill, Distribute over on left side to make more room... Filter should logically stay on the right (modulation side)
+- New sounds!
+  - needs to initializeSceneAudio, so will need professional feedback about that...
 
 
-New Sounds:
-- Will need to initialize audiomodule, so...
-
-
-
+OTHER FEATURES TO ADD:
+- switch ctrl and alt left & right arrow navigation
 - sleep feature
 - https://www.npmjs.com/package/vue-draggable-resizable
 - https://codepen.io/anon/pen/zLJzdq
-- save/load individual scenes feature
-
-- Info
-    - mentioned that scenes are draggable?
-
 - button for add track
-- Chord Options in Modulation (would go with a use-all)
-- Chromatic Chooser for Modulation
 - Click mode/chord name to do/queue that type of modulation
+
+
+INFO-TO-UPDATE:
+
+
+
+
+
 
 Studying:
 
@@ -498,6 +486,12 @@ https://github.com/Tonejs/Tone.js/issues/341
 KNOB
   https://mail.google.com/mail/u/0/#inbox/163a3acf0243d273
 
+
+SAVE/LOAD & export/ import
+    - https://www.reddit.com/r/javascript/comments/925uxe/can_you_importexport_localstorage_via_url/?st=jk31bus7&sh=509faee5
+    - https://gist.github.com/andjosh/7867934
+    - https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
+    - https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file
 
 
 MISC:

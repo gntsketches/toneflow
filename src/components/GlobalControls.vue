@@ -6,6 +6,7 @@
 
 
     <div class="button-esq" v-on:click="save" >Save</div>
+    <div class="button-esq" v-on:click="saveScene" >Save Scene</div>
     <div class="button-esq" v-on:click="load" >Load</div>
 
     <select v-on:change="changeLoadTarget" v-bind:value="fileName">
@@ -13,6 +14,7 @@
     </select>
 
     <div class="button-esq" v-on:click="download" >Download</div>
+    <div class="button-esq" v-on:click="downloadScene" >Download Scene</div>
 
 <!--    <label class="fileContainer" >
         Upload
@@ -77,11 +79,17 @@ export default {
       this.$store.dispatch('save')
       this.getFileNames()
     },
+    saveScene(){
+      this.$store.dispatch('saveScene')
+      this.getFileNames()
+    },
     getFileNames(){
       let fileNames = []
       for (var key in localStorage){
         if (key.slice(0,4) === 'TF3_') {
           fileNames.push(key.slice(4))
+        } else if (key.slice(0,5) === 'TF3S_') {
+          fileNames.push(key.slice(3))
         }
       }
       this.fileNames = fileNames
@@ -91,10 +99,14 @@ export default {
       this.$store.commit('changeLoadTarget', loadTarget)
     },
     load(){
+      console.log("loadTarget", this.$store.state.loadTarget)
       this.$store.dispatch('load', localStorage.getItem( this.$store.state.loadTarget ))
     },
     download(){
       this.$store.dispatch('download')
+    },
+    downloadScene(){
+      this.$store.dispatch('downloadScene')
     },
     processFile(event) {
       const file = event.target.files[0]

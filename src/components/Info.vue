@@ -201,7 +201,7 @@
             pick random modes for the last two steps.
           </p>
           <br><br>
-          <h1>Synthesizers</h1>
+          <h1>Sounds and Synths</h1>
           <p>
             Toneflow's sounds are made by basic subtractive synthesis and a few special effects.
             The options are the same for both Tracks and for the Qwerty keyboard.
@@ -231,11 +231,19 @@
             <br><br>
           </p>
           <h1>Saving & Loading</h1>
-            Toneflow allows saving and loading of compositions in the browser's "Local Storage".
-            The load buton will load whatever composition is displayed in the adjacent drop-down selector.
+          <p>
+            Toneflow allows you to <strong>Save</strong> compositions, as well as individual scenes,
+            in the browser's "Local Storage".
+            These are displayed in the drop-down menu adjacent to the <strong>Load</strong> button;
+            scenes are labeled with the prefix <em>"S_"</em>, and will be added to the current composition when loaded.
+            <br><br>
             However, Local Storage does not transfer between browsers, and the files cannot be transfered or backed up.
-            <strong>Download</strong> will export a copy of the current composition as a <strong>.json</strong> file
-            An Upload (or Import) feature is currently in development.
+            <strong>Download</strong> (or <strong>Download Scene</strong>) will
+            export a copy of the current composition or scene as a <em>.json</em> file. These are prefixed
+            <em>TF3_</em> for compositions and <em>TF3_S_</em> for scenes.
+            The <strong>Choose File</strong> button then allows you to locate and upload that file.
+            <br><br>
+          </p>
       </div>
 
       <div class="info-text info-shortcuts" v-if="infoSection === 'shortcuts'">
