@@ -10,6 +10,11 @@
           <input :id="'trackGain-'+trackId" type="number" v-model="gain" :min="0" :max="2" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
         <div class="track-controls">
+          <div>Portamento</div>
+          <knob-control class="knob-control" v-model="portamento"  :min="0" :max="1" :stepSize="0.01" :size="50" ></knob-control>
+          <input type="number" v-model="portamento" :min="0" :max="1" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
+        </div>
+        <div class="track-controls">
           <div>Delay Time</div>
           <knob-control class="knob-control" v-model="delayTime"  :min="0" :max="1" :stepSize="0.01" :size="50" ></knob-control>
           <input type="number" v-model="delayTime" :min="0" :max="1" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
@@ -155,6 +160,10 @@ export default {
     gain: {
       get(){ return Math.round(this.track.gain*100)/100 },
       set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'gain', trackNumber: this.trackNumber, value:value }) },
+    },
+    portamento: {
+      get(){ return Math.round(this.track.portamento*100)/100 },
+      set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'portamento', trackNumber: this.trackNumber, value:value }) },
     },
     delayTime: {
       get(){ return Math.round(this.track.delayTime*100)/100 },

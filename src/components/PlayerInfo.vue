@@ -19,10 +19,13 @@
           v-model:value="storePlayerWaveType"
           @change="enterFunction($event)"
         >
+          <option v-for="waveName in waveNameOptions" >{{ waveName }}</option>
+          <!--
           <option>sine</option>
           <option>triangle</option>
           <option>sawtooth</option>
           <option>square</option>
+        -->
         </select>
 
         <br><br>
@@ -100,6 +103,13 @@ export default {
 
   data: () => ({
     QWERTYDisplayOptions: ['Rows-Octave', 'Clusters'],
+    waveNameOptions: [
+      'sine','triangle','sawtooth','square',
+      'amsine','amtriangle','amsawtooth','amsquare',
+      'fmsine','fmtriangle','fmsawtooth','fmsquare',
+      'fatsine','fattriangle','fatsawtooth','fatsquare',
+      'pwm',
+    ],
   }),
 
   computed: {

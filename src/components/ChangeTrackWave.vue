@@ -17,7 +17,13 @@ export default {
 
   data() {
     return {
-      waveNameOptions: ['sine','triangle','sawtooth','square'],
+      waveNameOptions: [
+        'sine','triangle','sawtooth','square',
+        'amsine','amtriangle','amsawtooth','amsquare',
+        'fmsine','fmtriangle','fmsawtooth','fmsquare',
+        'fatsine','fattriangle','fatsawtooth','fatsquare',
+        'pwm',
+      ],
     }
   },
 

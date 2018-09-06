@@ -682,13 +682,6 @@ export const store = new Vuex.Store({
       changeLoadTarget: (state, loadTarget) => {
         state.loadTarget = loadTarget
       },
-      load: state => {
-        const retrievedState = JSON.parse( localStorage.getItem( state.loadTarget ) )
-        // can you do this? https://vuejs.org/v2/guide/list.html
-        for (var property in retrievedState) {
-          state[property] = retrievedState[property]
-        }
-      },
       improvedLoad: (state, loadData) => {
         // https://www.reddit.com/r/vuejs/comments/8qmw3s/looking_for_advice_on_a_saveload_function_with/?st=jj7cs5mw&sh=21b2f617
         let retrievedState = JSON.parse(loadData)
@@ -861,11 +854,12 @@ export const store = new Vuex.Store({
           }
           AM.scenes[title] = { synths:[], autoFilters: [], gains:[], delays:[], distortions:[] } // https://stackoverflow.com/questions/1168807/how-can-i-add-a-key-value-pair-to-a-javascript-object
           context.state.scenes[sceneNumber].tracks.forEach( (track, tracksIndex) =>  {
-            let trackSynth = new Tone.PolySynth(6, Tone.Synth, {
+            /*let trackSynth = new Tone.PolySynth(6, Tone.Synth, {
               "oscillator" : {
                   "type": "triangle",
               }
-            })
+            })*/
+            let trackSynth = new Tone.Synth()
             trackSynth.set({
       	      "oscillator" : {
                 "type"     : track.waveType
@@ -875,7 +869,8 @@ export const store = new Vuex.Store({
                 "decay"    : track.decay,
                 "sustain"  : track.sustain,
                 "release"  : track.release,
-              }
+              },
+              "portamento" : track.portamento,
             })
             AM.scenes[title].synths.push(trackSynth)
             let autoFilter = new Tone.AutoFilter({
@@ -1244,7 +1239,7 @@ export const store = new Vuex.Store({
       changeTrackWave: (context, payload) => {
         context.commit('changeTrackWave', payload)
         AM.scenes[context.getters.activeSceneTitle].synths[payload.trackNumber].set({
-           "oscillator": { "type": payload.wave }
+           'oscillator': { 'type': payload.wave }
         })
       },
       setTrackAMSoundParams: (context, payload) => {
@@ -1274,8 +1269,9 @@ export const store = new Vuex.Store({
           case 'release':
             AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'envelope': { release: payload.value } })
             break
-
-
+          case 'portamento':
+            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'portamento': payload.value })
+            break
           case 'filterWet':
             AM.scenes[payload.sceneTitle].autoFilters[payload.trackNumber].wet.value = payload.value
             break
@@ -1504,8 +1500,6 @@ export const store = new Vuex.Store({
           console.log("title!")
           context.commit('loadScene', loadData)
         }
-
-
         context.state.scenes.forEach( (scene, index) => {
           context.dispatch('initializeSceneAudio', index)
         })

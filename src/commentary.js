@@ -14,7 +14,9 @@
 
 
 OTHER FEATURES TO ADD:
-- switch ctrl and alt left & right arrow navigation
+- delay stomp for tracks 
+- move playing indexes forward/backward with arrows... which shortcuts?
+- exchange ctrl and alt left & right arrow navigation
 - sleep feature
 - https://www.npmjs.com/package/vue-draggable-resizable
 - https://codepen.io/anon/pen/zLJzdq
@@ -30,6 +32,12 @@ INFO-TO-UPDATE:
 
 
 Studying:
+
+http://blog.chrislowis.co.uk/2013/06/17/synthesis-web-audio-api-envelopes.html
+https://noisehack.com/how-to-build-monotron-synth-web-audio-api/
+https://noisehack.com/how-to-build-supersaw-synth-web-audio-api/
+https://www.webaudioweekly.com/
+https://www.youtube.com/watch?v=vKGKJprJhkc
 
 - WEBSTORM.yes {
   - right click, find usages
@@ -96,7 +104,7 @@ PERFORMANCE
 
   CONSIDERING:
 
-https://superuser.com/questions/408570/how-can-i-tell-when-the-last-time-chrome-updated
+  https://superuser.com/questions/408570/how-can-i-tell-when-the-last-time-chrome-updated
 
     - Tone is a dependency in package.json ... could this be interfering with loading the script directly... ?
 
@@ -245,6 +253,10 @@ REFACTORING / BUGS / HMMMMMMM
 {
 
   BUGGY
+    - keyboard use of html-dropdowns with *enter* are getting stuck and entering track again...
+        betcha its because of "activeRegion" : if (this.activeRegion==='' && e.key==='Enter') { this.down = [] } // this prevents 'Enter' from getting stuck in down when a select is focussed. It works but feeling a bit suspicious. (Or perhaps more conditions are needed here?)
+    - a#\g#dia in "four nasty" doesnt place a# in bottom (lead) track... ???
+
     - adjusted newTrackDefaults pitchPercent to 100 - with shift-f it still filled in some rests...
         - pitchPercent vs selectedPitchPercent... probs you can just get rid of this...!
     - using distribute on leadTrack doesnt change fill length...
