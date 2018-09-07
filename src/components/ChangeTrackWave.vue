@@ -58,7 +58,8 @@ export default {
 <style>
 
 .change-track-wave{
-  display: inline-block;
+  display: block;
+  padding: 2px 0;
 }
 
 </style>

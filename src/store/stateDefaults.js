@@ -130,6 +130,7 @@ export const stateDefaults = {
     portamento: 0,
     delayTime: 0,
     delayFeedback: 0,
+    delayActive: true,
     distortion: 0,
     attack: 0.005,
     decay: 0,

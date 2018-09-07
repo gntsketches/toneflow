@@ -523,6 +523,24 @@ export const store = new Vuex.Store({
         let scene = state.scenes[state.editingSceneNumber]
         scene.tracks[payload.trackNumber].noteDuration = payload.duration
       },
+      toggleTrackDelay: (state, trackNumber) => {
+        // would be cool if there were some way (other than disposing of the delay node, which seems inconvenient) to stop the delay entirely so that on resume there is no residual echo
+        let scene = state.scenes[state.editingSceneNumber]
+        let track = scene.tracks[trackNumber]
+        if (track.delayActive === true) {
+          //AM.scenes[scene.title].delays[scene.editingTrackNumber].disconnect()
+          AM.scenes[scene.title].delays[scene.editingTrackNumber].wet.value = 0
+          //AM.scenes[scene.title].delays[scene.editingTrackNumber].delayTime.value = 0
+          //AM.scenes[scene.title].delays[scene.editingTrackNumber].feedback.value = 0
+          track.delayActive = false
+        } else {
+          //AM.scenes[scene.title].delays[scene.editingTrackNumber].connect(AM.scenes[scene.title].gains[scene.editingTrackNumber])
+          AM.scenes[scene.title].delays[scene.editingTrackNumber].wet.value = 1
+          //AM.scenes[scene.title].delays[scene.editingTrackNumber].delayTime.value = track.delayTime
+          //AM.scenes[scene.title].delays[scene.editingTrackNumber].feedback.value = track.delayFeedback
+          track.delayActive = true
+        }
+    },
 
       // DRAGGABLE
       updateEditingTrackNumber: (state, indexOfEditingTrack) => {
@@ -906,6 +924,7 @@ export const store = new Vuex.Store({
           AM.scenes[title].gains.forEach( (gain, i) => gain.toMaster() )
 
       },
+
       enterTrack: context => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
         let enteringTrack = JSON.parse(JSON.stringify(scene.tracks[0]))

@@ -121,7 +121,7 @@ export let generalKeyDispatchTable = {
   "A"       : function() { findAndBlur.call(this)
                            this.$store.commit('changeActiveRegion', 'tune-entry') },
   "S"       : function() { this.$store.dispatch('toggleTrackMute', this.$store.state.scenes[this.$store.state.editingSceneNumber].editingTrackNumber) },
-  "D"       : function() { this.$store.dispatch('distribute') },
+  "D"       : function() { this.$store.commit('toggleTrackDelay', this.$store.state.scenes[this.$store.state.editingSceneNumber].editingTrackNumber) },
   "F"       : function() { this.$store.dispatch('fill') },
   "G"       : function() { this.$store.dispatch('changeTune', { trackIndex: this.editingTrackNumber, all: false }) },
   "H"       : function() { this.$store.commit('toggleHidePitches', this.editingTrackNumber)},

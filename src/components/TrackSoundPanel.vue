@@ -2,7 +2,11 @@
 
     <div class="sound-panel">
 
-        <change-track-wave :track-number="trackNumber" :track-id="trackId" ></change-track-wave>
+        <div class="track-controls">
+            <change-track-wave :track-number="trackNumber" :track-id="trackId" ></change-track-wave>
+            <div class="button-esq" v-if="delayActive" @click="toggleDelayActive">Delay On</div>
+            <div class="button-esq" v-else @click="toggleDelayActive">Delay Off</div>
+        </div>
 
         <div class="track-controls">
           <div>Gain</div>
@@ -14,12 +18,12 @@
           <knob-control class="knob-control" v-model="portamento"  :min="0" :max="1" :stepSize="0.01" :size="50" ></knob-control>
           <input type="number" v-model="portamento" :min="0" :max="1" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
-        <div class="track-controls">
+        <div class="track-controls" v-bind:class="{ greyOut: !delayActive }" >
           <div>Delay Time</div>
           <knob-control class="knob-control" v-model="delayTime"  :min="0" :max="1" :stepSize="0.01" :size="50" ></knob-control>
           <input type="number" v-model="delayTime" :min="0" :max="1" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
-        <div class="track-controls">
+        <div class="track-controls" v-bind:class="{ greyOut: !delayActive }" >
           <div>Delay Feed</div>
           <knob-control class="knob-control" v-model="delayFeedback"  :min="0" :max="1" :stepSize="0.01" :size="50" ></knob-control>
           <input type="number" v-model="delayFeedback" :min="0" :max="1" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
@@ -157,6 +161,9 @@ export default {
     track(){
       return this.scene.tracks[this.trackNumber]
     },
+    delayActive(){
+      return this.track.delayActive
+    },
     gain: {
       get(){ return Math.round(this.track.gain*100)/100 },
       set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'gain', trackNumber: this.trackNumber, value:value }) },
@@ -245,6 +252,9 @@ export default {
   },
 
   methods: {
+    toggleDelayActive(){
+      this.$store.commit('toggleTrackDelay', this.trackNumber)
+    },
     focusFunction(){
       this.$store.commit('changePreviousRegion', this.$store.state.activeRegion)
       this.$store.commit('changeActiveRegion', 'track-controls')
@@ -272,6 +282,7 @@ export default {
   background: #866;
   text-align: center;
   padding: 3px;
+  margin-left: 1px;
 }
 .track-controls input {
   width: 40px;

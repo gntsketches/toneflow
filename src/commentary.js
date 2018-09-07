@@ -14,7 +14,13 @@
 
 
 OTHER FEATURES TO ADD:
-- delay stomp for tracks 
+- are there common features for amoscillator, fmoscillator, etc, in synth class?
+  - if not, will it do weird things to change the feature of one, then change the type of oscillator?
+  - and if thats no problem, you can use conditionals to display and modify settings as appropriate...?
+  - will the previous setting be remembered if you change oscillator type?
+  - changing track type then may require more sophisticated initialization...
+  - but it seems relatively doable...
+  - (would like to understand the difference between different synth types and different oscillator types)
 - move playing indexes forward/backward with arrows... which shortcuts?
 - exchange ctrl and alt left & right arrow navigation
 - sleep feature
