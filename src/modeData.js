@@ -55,3 +55,21 @@ export const modeData = {
     C: ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],
   },
 }
+
+/*
+  maj
+  min
+  dom
+  aug
+
+  mi7
+  ma7
+  hdm
+  dm7
+
+  sus
+  pen
+  blu
+  one
+
+*/

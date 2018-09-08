@@ -13,7 +13,7 @@
           <p>...is an app for music composition, improvisation, and interactive ear training.
             It is built to be played with the <em>QWERTY</em> keyboard and offers randomized notes in patterns chosen by the user.
             <em>Keyboard shortcuts</em> are used for swift navigation.
-            The sounds emulate the basic features of old-school analog synthesizers.
+            The sounds emulate the basic features of old-school synthesizers.
             Toneflow currently works best in the Chrome browser.
             <!-- (see the <span style="text-decoration: underline; cursor: pointer;" @click="changeInfoSection('help')">HELP</span> menu.)-->
           </p>

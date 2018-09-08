@@ -4,6 +4,14 @@
 
         <div class="track-controls">
             <change-track-wave :track-number="trackNumber" :track-id="trackId" ></change-track-wave>
+            <select class="stacking-select" v-model="modulationType"
+                    v-if="this.track.waveType === 'amsine'     || this.track.waveType === 'amtriangle' ||
+                          this.track.waveType === 'amsawtooth' || this.track.waveType === 'amsquare'   ||
+                          this.track.waveType === 'fmsine'     || this.track.waveType === 'fmtriangle' ||
+                          this.track.waveType === 'fmsawtooth' || this.track.waveType === 'fmsquare'   "
+            >
+              <option v-for="modulationType in modulationTypes">{{ modulationType }}</option>
+            </select>
             <div class="button-esq" v-if="delayActive" @click="toggleDelayActive">Delay On</div>
             <div class="button-esq" v-else @click="toggleDelayActive">Delay Off</div>
         </div>
@@ -13,21 +21,69 @@
           <knob-control class="knob-control" v-model="gain"  :min="0" :max="2" :stepSize="0.01" :size="50" ></knob-control>
           <input :id="'trackGain-'+trackId" type="number" v-model="gain" :min="0" :max="2" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
+
+        <div class="track-controls"
+              v-if="this.track.waveType === 'amsine'     || this.track.waveType === 'amtriangle' ||
+                    this.track.waveType === 'amsawtooth' || this.track.waveType === 'amsquare'   ||
+                    this.track.waveType === 'fmsine'     || this.track.waveType === 'fmtriangle' ||
+                    this.track.waveType === 'fmsawtooth' || this.track.waveType === 'fmsquare'   "
+        >
+          <div>Harmonicity</div>
+          <knob-control class="knob-control" v-model="harmonicity"  :min="0" :max="4" :stepSize="0.01" :size="50" ></knob-control>
+          <input type="number" v-model="harmonicity" :min="0" :max="4" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
+        </div>
+
+        <div class="track-controls"
+              v-if="this.track.waveType === 'fmsine'     || this.track.waveType === 'fmtriangle' ||
+                    this.track.waveType === 'fmsawtooth' || this.track.waveType === 'fmsquare'   "
+        >
+          <div>Mod. Index</div>
+          <knob-control class="knob-control" v-model="modulationIndex"  :min="0" :max="4" :stepSize="0.01" :size="50" ></knob-control>
+          <input type="number" v-model="modulationIndex" :min="0" :max="4" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
+        </div>
+
+        <div class="track-controls"
+              v-if="this.track.waveType === 'fatsine'     || this.track.waveType === 'fattriangle' ||
+                    this.track.waveType === 'fatsawtooth' || this.track.waveType === 'fatsquare'   "
+        >
+          <div>Count</div>
+          <knob-control class="knob-control" v-model="count"  :min="1" :max="10" :stepSize="1" :size="50" ></knob-control>
+          <input type="number" v-model="count" :min="1" :max="10" :step="1" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
+        </div>
+
+        <div class="track-controls"
+              v-if="this.track.waveType === 'fatsine'     || this.track.waveType === 'fattriangle' ||
+                    this.track.waveType === 'fatsawtooth' || this.track.waveType === 'fatsquare'   "
+        >
+          <div>Spread</div>
+          <knob-control class="knob-control" v-model="spread"  :min="0" :max="1200" :stepSize="1" :size="50" ></knob-control>
+          <input type="number" v-model="spread" :min="0" :max="1200" :step="1" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
+        </div>
+
+        <div class="track-controls" v-if="this.track.waveType === 'pwm'">
+          <div>Mod. Frequency</div>
+          <knob-control class="knob-control" v-model="modulationFrequency"  :min="0" :max="100" :stepSize="0.1" :size="50" ></knob-control>
+          <input type="number" v-model="modulationFrequency" :min="0" :max="100" :step="0.1" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
+        </div>
+
         <div class="track-controls">
           <div>Portamento</div>
           <knob-control class="knob-control" v-model="portamento"  :min="0" :max="1" :stepSize="0.01" :size="50" ></knob-control>
           <input type="number" v-model="portamento" :min="0" :max="1" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
+
         <div class="track-controls" v-bind:class="{ greyOut: !delayActive }" >
           <div>Delay Time</div>
           <knob-control class="knob-control" v-model="delayTime"  :min="0" :max="1" :stepSize="0.01" :size="50" ></knob-control>
           <input type="number" v-model="delayTime" :min="0" :max="1" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
+
         <div class="track-controls" v-bind:class="{ greyOut: !delayActive }" >
           <div>Delay Feed</div>
           <knob-control class="knob-control" v-model="delayFeedback"  :min="0" :max="1" :stepSize="0.01" :size="50" ></knob-control>
           <input type="number" v-model="delayFeedback" :min="0" :max="1" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
+
         <div class="track-controls">
           <div>Distortion</div>
           <knob-control class="knob-control" v-model="distortion"  :min="0" :max="1" :stepSize="0.01" :size="50" ></knob-control>
@@ -54,16 +110,19 @@
           <knob-control class="knob-control" v-model="attack"  :min="0" :max="10" :stepSize="0.1" :size="50" ></knob-control>
           <input type="number" v-model="attack" :min="0" :max="10" :step="0.005" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
+
         <div class="track-controls">
           <div>Decay</div>
           <knob-control class="knob-control" v-model="decay"  :min="0" :max="10" :stepSize="0.1" :size="50" ></knob-control>
           <input type="number" v-model="decay" :min="0" :max="10" :step="0.1" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
+
         <div class="track-controls">
           <div>Sustain</div>
           <knob-control class="knob-control" v-model="sustain"  :min="0" :max="1" :stepSize="0.05" :size="50" ></knob-control>
           <input type="number" v-model="sustain" :min="0" :max="1" :step="0.05" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
+
         <div class="track-controls">
           <div>Release</div>
           <knob-control class="knob-control" v-model="release"  :min="0" :max="10" :stepSize="0.1" :size="50" ></knob-control>
@@ -82,17 +141,20 @@
             <option v-for="filter in filterTypes">{{ filter }}</option>
           </select>
         </div>
+
         <div class="track-controls">
           <div>Rolloff</div>
           <select v-model="trackFilterRolloff">
             <option v-for="roll in rolloffs">{{ roll }}</option>
           </select>
         </div>
+
         <div class="track-controls">
           <div>Base</div>
           <knob-control class="knob-control" v-model="trackFilterBaseFrequency"  :min="50" :max="10000" :stepSize="50" :size="50" ></knob-control>
           <input type="number" v-model="trackFilterBaseFrequency" :min="50" :max="10000" :step="50" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
+
         <div class="track-controls">
           <div>Q</div>
           <knob-control class="knob-control" v-model="trackFilterQ"  :min="0" :max="100" :stepSize="1" :size="50" ></knob-control>
@@ -105,16 +167,19 @@
             <option v-for="wave in waveTypes">{{ wave }}</option>
           </select>
         </div>
+
         <div class="track-controls">
           <div>LFO Freq</div>
           <knob-control class="knob-control" v-model="trackLFOFrequency"  :min="0" :max="10" :stepSize="0.1" :size="50" ></knob-control>
           <input :id="'trackLFOFrequency-'+trackId" type="number" v-model="trackLFOFrequency" :min="0" :max="10" :step="0.1" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
+
         <div class="track-controls">
           <div>LFO Depth</div>
           <knob-control class="knob-control" v-model="trackLFODepth"  :min="0" :max="1" :stepSize="0.1" :size="50" ></knob-control>
           <input type="number" v-model="trackLFODepth" :min="0" :max="1" :step="0.1" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
+
         <div class="track-controls">
           <div>Octaves</div>
           <knob-control class="knob-control" v-model="trackLFOOctaves"  :min="0.1" :max="6" :stepSize="0.1" :size="50" ></knob-control>
@@ -148,6 +213,7 @@ export default {
   },
 
   data: () => ({
+    modulationTypes: ['sine', 'triangle', 'sawtooth', 'square'],
     relativeDurations: ['32n', '16n', '8n', '4n', '2n', '1m', '2m', '4m'],
     filterTypes: ['lowpass', 'highpass', 'bandpass', 'notch', 'allpass'],
     waveTypes: ['sine', 'triangle', 'sawtooth', 'square'],
@@ -171,6 +237,30 @@ export default {
     portamento: {
       get(){ return Math.round(this.track.portamento*100)/100 },
       set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'portamento', trackNumber: this.trackNumber, value:value }) },
+    },
+    modulationType: {
+      get(){ return this.track.modulationType },
+      set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'modulationType', trackNumber: this.trackNumber, value:value }) },
+    },
+    harmonicity: {
+      get(){ return Math.round(this.track.harmonicity*100)/100 },
+      set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'harmonicity', trackNumber: this.trackNumber, value:value }) },
+    },
+    modulationIndex: {
+      get(){ return Math.round(this.track.modulationIndex*100)/100 },
+      set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'modulationIndex', trackNumber: this.trackNumber, value:value }) },
+    },
+    count: {
+      get(){ return this.track.count },
+      set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'count', trackNumber: this.trackNumber, value:value }) },
+    },
+    spread: {
+      get(){ return Math.round(this.track.spread*10)/10 },
+      set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'spread', trackNumber: this.trackNumber, value:value }) },
+    },
+    modulationFrequency: {
+      get(){ return Math.round(this.track.modulationFrequency*100)/100 },
+      set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'modulationFrequency', trackNumber: this.trackNumber, value:value }) },
     },
     delayTime: {
       get(){ return Math.round(this.track.delayTime*100)/100 },
@@ -289,5 +379,10 @@ export default {
   padding: 0;
   font-size:12px;
 }
+
+.stacking-select {
+  display: block;
+}
+
 
 </style>

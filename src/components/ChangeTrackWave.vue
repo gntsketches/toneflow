@@ -22,7 +22,7 @@ export default {
         'amsine','amtriangle','amsawtooth','amsquare',
         'fmsine','fmtriangle','fmsawtooth','fmsquare',
         'fatsine','fattriangle','fatsawtooth','fatsquare',
-        'pwm',
+        /*'pulse', (read link in the API...)*/ 'pwm',
       ],
     }
   },

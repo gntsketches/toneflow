@@ -1291,6 +1291,24 @@ export const store = new Vuex.Store({
           case 'portamento':
             AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'portamento': payload.value })
             break
+          case 'modulationType':
+            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'modulationType' : payload.value } })
+            break
+          case 'modulationIndex':
+            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'modulationIndex' : payload.value } })
+            break
+          case 'harmonicity':
+            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'harmonicity' : payload.value } })
+            break
+          case 'count':
+            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'count' : payload.value } })
+            break
+          case 'spread':
+            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'spread' : payload.value } })
+            break
+          case 'modulationFrequency':
+            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'modulationFrequency' : payload.value } })
+            break
           case 'filterWet':
             AM.scenes[payload.sceneTitle].autoFilters[payload.trackNumber].wet.value = payload.value
             break

@@ -4,23 +4,24 @@
 **********************************************************************************************************************/
 
 - GITHUB!
-  - https://guides.github.com/activities/hello-world/
 
 - Modulations to include Root notes and chords (as well as scales) ,
   - will want a "use-all" option
   - put Remember, Return, Fill, Distribute over on left side to make more room... Filter should logically stay on the right (modulation side)
-- New sounds!
-  - needs to initializeSceneAudio, so will need professional feedback about that...
+  - change "per lead track changes" to just "per"...? (still queued to lead track, but just per cycle...)
 
+  - get pro feedback about initializeSceneAudio
+  - test builds for adding tracks, scenes, renaming, key responsiveness
+
+  - equalize / divide gains
 
 OTHER FEATURES TO ADD:
-- are there common features for amoscillator, fmoscillator, etc, in synth class?
-  - if not, will it do weird things to change the feature of one, then change the type of oscillator?
-  - and if thats no problem, you can use conditionals to display and modify settings as appropriate...?
-  - will the previous setting be remembered if you change oscillator type?
-  - changing track type then may require more sophisticated initialization...
-  - but it seems relatively doable...
-  - (would like to understand the difference between different synth types and different oscillator types)
+
+- remove Modulate per # Lead Changes, just have "per" & input
+    - auto on/off goes to right side, and input is greyed out when auto is off
+- filter goes under that, also changesActive goes in that section too
+- reset scene goes in upper right blank space, rememberAll and returnAll go under where that was, as do fill & distribute
+
 - move playing indexes forward/backward with arrows... which shortcuts?
 - exchange ctrl and alt left & right arrow navigation
 - sleep feature
@@ -252,7 +253,7 @@ DESIGN HMMM:
 
 
 
-/*****************************************************************************************************
+*****************************************************************************************************/
 REFACTORING / BUGS / HMMMMMMM
 ******************************************************************************************************/
 
@@ -303,6 +304,7 @@ REFACTORING / BUGS / HMMMMMMM
 
   - General cleanup
       - store actions and mutation classifications
+      - "mute" is an option on synths and you dont need to the pre-post mute volume selectors. (but check if you need it for samples before you change things...)
 
   - Keyboard entry & shortcuts - organize & refactor, keypress compatability
       - register and unregister combos by region (per reddit)  //https://www.reddit.com/r/javascript/comments/8l9h2j/use_of_keypress_library_with_conditional_input/?st=jhi4stc9&sh=44da25e6
