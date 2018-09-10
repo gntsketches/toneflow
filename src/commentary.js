@@ -5,15 +5,17 @@
 
 - GITHUB!
 
-- Modulations to include Root notes and chords (as well as scales) ,
-  - will want a "use-all" option
-  - put Remember, Return, Fill, Distribute over on left side to make more room... Filter should logically stay on the right (modulation side)
-  - change "per lead track changes" to just "per"...? (still queued to lead track, but just per cycle...)
+  - Modulations to include Root notes
+  - 'clear all' / 'select all' option for mod weights?
+  - click on mod weight to increase it?
+  - more shortcuts?
+  - (will want a "use-all" option? dont think so...)
 
-  - get pro feedback about initializeSceneAudio
-  - test builds for adding tracks, scenes, renaming, key responsiveness
+- get pro feedback about initializeSceneAudio
+- test builds for adding tracks, scenes, renaming, key responsiveness
 
-  - equalize / divide gains
+- equalize / divide gains
+  - DELAY is having an effect... because when delay time is at 0, it is *doubling* the volume...!
 
 OTHER FEATURES TO ADD:
 
@@ -240,7 +242,7 @@ UI HMMM:
       - ALSO if could be cool to have an option where it distributes the whole mode each time it modulates.
   - 'suspendChanges' option (boolean check in advanceAndPlayTrack on lines which use scene.changeCycles,  zeros track changeCycles)
       - does advance scenes, but wont advance modulations (resets blue bar each cycle)
-
+  - Is the note randomization algorithm good (specifically with reagrd to how rests are handled?)
 
 
 DESIGN HMMM:
@@ -263,6 +265,7 @@ REFACTORING / BUGS / HMMMMMMM
     - keyboard use of html-dropdowns with *enter* are getting stuck and entering track again...
         betcha its because of "activeRegion" : if (this.activeRegion==='' && e.key==='Enter') { this.down = [] } // this prevents 'Enter' from getting stuck in down when a select is focussed. It works but feeling a bit suspicious. (Or perhaps more conditions are needed here?)
     - a#\g#dia in "four nasty" doesnt place a# in bottom (lead) track... ???
+
 
     - adjusted newTrackDefaults pitchPercent to 100 - with shift-f it still filled in some rests...
         - pitchPercent vs selectedPitchPercent... probs you can just get rid of this...!
@@ -532,37 +535,3 @@ https://www.reddit.com/r/vuejs/comments/8kn53j/how_to_blur_all_inputs/?st=jhf63g
 
 HISTORY:
 - Development process: single HTML file & CDN, multiple Vue components with multiple files, move to webpack build, move to Vuex, multi-track, multi-scene...
-
-
-
-SETLIST:
-  Originals
-  - Delay piece E
-  - Swells
-    - Very Slow qwerty LFO
-  - 9 in 90 (more: a hide & follow game, a form, a drift, & fast outtro)
-  - Ahead in 9 / Day Frame
-  - Big fast ripples versions
-  - Gradus ad Gigus
-      - (faster, maybe 160, build longer expressions with more rests.)
-      - square wave lead
-  - Swampy love
-      - slow now, ... more interesting sectioned bassline...
-
-  Covers
-  - Them Bones
-  - OldTime: Big Scioty / Flowers of Edinburgh
-  - Chorale: Ich dank'' dir, lieber Herre
-
-Hypothetical subscribers list:
- - "Charlie" from Noc Noc - steezy.ellis@gmail.com
-
-UNRELATED
-https://en.wikipedia.org/wiki/%C3%87atalh%C3%B6y%C3%BCk
-https://en.wikipedia.org/wiki/Nan_Madol
-https://en.wikipedia.org/wiki/The_Institute_(2013_film)
-https://www.msn.com/en-us/video/wonder/archaeologists-uncover-1850-year-old-roman-library-in-germany/vi-BBLl2WH?ocid=wispr
-Gunung Padang Megalithic Site
-Osaka Castle
-"Genile" is that bartender I like at Noc Noc
-  Hoodline... indy rag...

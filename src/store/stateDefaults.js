@@ -92,7 +92,11 @@ export const stateDefaults = {
     filterPitchesOnChange: true,
     modulatePerLeadChanges: 1,
     modulationCycles: 0,
-    modulationWeights: { dia: 2, mel: 1, har: 1, dim: 0, aug: 0, chr: 0, },
+    modulationWeights: {
+      dia: 1, mel: 0, har: 0, dim: 0, aug: 0, chr: 0,
+      maj: 0, min: 0, sus: 0, ma7: 0, dom: 0, mi7: 0,
+      hdm: 0, dm7: 0, blu: 0, pen: 0, fth: 0, one: 0,
+    },
     lastMode: 'C-dia',
     autoModulate: false,
     modulationStyle: 'drift',

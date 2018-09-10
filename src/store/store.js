@@ -137,6 +137,7 @@ export const store = new Vuex.Store({
         //console.log('modsulations', modulations)
         return modulations
       },
+
     },
 
     mutations: {
@@ -540,7 +541,7 @@ export const store = new Vuex.Store({
           //AM.scenes[scene.title].delays[scene.editingTrackNumber].feedback.value = track.delayFeedback
           track.delayActive = true
         }
-    },
+      },
 
       // DRAGGABLE
       updateEditingTrackNumber: (state, indexOfEditingTrack) => {
@@ -656,7 +657,10 @@ export const store = new Vuex.Store({
         let scene = state.scenes[state.editingSceneNumber]
         const noteIndex = scene.selectedNotes.indexOf(note);
         if (noteIndex === -1) { scene.selectedNotes.push(note) }
-        else { scene.selectedNotes.splice(noteIndex, 1) }
+        else {
+          if (scene.selectedNotes.length > 1)
+          scene.selectedNotes.splice(noteIndex, 1)
+        }
       },
       updateSelectedMode: (state, modeInfo) => {
         let scene = state.scenes[state.editingSceneNumber]
@@ -779,6 +783,7 @@ export const store = new Vuex.Store({
       },
 
     },
+
 
     actions: {
 
@@ -951,7 +956,6 @@ export const store = new Vuex.Store({
         context.dispatch('initializeSceneAudio', context.state.editingSceneNumber)
       },
       autoModulate: (context, onOrOff) => {
-        console.log("in autoModulate")
         let scene = context.state.scenes[context.state.editingSceneNumber]
         if ( onOrOff === 'on') {
           if  (scene.modulationStyle === 'drift' && ( scene.nextModulation === '' ||
@@ -1021,7 +1025,8 @@ export const store = new Vuex.Store({
         // create a uniqe match for each letter
         let formLettersMatches = []        // https://stackoverflow.com/questions/2380019/generate-unique-random-numbers-between-1-and-100
         while(formLettersMatches.length < formLetters.length){
-            let preMatch = pickMode(MODEDATA, randomElement(context.getters.selectedModulations) )
+            let type = randomElement(context.getter.selectedModulations)
+            let preMatch = pickMode(MODEDATA, type)
             preMatch.modeBase = preMatch.modeBase.replace(/s/,'#')
             let match = preMatch.modeBase + preMatch.modulation
             if(formLettersMatches.indexOf(match) > -1) continue
@@ -1431,9 +1436,13 @@ export const store = new Vuex.Store({
         for (let i=0; i < changeTotal; i++) {
           let prevPitch = track.tune[changeableNoteIndexes[i]].pitch
           let newPitch = ''
-          do {
-            newPitch = randomElement(pitchSet)
-          } while (newPitch === prevPitch)
+          if (pitchSet.length > 1) {
+            do {
+              newPitch = randomElement(pitchSet)
+            } while (newPitch === prevPitch)
+          } else {
+            newPitch = pitchSet[0]
+          }
           if (track.tune[changeableNoteIndexes[i]].random === 'rests' &&  Math.random()*100 > track.pitchPercent) { newPitch = ' ' }  // why is this after the doWhile? shouldn't this be first and doWhile be in an else?
           context.commit('changeTuneNote', {
             trackIndex: payload.trackIndex,

@@ -170,9 +170,11 @@ function filterTrackTunePitches(trackTune, pitchSet){
 }
 
 function pickMode(modeData, modulationType, lastMode){
+  console.log("modulationType", modulationType)
   let lastModeArr = []
   if (lastMode != undefined) { lastModeArr = lastMode.split('-') }
   let modeInfo = modeData[modulationType]
+  /*
   if (modulationType === 'chr') { return { modeBase: 'C', modePitches: modeInfo['C'], modulation: modulationType } }
   let rootPitches = []
   if (modulationType === 'dia' || modulationType === 'mel' || modulationType === 'har') {
@@ -182,6 +184,8 @@ function pickMode(modeData, modulationType, lastMode){
   } else if (modulationType === 'aug') {
     rootPitches = ['C','Cs']
   }
+  */
+  let rootPitches = ['C','G','D','A','E','B','Fs','Cs','Gs','Ds','As','F']
   let chosenRoot = ''
   if (lastMode) {
     do {

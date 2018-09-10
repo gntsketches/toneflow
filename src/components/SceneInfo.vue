@@ -33,6 +33,8 @@
       >{{ index }}</option>
     </select>
 
+    <div class="button-esq" v-on:click="resetScene" >Reset Scene</div>
+
     <br>
 
     <span>Chain Reps</span>
@@ -51,10 +53,23 @@
 
     <br>
 
-    <div class="button-esq" v-on:click="resetScene" >Reset Scene</div>
+    <div class="track-options">
+        <div class="button-esq random-fill" v-on:click='fill' >Fill</div>
+        <input  type="number" min="1"
+                v-bind:value="length"
+                v-on:change="updateSelectedLength"
+                @focus="focusFunction"
+                @keyup.enter="enterFunction"
+        ></input>
+        <div class="button-esq random-distribute" v-on:click='distribute' >Distribute</div>
 
-    <div class="button-esq" v-if="suspendChanges" @click="toggleSuspendChanges">Changes Suspended</div>
-    <div class="button-esq" v-else @click="toggleSuspendChanges">Changes Active</div>
+        <div class="button-esq" @click="rememberAllTunes" >Remember All</div>
+        <div class="button-esq"
+             @click="returnAllTunes"
+             v-bind:class="{ greyOut: !tunesRemembered }"
+        >Return All</div>
+    </div>
+
 
 
 
@@ -129,11 +144,27 @@ export default {
     advanceSceneTitle(){
       return this.$store.getters.advanceSceneTitle
     },
-    suspendChanges(){
-      return this.scene.suspendChanges
+    length(){
+      /* // tracking length of lead track tune:
+      let leadTrackTuneLength = this.$store.getters.toneTunes[this.$store.getters.leadTrackNumber].length
+      console.log(leadTrackTuneLength)
+      let length = ''
+      if (leadTrackTuneLength === 0) { length = this.scene.selectedLength }
+      else length = leadTrackTuneLength
+      return length */
+      let length = this.scene.selectedLength
+      if (length === 0) { return 8 }
+      else { return length }
     },
-
+    tunesRemembered(){
+      let remembered = false
+      for (let i=0; i < this.scene.tracks.length; i++) {
+        if (this.scene.tracks[i].rememberedTune.length > 0) { remembered = true }
+      }
+      return remembered
+    },
   },
+
   methods: {
     resetScene(){
       this.$store.commit('resetScene')
@@ -151,9 +182,22 @@ export default {
       event.target.blur()
       this.$store.commit('changeActiveRegion', this.$store.state.previousRegion)
     },
-    toggleSuspendChanges(){
-      this.$store.commit('toggleSuspendChanges')
+    fill(){
+      this.$store.dispatch('fill')
     },
+    distribute(){
+      this.$store.dispatch('distribute')
+    },
+    updateSelectedLength(e){
+      this.$store.commit('updateSelectedLength', e.target.value)
+    },
+    rememberAllTunes(){
+      this.$store.dispatch('rememberAllTunes')
+    },
+    returnAllTunes(){
+      this.$store.dispatch('returnAllTunes')
+    },
+
   },
 
   created: function () {
@@ -208,6 +252,17 @@ export default {
   font-size: 14px;
   overflow: hidden;
 }
+
+.track-options {
+}
+.track-options input {
+  width: 35px;
+}
+.random-fill {
+}
+.random-distribute {
+}
+
 
 /*
 .image-button {
