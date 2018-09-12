@@ -92,6 +92,7 @@ export const stateDefaults = {
     filterPitchesOnChange: true,
     modulatePerLeadChanges: 1,
     modulationCycles: 0,
+    selectedRootPitches: ['C','G','D','A','E','B','Fs','Cs','Gs','Ds','As','F'],
     modulationWeights: {
       dia: 1, mel: 0, har: 0, dim: 0, aug: 0, chr: 0,
       maj: 0, min: 0, sus: 0, ma7: 0, dom: 0, mi7: 0,

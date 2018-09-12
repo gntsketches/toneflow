@@ -257,9 +257,7 @@ export const modeData = {
     F: ['F'],
   },
 
-
 }
-
 
 
 

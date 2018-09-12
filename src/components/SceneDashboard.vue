@@ -75,71 +75,123 @@
 
       <div class="mode-options">
 
-          <div>Modulation Weights</div>
-          <!-- <div>C C# D D# E F F# G G# A A# B</div> -->
+          <div>
+              <div class="root-pitch-selector">
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('C') > -1 }"
+                        @click="updateSelectedRootPitches('C')">
+                  C</div>
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('Cs') > -1 }"
+                        @click="updateSelectedRootPitches('Cs')">
+                  C#</div>
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('D') > -1 }"
+                        @click="updateSelectedRootPitches('D')">
+                  D</div>
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('Ds') > -1 }"
+                        @click="updateSelectedRootPitches('Ds')">
+                  D#</div>
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('E') > -1 }"
+                        @click="updateSelectedRootPitches('E')">
+                  E</div>
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('F') > -1 }"
+                        @click="updateSelectedRootPitches('F')">
+                  F</div>
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('Fs') > -1 }"
+                        @click="updateSelectedRootPitches('Fs')">
+                  F#</div>
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('G') > -1 }"
+                        @click="updateSelectedRootPitches('G')">
+                  G</div>
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('Gs') > -1 }"
+                        @click="updateSelectedRootPitches('Gs')">
+                  G#</div>
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('A') > -1 }"
+                        @click="updateSelectedRootPitches('A')">
+                  A</div>
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('As') > -1 }"
+                        @click="updateSelectedRootPitches('As')">
+                  A#</div>
+                  <div class="root-pitch-option"
+                        :class="{ rootPitchOptionSelected: this.selectedRootPitches.indexOf('B') > -1 }"
+                        @click="updateSelectedRootPitches('B')">
+                  B</div>
+              </div>
+              <div class="button-esq increment-weights" @click="incrementModulationWeights">All Types</div>
+          </div>
+
           <div class="mode-options-box">
-              <div class="mode-option"><span>Dia</span>
+              <div class="mode-option" @click="changeToModeType('dia')" @contextmenu="selectModulationWeight('dia', $event)" ><span>Dia</span>
                 <input type="number" min="0" :value="modulationWeights['dia']" @input="updateModulationWeights('dia', $event)" @focus="focusFunction" />
               </div>
-              <div class="mode-option"><span>Mel</span>
+              <div class="mode-option" @click="changeToModeType('mel')" @contextmenu="selectModulationWeight('mel', $event)" ><span>Mel</span>
                 <input type="number" min="0" :value="modulationWeights['mel']" @input="updateModulationWeights('mel', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option"><span>Har</span>
+              <div class="mode-option" @click="changeToModeType('har')" @contextmenu="selectModulationWeight('har', $event)" ><span>Har</span>
                 <input type="number" min="0" :value="modulationWeights['har']" @input="updateModulationWeights('har', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>
           <div class="mode-options-box">
-              <div class="mode-option"><span>Dim</span>
+              <div class="mode-option" @click="changeToModeType('dim')" @contextmenu="selectModulationWeight('dim', $event)" ><span>Dim</span>
                 <input type="number" min="0" :value="modulationWeights['dim']" @input="updateModulationWeights('dim', $event)" @focus="focusFunction"  @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option"><span>Aug</span>
+              <div class="mode-option" @click="changeToModeType('aug')" @contextmenu="selectModulationWeight('aug', $event)" ><span>Aug</span>
                 <input type="number" min="0" :value="modulationWeights['aug']" @input="updateModulationWeights('aug', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option"><span>Chr</span>
+              <div class="mode-option" @click="changeToModeType('chr')" @contextmenu="selectModulationWeight('chr', $event)" ><span>Chr</span>
                 <input type="number" min="0" :value="modulationWeights['chr']" @input="updateModulationWeights('chr', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>
           <div class="mode-options-box">
-              <div class="mode-option"><span>Maj</span>
+              <div class="mode-option" @click="changeToModeType('maj')" @contextmenu="selectModulationWeight('maj', $event)" ><span>Maj</span>
                 <input type="number" min="0" :value="modulationWeights['maj']" @input="updateModulationWeights('maj', $event)" @focus="focusFunction"  @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option"><span>Min</span>
+              <div class="mode-option" @click="changeToModeType('min')" @contextmenu="selectModulationWeight('min', $event)" ><span>Min</span>
                 <input type="number" min="0" :value="modulationWeights['min']" @input="updateModulationWeights('min', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option"><span>Sus</span>
+              <div class="mode-option" @click="changeToModeType('sus')" @contextmenu="selectModulationWeight('sus', $event)" ><span>Sus</span>
                 <input type="number" min="0" :value="modulationWeights['sus']" @input="updateModulationWeights('sus', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>
           <div class="mode-options-box">
-              <div class="mode-option"><span>Ma7</span>
+              <div class="mode-option" @click="changeToModeType('maj')" @contextmenu="selectModulationWeight('ma7', $event)" ><span>Ma7</span>
                 <input type="number" min="0" :value="modulationWeights['ma7']" @input="updateModulationWeights('ma7', $event)" @focus="focusFunction"  @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option"><span>Dom</span>
+              <div class="mode-option" @click="changeToModeType('dom')" @contextmenu="selectModulationWeight('dom', $event)" ><span>Dom</span>
                 <input type="number" min="0" :value="modulationWeights['dom']" @input="updateModulationWeights('dom', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option"><span>Mi7</span>
+              <div class="mode-option" @click="changeToModeType('mi7')" @contextmenu="selectModulationWeight('mi7', $event)" ><span>Mi7</span>
                 <input type="number" min="0" :value="modulationWeights['mi7']" @input="updateModulationWeights('mi7', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>
           <div class="mode-options-box">
-              <div class="mode-option"><span>Hdm</span>
+              <div class="mode-option" @click="changeToModeType('hdm')" @contextmenu="selectModulationWeight('hdm', $event)" ><span>Hdm</span>
                 <input type="number" min="0" :value="modulationWeights['hdm']" @input="updateModulationWeights('hdm', $event)" @focus="focusFunction"  @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option"><span>Dm7</span>
+              <div class="mode-option" @click="changeToModeType('dm7')" @contextmenu="selectModulationWeight('dm7', $event)" ><span>Dm7</span>
                 <input type="number" min="0" :value="modulationWeights['dm7']" @input="updateModulationWeights('dm7', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option"><span>Blu</span>
+              <div class="mode-option" @click="changeToModeType('blu')" @contextmenu="selectModulationWeight('blu', $event)" ><span>Blu</span>
                 <input type="number" min="0" :value="modulationWeights['blu']" @input="updateModulationWeights('blu', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>
           <div class="mode-options-box">
-              <div class="mode-option"><span>Pen</span>
+              <div class="mode-option" @click="changeToModeType('pen')" @contextmenu="selectModulationWeight('pen', $event)" ><span>Pen</span>
                 <input type="number" min="0" :value="modulationWeights['pen']" @input="updateModulationWeights('pen', $event)" @focus="focusFunction"  @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option"><span>Fth</span>
+              <div class="mode-option" @click="changeToModeType('fth')" @contextmenu="selectModulationWeight('fth', $event)" ><span>Fth</span>
                 <input type="number" min="0" :value="modulationWeights['fth']" @input="updateModulationWeights('fth', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option"><span>One</span>
+              <div class="mode-option" @click="changeToModeType('one')" @contextmenu="selectModulationWeight('one', $event)"><span>One</span>
                 <input type="number" min="0" :value="modulationWeights['one']" @input="updateModulationWeights('one', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>
@@ -155,6 +207,8 @@
 <script>
 import SceneInfo from './SceneInfo.vue'
 import PianoSelector from './PianoSelector.vue'
+import {modeData as MODEDATA} from "../modeData"
+
 
 export default {
     components: {
@@ -162,7 +216,8 @@ export default {
       'piano-selector': PianoSelector,
     },
     data(){
-      return {}
+      return {
+      }
     },
     computed: {
       scene(){
@@ -226,6 +281,9 @@ export default {
           this.$store.commit('updateModulatePerLeadChanges', value)
         },
       },
+      selectedRootPitches(){
+        return this.scene.selectedRootPitches
+      },
       modulationWeights() {
        return this.scene.modulationWeights
       },
@@ -259,11 +317,32 @@ export default {
       toggleSuspendChanges(){
         this.$store.commit('toggleSuspendChanges')
       },
+      updateSelectedRootPitches(rootPitch){
+        this.$store.commit('updateSelectedRootPitches', rootPitch)
+      },
       updateModulationWeights(modulationType, e){
         this.$store.commit('updateModulationWeights', { modulationType: modulationType, value: e.target.value } )
       },
-
-
+      incrementModulationWeights(){
+        let modulationTypes = ['dia', 'mel', 'har', 'dim', 'aug', 'chr', 'maj', 'min', 'sus', 'ma7', 'dom', 'mi7', 'hdm', 'dm7', 'blu', 'pen', 'fth', 'one']
+        modulationTypes.forEach( (type, index) => {
+          this.$store.commit('updateModulationWeights', { modulationType: type, value: 'increment' } )
+        })
+      },
+      changeToModeType(modulationType){
+        let modeInfo = pickMode(MODEDATA, modulationType, this.scene.lastMode, this.selectedRootPitches)
+        //this.$store.commit('updateNextModulation', modeInfo) // an alternate style to employ this...
+        this.$store.commit('updateSelectedMode', modeInfo)
+      },
+      selectModulationWeight(modulationType, e){
+        // https://stackoverflow.com/questions/41303982/vue-js-how-to-handle-click-and-dblclick-events-on-same-element
+        e.preventDefault()
+        let modulationTypes = ['dia', 'mel', 'har', 'dim', 'aug', 'chr', 'maj', 'min', 'sus', 'ma7', 'dom', 'mi7', 'hdm', 'dm7', 'blu', 'pen', 'fth', 'one']
+        modulationTypes.forEach( (type, index) => {
+          this.$store.commit('updateModulationWeights', { modulationType: type, value: 0 } )
+        })
+        this.$store.commit('updateModulationWeights', { modulationType: modulationType, value: 1 } )
+      },
       toggleFilterOnChange(){
         this.$store.commit('toggleFilterOnChange')
       },
@@ -350,14 +429,39 @@ export default {
   display: inline-block;
 }
 
+
+
 .mode-options {
   float: left;
   padding: 5px;
   text-align: center;
   background: #787;
 }
+
+.root-pitch-selector {
+  display: inline-block;
+}
+
+.root-pitch-option {
+  display: inline-block;
+  width: 24px;
+  background: black;
+  color: grey;
+  border: 2px solid transparent;
+}
+
+.rootPitchOptionSelected {
+  background: #afa;
+  color: black;
+  border: 2px solid green;
+}
+
+.increment-weights {
+  display: inline-block;
+}
+
 .mode-options-box {
-  float: left
+  float: left;
 }
 .mode-option {
   float: none;

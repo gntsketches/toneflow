@@ -3,6 +3,15 @@
 * CURRENT
 **********************************************************************************************************************/
 
+mutation: updateSelectedPitchPercent ... in use?
+
+- changing from drift to form can create an infinite loop if there arent enough root & mode options...
+  - check other instances of this sort of thing:
+    -
+
+"All Types" goes to the left of boxes
+"All Roots" goes where All Types is
+
 - GITHUB!
 
   - Modulations to include Root notes
@@ -19,11 +28,7 @@
 
 OTHER FEATURES TO ADD:
 
-- remove Modulate per # Lead Changes, just have "per" & input
-    - auto on/off goes to right side, and input is greyed out when auto is off
-- filter goes under that, also changesActive goes in that section too
-- reset scene goes in upper right blank space, rememberAll and returnAll go under where that was, as do fill & distribute
-
+- Filter range vs filter selectedNotes ?
 - move playing indexes forward/backward with arrows... which shortcuts?
 - exchange ctrl and alt left & right arrow navigation
 - sleep feature

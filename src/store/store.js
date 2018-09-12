@@ -366,7 +366,11 @@ export const store = new Vuex.Store({
       },
       updateModulationWeights: (state, payload) => {
         let scene = state.scenes[state.editingSceneNumber]
+        if (payload.value === 'increment') {
+          scene.modulationWeights[payload.modulationType]++
+        } else {
         scene.modulationWeights[payload.modulationType] = payload.value
+        }
       },
       toggleFilterOnChange: state => {
         let scene = state.scenes[state.editingSceneNumber]
@@ -671,10 +675,25 @@ export const store = new Vuex.Store({
         let scene = state.scenes[state.editingSceneNumber]
         scene.selectedLength = value
       },
+      // is this in use? or a remnant from before you put pitch percent on tracks?
       updateSelectedPitchPercent: (state, value) => {
         let scene = state.scenes[state.editingSceneNumber]
         scene.selectedPitchPercent = value
       },
+      updateSelectedRootPitches: (state, rootPitch) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        if (rootPitch === 'all') {
+          scene.selectedRootPitches = ['C','G','D','A','E','B','Fs','Cs','Gs','Ds','As','F']
+        } else {
+          let rootPitchIndex = scene.selectedRootPitches.indexOf(rootPitch)
+          if (rootPitchIndex === -1) { scene.selectedRootPitches.push(rootPitch) }
+          else {
+            if (scene.selectedRootPitches.length > 1)
+            scene.selectedRootPitches.splice(rootPitchIndex, 1)
+          }
+        }
+      },
+
       writeNewTune: (state, tune) => {
         let scene = state.scenes[state.editingSceneNumber]
         scene.tracks[scene.editingTrackNumber].tune = tune
@@ -962,7 +981,7 @@ export const store = new Vuex.Store({
                context.getters.selectedModulations.indexOf(scene.nextModulation.modulation) === -1  )) {
             // DRY re: morphSelectedNotes, toggleModulationStyle
             let type = randomElement(context.getters.selectedModulations)
-            let modeInfo = pickMode(MODEDATA, type, scene.lastMode)
+            let modeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
             console.log("automodulate modeInfo", modeInfo)
             context.commit('updateNextModulation', modeInfo)
           } else if (scene.modulationStyle === 'form') {
@@ -994,7 +1013,7 @@ export const store = new Vuex.Store({
           // DRY re: morphSelectedNotes, autoModulate:
           console.log("next", scene.nextModulation)
           let type = randomElement(context.getters.selectedModulations)
-          let modeInfo = pickMode(MODEDATA, type, scene.lastMode)
+          let modeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
           context.commit('updateNextModulation', modeInfo)
           context.commit('updateModulationStyle', 'drift')
         }
@@ -1025,8 +1044,8 @@ export const store = new Vuex.Store({
         // create a uniqe match for each letter
         let formLettersMatches = []        // https://stackoverflow.com/questions/2380019/generate-unique-random-numbers-between-1-and-100
         while(formLettersMatches.length < formLetters.length){
-            let type = randomElement(context.getter.selectedModulations)
-            let preMatch = pickMode(MODEDATA, type)
+            let type = randomElement(context.getters.selectedModulations)
+            let preMatch = pickMode(MODEDATA, type, false, scene.selectedRootPitches)
             preMatch.modeBase = preMatch.modeBase.replace(/s/,'#')
             let match = preMatch.modeBase + preMatch.modulation
             if(formLettersMatches.indexOf(match) > -1) continue
@@ -1493,7 +1512,7 @@ export const store = new Vuex.Store({
             // DRY re: autoModulate & toggleModulationStyle
             let type = randomElement(context.getters.selectedModulations)
             console.log('type',type)
-            let nextModeInfo = pickMode(MODEDATA, type, scene.lastMode)
+            let nextModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
             console.log('nextModeInfo', nextModeInfo)
             context.commit('updateNextModulation', nextModeInfo)
           } else if (scene.modulationStyle === 'form') {
@@ -1511,7 +1530,7 @@ export const store = new Vuex.Store({
           }
         } else {
           let type = randomElement(context.getters.selectedModulations)
-          let newModeInfo = pickMode(MODEDATA, type, scene.lastMode)
+          let newModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
           context.commit('updateSelectedMode', newModeInfo)
         }
       },

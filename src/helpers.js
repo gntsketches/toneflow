@@ -169,10 +169,12 @@ function filterTrackTunePitches(trackTune, pitchSet){
   return filteredTrackTune
 }
 
-function pickMode(modeData, modulationType, lastMode){
+function pickMode(modeData, modulationType, lastMode, rootPitchSelections){
   console.log("modulationType", modulationType)
+  console.log('rootPitchSelections', rootPitchSelections)
   let lastModeArr = []
-  if (lastMode != undefined) { lastModeArr = lastMode.split('-') }
+  //if (lastMode != undefined && lastmode != false) { lastModeArr = lastMode.split('-') }
+  if (lastMode) { lastModeArr = lastMode.split('-') }
   let modeInfo = modeData[modulationType]
   /*
   if (modulationType === 'chr') { return { modeBase: 'C', modePitches: modeInfo['C'], modulation: modulationType } }
@@ -185,9 +187,10 @@ function pickMode(modeData, modulationType, lastMode){
     rootPitches = ['C','Cs']
   }
   */
-  let rootPitches = ['C','G','D','A','E','B','Fs','Cs','Gs','Ds','As','F']
+  let rootPitches = rootPitchSelections || ['C','G','D','A','E','B','Fs','Cs','Gs','Ds','As','F']
+  console.log('rootPitches', rootPitches)
   let chosenRoot = ''
-  if (lastMode) {
+  if (lastMode && rootPitches.length > 1) {
     do {
       chosenRoot = randomElement(rootPitches)
     } while (chosenRoot === lastModeArr[0])
