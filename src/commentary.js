@@ -5,23 +5,15 @@
 
 mutation: updateSelectedPitchPercent ... in use?
 
-- changing from drift to form can create an infinite loop if there arent enough root & mode options...
-  - check other instances of this sort of thing:
-    -
 
-"All Types" goes to the left of boxes
-"All Roots" goes where All Types is
 
-- GITHUB!
+TEST builds for adding tracks, scenes, renaming, key responsiveness
 
-  - Modulations to include Root notes
-  - 'clear all' / 'select all' option for mod weights?
-  - click on mod weight to increase it?
-  - more shortcuts?
-  - (will want a "use-all" option? dont think so...)
+PRO FEEDBACK
+  - initializeSceneAudio
 
-- get pro feedback about initializeSceneAudio
-- test builds for adding tracks, scenes, renaming, key responsiveness
+FORUMS
+  -
 
 - equalize / divide gains
   - DELAY is having an effect... because when delay time is at 0, it is *doubling* the volume...!
@@ -29,13 +21,25 @@ mutation: updateSelectedPitchPercent ... in use?
 OTHER FEATURES TO ADD:
 
 - Filter range vs filter selectedNotes ?
+- shortcut to extend range up or down an octave (ctrl shift up arrow ctrl shift down arrow)
+  - or perhaps it widens/narrows it in both directions?
 - move playing indexes forward/backward with arrows... which shortcuts?
 - exchange ctrl and alt left & right arrow navigation
 - sleep feature
 - https://www.npmjs.com/package/vue-draggable-resizable
 - https://codepen.io/anon/pen/zLJzdq
 - button for add track
-- Click mode/chord name to do/queue that type of modulation
+
+- Global Button/Shortcuts:
+    - Fill track with _# of rests (same as fill number, just rests... but, squares or circles?)
+    - toggle all tracks to change 0 & back (change on/off)  (to change max / to change _x_)
+    // are these doable in keypress? (without registering each number value as a separate handler? ie: can keypress accept an arbitrary number?
+    - all tracks changePer
+    - all tracks for rest percent settings
+    - sequence combo for modulation per: ctrl M #
+
+- Track Buttons/Shortcuts
+- track edit arrow keys repeat ok (will need to be keypress)
 
 
 INFO-TO-UPDATE:
@@ -78,22 +82,6 @@ https://www.youtube.com/watch?v=vKGKJprJhkc
         - apparently chainReps overrides shift-e
         - grey out "chain reps" when it''s set at 0 ?
 
-
-    - Modulations
-        - chord options would be nice, for studying jazz progressions
-          - also a "use all" option, so it would fill all or as many of the chord tones as possible before repeating
-
-    - Global Button/Shortcuts:
-        - Fill track with _# of rests (same as fill number, just rests... but, squares or circles?)
-        - toggle all tracks to change 0 & back (change on/off)  (to change max / to change _x_)
-        // are these doable in keypress? (without registering each number value as a separate handler? ie: can keypress accept an arbitrary number?
-            - all tracks changePer
-            - all tracks for rest percent settings
-            - sequence combo for modulation per: ctrl M #
-
-    - Track Buttons/Shortcuts
-        - Delay on/off
-        - track edit arrow keys repeat ok (will need to be keypress)
 
       Potentially less-needed shotcuts:
         - shortcuts to choose specific mode
@@ -271,7 +259,7 @@ REFACTORING / BUGS / HMMMMMMM
         betcha its because of "activeRegion" : if (this.activeRegion==='' && e.key==='Enter') { this.down = [] } // this prevents 'Enter' from getting stuck in down when a select is focussed. It works but feeling a bit suspicious. (Or perhaps more conditions are needed here?)
     - a#\g#dia in "four nasty" doesnt place a# in bottom (lead) track... ???
 
-
+    - double OR bar (||) in buildHarmonicForm regex...?
     - adjusted newTrackDefaults pitchPercent to 100 - with shift-f it still filled in some rests...
         - pitchPercent vs selectedPitchPercent... probs you can just get rid of this...!
     - using distribute on leadTrack doesnt change fill length...

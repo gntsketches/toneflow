@@ -682,7 +682,9 @@ export const store = new Vuex.Store({
       },
       updateSelectedRootPitches: (state, rootPitch) => {
         let scene = state.scenes[state.editingSceneNumber]
-        if (rootPitch === 'all') {
+        if (rootPitch === 'clear') {
+          scene.selectedRootPitches = []
+        } else if (rootPitch === 'all') {
           scene.selectedRootPitches = ['C','G','D','A','E','B','Fs','Cs','Gs','Ds','As','F']
         } else {
           let rootPitchIndex = scene.selectedRootPitches.indexOf(rootPitch)
@@ -1027,20 +1029,20 @@ export const store = new Vuex.Store({
         //let harmonicPreForm = value.match(/((([c|d|f|g|a]#?|[b|e])\\)?([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr))|((([c|d|f|g|a]#?|[b|e])\\)?\([a-z]\))/gi)
         let harmonicPreForm = value.match(/((([c|d|f|g|a]#?|[b|e])\\)?([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr))|((([c|d|f|g|a]#?|[b|e])\\)?-[a-z])/gi)
         if (harmonicPreForm === null) { console.log("harmonicPreForm is null!"); return }
-        console.log("preForm", harmonicPreForm)
         if (arraysEqual(harmonicPreForm, scene.harmonicForm)) { console.log('same'); return }
 
         // find all the -[a-z] and eliminate the duplicates
         let formLetters = []
-        //let formToPickFinderArray = value.match(/\([a-z]\)/gi) // console.log('parensFinderArray', parensFinderArray)
-        let formToPickFinderArray = value.match(/-[a-z]/gi) // console.log('parensFinderArray', parensFinderArray)
+        let formToPickFinderArray = value.match(/-[a-z]/gi)
         if (formToPickFinderArray !== null) {
-        let formToPickLettersArray = formToPickFinderArray.map(foundLetter => foundLetter.match(/[a-z]/i)[0] ) //console.log("parensStrippes", parensStrippedArray)
-          formToPickLettersArray.forEach((letter, index)=>{
-            if (formLetters.indexOf(letter)=== -1) { formLetters.push(letter) }
+          let formToPickLettersArray = formToPickFinderArray.map(foundLetter => foundLetter.match(/[a-z]/i)[0] )
+          formToPickLettersArray.forEach((letter, index) => {
+            if (formLetters.indexOf(letter) === -1) { formLetters.push(letter) }
           })
         }
-        console.log('formLetters',formLetters)
+
+        // checking formLetters.length against totalFormStepOptions prevents an infiniteloop if there are too few options
+        let totalFormStepOptions = scene.selectedRootPitches.length * context.getters.selectedModulations.length
         // create a uniqe match for each letter
         let formLettersMatches = []        // https://stackoverflow.com/questions/2380019/generate-unique-random-numbers-between-1-and-100
         while(formLettersMatches.length < formLetters.length){
@@ -1048,21 +1050,18 @@ export const store = new Vuex.Store({
             let preMatch = pickMode(MODEDATA, type, false, scene.selectedRootPitches)
             preMatch.modeBase = preMatch.modeBase.replace(/s/,'#')
             let match = preMatch.modeBase + preMatch.modulation
-            if(formLettersMatches.indexOf(match) > -1) continue
+            if(formLettersMatches.indexOf(match) > -1 && totalFormStepOptions >= formLetters.length) continue
             formLettersMatches[formLettersMatches.length] = match
         }
-        console.log("formLetterMatches", formLettersMatches)
           // then combine those together onto an object
         let formLettersRef = {}
         formLetters.forEach((letter, index) => {
           formLettersRef[letter] = formLettersMatches[index]
         })
-        console.log('formLettersRef', formLettersRef )
 
         // translate the pre-form into the form using that object
             // lower stuff below is redundant...
         let harmonicForm = []
-        console.log('preForm', harmonicPreForm)
         harmonicPreForm.forEach( (section, index) => {
           let prefix = ''
           if (section.match(/([c|d|f|g|a]#?|[b|e])\\/i) !== null) {
@@ -1082,7 +1081,6 @@ export const store = new Vuex.Store({
           }
           harmonicForm.push(prefix + sectionMode)
         })
-        console.log("harmonicForm", harmonicForm)
         context.commit('updateHarmonicForm', harmonicForm)
       },
       rememberAllTunes: context => {
