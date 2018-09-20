@@ -134,12 +134,12 @@
             </noscript>
             <br><br>
             The <strong>percentage (%)</strong> field detemines the odds that a randomized note will be a pitch (rather than a rest) when it changes.
-            This field also determines track density when using the <strong>Fill</strong> and <strong>Distribute</strong> buttons (dashboard right).
+            This field also determines track density when using the <strong>Fill</strong> and <strong>Distribute</strong> buttons (dashboard left).
             Fill length can be is in a field by the button, and also changes automatically with the length of the lead track.
             The distribute feature will use each of the green pitches in the Piano Selector once.
             <br><br>
             The <strong>Remember</strong> and <strong>Return</strong> buttons can be used to allow a track to evolve randomly and return to its original state.
-            These buttons are also available on the dashboard, and there they affect all tracks.
+            These buttons are also available on the dashboard, where they affect all tracks.
             Further features of the Track Controls sections include the track number,
             a <strong>Hide/Show</strong> button for track pitches (useful in ear training),
             a <strong>Mute</strong> button (<strong>M</strong>),
@@ -176,12 +176,23 @@
             modulations follow a determined structure. Clicking the <strong>Modulate</strong> button will prompt the next modualtion.
             When <strong>Auto On</strong> is selected, the next modulation will happen along with the note-changing cycles of the Lead Track.
             <br><br>
-            Toneflow recognizes six types of modes: Diatonic (Dia) - ie: the natural major scale, Melodic Minor (Mel), Harmonic Minor (Har),
-            Diminished (Dim), Augmented (Aug), and Chromatic (Chr). Because these modes specify notes to be chosen from at random,
+            Toneflow recognizes eighteen types of modes and chord structures. Modes available are:
+            Diatonic (Dia) - ie: the natural major scale, Melodic Minor (Mel), Harmonic Minor (Har),
+            Diminished (Dim), Augmented (Aug), and Chromatic (Chr). (Since modes specify notes to be chosen from at random,
             modes with identical sets of notes are ragarded as the same. For example, "C Major", "D Dorian",
-            and "G Myxolydian" are all "C Diatonic". The odds that one of these types of modes will be picked at random can be altered in the
+            and "G Myxolydian" are all "C Diatonic".) You can also select Major (Maj), Minor (Min), and Suspended (Sus) triads;
+            Major 7th (Ma7), Dominant 7th (Dom), Minor 7th (Mi7), Half-Diminished (Hdm) and Diminished 7th (Dm7) chords;
+            Blues (Blu) and minor Pentatonic (Pen) scales; or a simple Fifth (Fth) or single note (One).
+            <br><br>
+            The odds that one of these types of modes will be picked at random can be altered in the
             <strong>Modulation Weights</strong> section. For example, if "Dia" is set to "2" and "Mel" is set to "1",
             a Diatonic mode (any of the 12) is twice as likely to be chosen as a Melodic Minor mode (any of the 12).
+            Right-clicking on the name of a mode will re-set all other weights to 0; left-clicking on the name will
+            modulate the piano to that mode or queue it as upcoming if "Auto" is selected.
+            <strong>+ Types</strong> increments the weight of all modes.
+            <br><br>
+            It is possible to limit the root-note options from which Toneflow will choose a mode;
+            left-click on the pitch names (above the mode names) to toggle this, or right-click to select only one root pitch.
             <br><br>
             You can click in the <strong>Form Entry</strong> field, to use text to enter specific modes.
             Only lowercase letters are accepted, sharps are always used (no flats), and modes should be separated by spaces.
@@ -204,7 +215,8 @@
           <h1>Sounds and Synths</h1>
           <p>
             Toneflow's sounds are made by basic subtractive synthesis and a few special effects.
-            The options are the same for both Tracks and for the Qwerty keyboard.
+            The options are the same for both Tracks and for the Qwerty keyboard, though the tracks have additional tools for manipulating
+            the more complicated AM, FM, Fat, and Pusle types of synth sounds.
             <br><br>
             You can learn more about <strong>Wave Type</strong>s on <a href="https://en.wikipedia.org/wiki/Waveform" target="_blank">Wikipedia</a>.
             The <strong>Gain</strong> is the magnitide of the signal, similar to volume.
@@ -263,8 +275,8 @@
           <br><br>
           <h1>Arrow Keys</h1>
           <p>
-            <strong>ctrl-left/right</strong>: sets cursor to track start/end<br>
-            <strong>alt-left/right</strong>: moves cursor left/right 8 notes<br>
+            <strong>ctrl-left/right</strong>: moves cursor left/right 8 notes<br>
+            <strong>alt-left/right</strong>: sets cursor to track start/end<br>
             <strong>ctrl-up/down</strong>: shifts editing note up/down in selected pitches<br>
             <strong>alt-up/down</strong>: shifts editing note up/down by an octave<br>
           </p>

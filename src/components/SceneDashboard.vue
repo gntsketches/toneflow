@@ -146,68 +146,68 @@
           </div>
 
           <div class="mode-options-box">
-              <div class="mode-option" @click="changeToModeType('dia')" @contextmenu="soloModulationWeight('dia', $event)" ><span>Dia</span>
+              <div class="mode-option"><span @click="changeToModeType('dia')" @contextmenu="soloModulationWeight('dia', $event)" >Dia</span>
                 <input type="number" min="0" :value="modulationWeights['dia']" @input="updateModulationWeights('dia', $event)" @focus="focusFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('mel')" @contextmenu="soloModulationWeight('mel', $event)" ><span>Mel</span>
+              <div class="mode-option"><span @click="changeToModeType('mel')" @contextmenu="soloModulationWeight('mel', $event)" >Mel</span>
                 <input type="number" min="0" :value="modulationWeights['mel']" @input="updateModulationWeights('mel', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('har')" @contextmenu="soloModulationWeight('har', $event)" ><span>Har</span>
+              <div class="mode-option"><span @click="changeToModeType('har')" @contextmenu="soloModulationWeight('har', $event)" >Har</span>
                 <input type="number" min="0" :value="modulationWeights['har']" @input="updateModulationWeights('har', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>
           <div class="mode-options-box">
-              <div class="mode-option" @click="changeToModeType('dim')" @contextmenu="soloModulationWeight('dim', $event)" ><span>Dim</span>
+              <div class="mode-option"><span @click="changeToModeType('dim')" @contextmenu="soloModulationWeight('dim', $event)" >Dim</span>
                 <input type="number" min="0" :value="modulationWeights['dim']" @input="updateModulationWeights('dim', $event)" @focus="focusFunction"  @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('aug')" @contextmenu="soloModulationWeight('aug', $event)" ><span>Aug</span>
+              <div class="mode-option"><span @click="changeToModeType('aug')" @contextmenu="soloModulationWeight('aug', $event)" >Aug</span>
                 <input type="number" min="0" :value="modulationWeights['aug']" @input="updateModulationWeights('aug', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('chr')" @contextmenu="soloModulationWeight('chr', $event)" ><span>Chr</span>
+              <div class="mode-option"><span @click="changeToModeType('chr')" @contextmenu="soloModulationWeight('chr', $event)" >Chr</span>
                 <input type="number" min="0" :value="modulationWeights['chr']" @input="updateModulationWeights('chr', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>
           <div class="mode-options-box">
-              <div class="mode-option" @click="changeToModeType('maj')" @contextmenu="soloModulationWeight('maj', $event)" ><span>Maj</span>
+              <div class="mode-option"><span @click="changeToModeType('maj')" @contextmenu="soloModulationWeight('maj', $event)" >Maj</span>
                 <input type="number" min="0" :value="modulationWeights['maj']" @input="updateModulationWeights('maj', $event)" @focus="focusFunction"  @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('min')" @contextmenu="soloModulationWeight('min', $event)" ><span>Min</span>
+              <div class="mode-option"><span @click="changeToModeType('min')" @contextmenu="soloModulationWeight('min', $event)" >Min</span>
                 <input type="number" min="0" :value="modulationWeights['min']" @input="updateModulationWeights('min', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('sus')" @contextmenu="soloModulationWeight('sus', $event)" ><span>Sus</span>
+              <div class="mode-option"><span @click="changeToModeType('sus')" @contextmenu="soloModulationWeight('sus', $event)" >Sus</span>
                 <input type="number" min="0" :value="modulationWeights['sus']" @input="updateModulationWeights('sus', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>
           <div class="mode-options-box">
-              <div class="mode-option" @click="changeToModeType('maj')" @contextmenu="soloModulationWeight('ma7', $event)" ><span>Ma7</span>
+              <div class="mode-option"><span @click="changeToModeType('maj')" @contextmenu="soloModulationWeight('ma7', $event)" >Ma7</span>
                 <input type="number" min="0" :value="modulationWeights['ma7']" @input="updateModulationWeights('ma7', $event)" @focus="focusFunction"  @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('dom')" @contextmenu="soloModulationWeight('dom', $event)" ><span>Dom</span>
+              <div class="mode-option"><span @click="changeToModeType('dom')" @contextmenu="soloModulationWeight('dom', $event)" >Dom</span>
                 <input type="number" min="0" :value="modulationWeights['dom']" @input="updateModulationWeights('dom', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('mi7')" @contextmenu="soloModulationWeight('mi7', $event)" ><span>Mi7</span>
+              <div class="mode-option"><span @click="changeToModeType('mi7')" @contextmenu="soloModulationWeight('mi7', $event)" >Mi7</span>
                 <input type="number" min="0" :value="modulationWeights['mi7']" @input="updateModulationWeights('mi7', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>
           <div class="mode-options-box">
-              <div class="mode-option" @click="changeToModeType('hdm')" @contextmenu="soloModulationWeight('hdm', $event)" ><span>Hdm</span>
+              <div class="mode-option"><span @click="changeToModeType('hdm')" @contextmenu="soloModulationWeight('hdm', $event)" >Hdm</span>
                 <input type="number" min="0" :value="modulationWeights['hdm']" @input="updateModulationWeights('hdm', $event)" @focus="focusFunction"  @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('dm7')" @contextmenu="soloModulationWeight('dm7', $event)" ><span>Dm7</span>
+              <div class="mode-option"><span @click="changeToModeType('dm7')" @contextmenu="soloModulationWeight('dm7', $event)" >Dm7</span>
                 <input type="number" min="0" :value="modulationWeights['dm7']" @input="updateModulationWeights('dm7', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('blu')" @contextmenu="soloModulationWeight('blu', $event)" ><span>Blu</span>
+              <div class="mode-option"><span @click="changeToModeType('blu')" @contextmenu="soloModulationWeight('blu', $event)" >Blu</span>
                 <input type="number" min="0" :value="modulationWeights['blu']" @input="updateModulationWeights('blu', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>
           <div class="mode-options-box">
-              <div class="mode-option" @click="changeToModeType('pen')" @contextmenu="soloModulationWeight('pen', $event)" ><span>Pen</span>
+              <div class="mode-option"><span @click="changeToModeType('pen')" @contextmenu="soloModulationWeight('pen', $event)" >Pen</span>
                 <input type="number" min="0" :value="modulationWeights['pen']" @input="updateModulationWeights('pen', $event)" @focus="focusFunction"  @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('fth')" @contextmenu="soloModulationWeight('fth', $event)" ><span>Fth</span>
+              <div class="mode-option"><span @click="changeToModeType('fth')" @contextmenu="soloModulationWeight('fth', $event)" >Fth</span>
                 <input type="number" min="0" :value="modulationWeights['fth']" @input="updateModulationWeights('fth', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
-              <div class="mode-option" @click="changeToModeType('one')" @contextmenu="soloModulationWeight('one', $event)"><span>One</span>
+              <div class="mode-option"><span @click="changeToModeType('one')" @contextmenu="soloModulationWeight('one', $event)" >One</span>
                 <input type="number" min="0" :value="modulationWeights['one']" @input="updateModulationWeights('one', $event)" @focus="focusFunction" @keyup.enter="enterFunction" />
               </div>
           </div>

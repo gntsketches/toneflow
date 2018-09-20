@@ -239,6 +239,32 @@ export const store = new Vuex.Store({
       },
 
       // SCENE MANAGEMENT
+      changeLeadCycles: (state, change) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        if (change === "increment") { scene.leadCycles++ }
+        else if (change === "zero") { scene.leadCycles = 0 }
+      },
+      changeScene: (state) => {
+        console.log("changing scene to:", state.sceneChangeNumber)
+        state.editingSceneNumber = state.sceneChangeNumber
+        let scene = state.scenes[state.editingSceneNumber]
+        Tone.Transport.bpm.value = scene.bpm
+      },
+      changeTempo: (state, e) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.bpm = e.target.value.toString()
+        Tone.Transport.bpm.value = scene.bpm
+      },
+      deleteScene: (state, sceneId) => {
+        state.sceneBench.forEach( (scene, index) => {
+          if (scene.id === sceneId) {
+            state.sceneBench.splice(index, 1)
+          }
+        })
+      },
+      setAdvanceTriggered: (state, bool) => {
+        bool === true? state.advanceTriggered = true : state.advanceTriggered = false
+      },
       moveScene: (state, payload) => {
         let movingScene = {}
         let movingSceneIndex = ''
@@ -264,47 +290,6 @@ export const store = new Vuex.Store({
           state.scenes.push(movingScene)
         }
       },    // "benchScene" is a better title
-      deleteScene: (state, sceneId) => {
-        state.sceneBench.forEach( (scene, index) => {
-          if (scene.id === sceneId) {
-            state.sceneBench.splice(index, 1)
-          }
-        })
-      },
-      updateSceneTitle: (state, title) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        scene.title = title
-      },
-      updateLeadTrack: (state, value) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        scene.leadTrackId = scene.tracks[value].id
-      },
-      changeTempo: (state, e) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        scene.bpm = e.target.value.toString()
-        Tone.Transport.bpm.value = scene.bpm
-      },
-      setAdvanceTriggered: (state, bool) => {
-        bool === true? state.advanceTriggered = true : state.advanceTriggered = false
-      },
-      startScene: state => {
-        let scene = state.scenes[state.editingSceneNumber]
-        scene.started = true
-      },
-      setSceneChangeNumber: (state, change) => {
-        state.sceneChangeNumber = change
-      },
-      changeScene: (state) => {
-        console.log("changing scene to:", state.sceneChangeNumber)
-        state.editingSceneNumber = state.sceneChangeNumber
-        let scene = state.scenes[state.editingSceneNumber]
-        Tone.Transport.bpm.value = scene.bpm
-      },
-      changeLeadCycles: (state, change) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        if (change === "increment") { scene.leadCycles++ }
-        else if (change === "zero") { scene.leadCycles = 0 }
-      },
       resetScene: (state) => {
         let scene = state.scenes[state.editingSceneNumber]
         // editingTrackNumber, editingTrackId, editingIndex - all left alone
@@ -316,61 +301,16 @@ export const store = new Vuex.Store({
         scene.started = false
         scene.modulationCycles = 0
       },
-      updateChainAdvancePer: (state, value) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        scene.chainAdvancePer = value
+      setSceneChangeNumber: (state, change) => {
+        state.sceneChangeNumber = change
       },
-      updateAutoModulate: (state, onOrOff) => {
+      startScene: state => {
         let scene = state.scenes[state.editingSceneNumber]
-        if (onOrOff === 'on') { scene.autoModulate = true }
-        else if (onOrOff === 'off') { scene.autoModulate = false }
-      },
-      updateNextModulation: (state, modulation) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        console.log("mod", modulation)
-        scene.nextModulation = modulation
-      },
-      updateModulationStyle: (state, style) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        scene.modulationStyle = style
+        scene.started = true
       },
       toggleEditingForm: state => {
         let scene = state.scenes[state.editingSceneNumber]
         scene.editingForm = !scene.editingForm
-      },
-      updateHarmonicForm: (state, harmonicForm) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        scene.harmonicForm = harmonicForm
-      },
-      updateFormStep: (state, update) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        console.log('formStep before advance', scene.formStep)
-        if (update === 'zero'){
-          scene.formStep = 0
-        } else if (update === 'advance') {
-          if (scene.formStep < scene.harmonicForm.length-1) { scene.formStep++ }
-          else { scene.formStep = 0 }
-        } else if (update === 'off') {
-          scene.formStep = -1
-        }
-        console.log('formStep after advance', scene.formStep)
-      },
-      updateModulatePerLeadChanges: (state, value) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        scene.modulatePerLeadChanges = value
-      },
-      updateModulationCycles: (state, update) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        if (update === 'increment') { scene.modulationCycles++ }
-        else if (update === 'zero') { scene.modulationCycles = 0 }
-      },
-      updateModulationWeights: (state, payload) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        if (payload.value === 'increment') {
-          scene.modulationWeights[payload.modulationType]++
-        } else {
-        scene.modulationWeights[payload.modulationType] = payload.value
-        }
       },
       toggleFilterOnChange: state => {
         let scene = state.scenes[state.editingSceneNumber]
@@ -386,6 +326,66 @@ export const store = new Vuex.Store({
             track.changeCycles = 0
           })
         }
+      },
+      updateAutoModulate: (state, onOrOff) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        if (onOrOff === 'on') { scene.autoModulate = true }
+        else if (onOrOff === 'off') { scene.autoModulate = false }
+      },
+      updateChainAdvancePer: (state, value) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.chainAdvancePer = value
+      },
+      updateFormStep: (state, update) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        console.log('formStep before advance', scene.formStep)
+        if (update === 'zero'){
+          scene.formStep = 0
+        } else if (update === 'advance') {
+          if (scene.formStep < scene.harmonicForm.length-1) { scene.formStep++ }
+          else { scene.formStep = 0 }
+        } else if (update === 'off') {
+          scene.formStep = -1
+        }
+        console.log('formStep after advance', scene.formStep)
+      },
+      updateHarmonicForm: (state, harmonicForm) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.harmonicForm = harmonicForm
+      },
+      updateSceneTitle: (state, title) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.title = title
+      },
+      updateLeadTrack: (state, value) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.leadTrackId = scene.tracks[value].id
+      },
+      updateModulationCycles: (state, update) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        if (update === 'increment') { scene.modulationCycles++ }
+        else if (update === 'zero') { scene.modulationCycles = 0 }
+      },
+      updateModulatePerLeadChanges: (state, value) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.modulatePerLeadChanges = value
+      },
+      updateModulationWeights: (state, payload) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        if (payload.value === 'increment') {
+          scene.modulationWeights[payload.modulationType]++
+        } else {
+        scene.modulationWeights[payload.modulationType] = payload.value
+        }
+      },
+      updateModulationStyle: (state, style) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.modulationStyle = style
+      },
+      updateNextModulation: (state, modulation) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        console.log("mod", modulation)
+        scene.nextModulation = modulation
       },
 
       // INITIALIZE, ADD & REMOVE
@@ -675,11 +675,6 @@ export const store = new Vuex.Store({
         let scene = state.scenes[state.editingSceneNumber]
         scene.selectedLength = value
       },
-      // is this in use? or a remnant from before you put pitch percent on tracks?
-      updateSelectedPitchPercent: (state, value) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        scene.selectedPitchPercent = value
-      },
       updateSelectedRootPitches: (state, rootPitch) => {
         let scene = state.scenes[state.editingSceneNumber]
         if (rootPitch === 'clear') {
@@ -729,6 +724,7 @@ export const store = new Vuex.Store({
         // https://www.reddit.com/r/vuejs/comments/8qmw3s/looking_for_advice_on_a_saveload_function_with/?st=jj7cs5mw&sh=21b2f617
         let retrievedState = JSON.parse(loadData)
         let newStateBuilder = JSON.parse(JSON.stringify(STATEDEFAULTS))
+        console.log('newStateBuilder', newStateBuilder)
         // properties of retrievedStatestate
         for (let retrievedProp in retrievedState) {
           if (!newStateBuilder.hasOwnProperty(retrievedProp)) { continue }
@@ -749,20 +745,25 @@ export const store = new Vuex.Store({
               let scenes = []
               if (retrievedProp === 'scenes') { scenesOrBenched = retrievedState.scenes }
               else if (retrievedProp === 'sceneBench') { scenesOrBenched = retrievedState.sceneBench }
+
               scenesOrBenched.forEach( (scene, index) => {
-                let sceneObject = JSON.parse(JSON.stringify(newStateBuilder.newSceneDefaults))
-                for (let sceneProp in scene){
-                  if (!sceneObject.hasOwnProperty(sceneProp)) { continue }
+                console.log(newStateBuilder.newSceneDefaults)
+                let sceneObjectBuilder = JSON.parse(JSON.stringify(STATEDEFAULTS.newSceneDefaults))
+                for (let scenePropKey in scene){
+                  if (!sceneObjectBuilder.hasOwnProperty(scenePropKey)) { continue }
+
                   // scene objects
-                  else if (typeof sceneProp === 'object' && !sceneProp.isArray())  {
-                    let scenePropObject = {}
-                    for (let scenePropLevel2 in sceneProp) {
-                      if (!sceneProp.hasOwnProperty(scenePropLevel2)){ continue }
-                      else { scenePropObject[scenePropLevel2] = sceneProp[scenePropLevel2] }
+                  else if (typeof scene[scenePropKey] === 'object' && !Array.isArray(scene[scenePropKey]) )  {
+                    console.log(scenePropKey)
+                    console.log('sceneObjectBuilder[scenePropkey]', sceneObjectBuilder[scenePropKey])
+                    for (let scenePropLevel2 in scene[scenePropKey]) {
+                      console.log(scenePropLevel2, scene[scenePropKey][scenePropLevel2])
+                      if (!sceneObjectBuilder[scenePropKey].hasOwnProperty(scenePropLevel2)){ continue }
+                      else { sceneObjectBuilder[scenePropKey][scenePropLevel2] = scene[scenePropKey][scenePropLevel2] }
                     }
 
                   // tracks
-                  } else if (sceneProp === 'tracks') {
+                } else if (scenePropKey === 'tracks') {
                     let tracks = []
                     scene.tracks.forEach( (track, index) => {
                       let trackObject = JSON.parse(JSON.stringify(newStateBuilder.newTrackDefaults))
@@ -772,14 +773,14 @@ export const store = new Vuex.Store({
                       }
                       tracks.push(trackObject)
                     })
-                    sceneObject.tracks = tracks
+                    sceneObjectBuilder.tracks = tracks
 
                   // other scene properties
                   } else {
-                    sceneObject[sceneProp] = scene[sceneProp]
+                    sceneObjectBuilder[scenePropKey] = scene[scenePropKey]
                   }
                 }
-                scenes.push(sceneObject)
+                scenes.push(sceneObjectBuilder)
               })
               // scenes array is now built
               if (retrievedProp === 'scenes') { newStateBuilder.scenes = scenes }
@@ -799,8 +800,8 @@ export const store = new Vuex.Store({
 
         console.log('state',state)
       },
-      loadScene: (state, loadData) => {
-        state.scenes.push(JSON.parse(loadData))
+      loadScene: (state, checkedSceneData) => {
+        state.scenes.push(checkedSceneData)
       },
 
     },
@@ -1561,7 +1562,7 @@ export const store = new Vuex.Store({
           context.commit('improvedLoad', loadData)
         } else if (parsedLoadData.hasOwnProperty('title')) {
           console.log("title!")
-          context.commit('loadScene', loadData)
+          context.dispatch('checkSceneData', loadData)
         }
         context.state.scenes.forEach( (scene, index) => {
           context.dispatch('initializeSceneAudio', index)
@@ -1570,6 +1571,53 @@ export const store = new Vuex.Store({
         // are there other things beside BPM that need updating on load?
         Tone.Transport.bpm.value = context.state.scenes[context.state.editingSceneNumber].bpm;
       },
+      checkSceneData: (context, loadData) => {
+          let sceneBuilder = JSON.parse(JSON.stringify(STATEDEFAULTS.newSceneDefaults))
+          let sceneData = JSON.parse(loadData)
+          console.log('sceneBuilder', sceneBuilder)
+          console.log('sceneData', sceneData)
+          for (let sceneKey in sceneData){
+
+              // passes by properties no longer recognized by this version of the app
+              if (!sceneBuilder.hasOwnProperty(sceneKey)) { continue }
+
+              // scene objects
+              else if (typeof sceneData[sceneKey] === 'object' && !Array.isArray(sceneData[sceneKey]) )  {
+                  console.log(sceneKey)
+                  console.log('sceneBuilder[sceneKey]', sceneBuilder[sceneKey])
+                  for (let sceneObjectKey in sceneData[sceneKey]) {
+                      console.log(sceneObjectKey, sceneData[sceneKey][sceneObjectKey])
+                      if (!sceneBuilder[sceneKey].hasOwnProperty(sceneObjectKey)){ continue }
+                      else { sceneBuilder[sceneKey][sceneObjectKey] = sceneData[sceneKey][sceneObjectKey] }
+                  }
+              }
+
+              // tracks
+              else if (sceneKey === 'tracks') {
+                  let tracks = []
+                  sceneData.tracks.forEach( (track, index) => {
+                      let trackObject = JSON.parse(JSON.stringify(STATEDEFAULTS.newTrackDefaults))
+                      for (let trackKey in track) {
+                          if (!trackObject.hasOwnProperty(trackKey)) { continue }
+                          else { trackObject[trackKey] = track[trackKey] }       //     tune: [{pitch:"_",random:'fixed'}],   could this be weird on accound of pass-by-reference?
+                      }
+                  tracks.push(trackObject)
+                  })
+                  sceneBuilder.tracks = tracks
+              }
+
+              // other scene properties
+              else {
+                  console.log('adding prop')
+                  sceneBuilder[sceneKey] = sceneData[sceneKey]
+              }
+          }
+          console.log('sceneBuilder', sceneBuilder)
+
+          context.commit('loadScene', sceneBuilder)
+
+      },
+
       download: context => {
         const promptData = prompt("Download this file as:", context.state.fileName)
         const fileName = (promptData === null) ? '' : promptData.trim()

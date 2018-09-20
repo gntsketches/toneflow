@@ -425,8 +425,10 @@ export default {
         })
         this.playerGain.gain.value = this.$store.state.playerParams.gain
         this.playerDistortion.distortion = this.$store.state.playerParams.distortion
+        this.playerDelay.wet.value = 0.5
         this.playerDelay.delayTime.value = this.$store.state.playerParams.delayTime
         this.playerDelay.feedback.value = this.$store.state.playerParams.delayFeedback
+
         this.playerSynth.set({ 'envelope': { attack: this.$store.state.playerADSR.attack } })
         this.playerSynth.set({ 'envelope': { decay: this.$store.state.playerADSR.decay } })
         this.playerSynth.set({ 'envelope': { sustain: this.$store.state.playerADSR.sustain } })
@@ -437,24 +439,22 @@ export default {
         this.playerAutoFilter.filter.rolloff = this.storePlayerFilterRolloff
         this.playerAutoFilter.baseFrequency = this.storePlayerBaseFrequency
         this.playerAutoFilter.filter.Q.value = this.$store.state.playerFilter.filterQ
-
         this.playerAutoFilter.frequency.value = this.$store.state.playerFilter.LFOFrequency
         this.playerAutoFilter.depth.value = this.$store.state.playerFilter.LFODepth
         this.playerAutoFilter.type = this.storePlayerLFOWaveType
         this.playerAutoFilter.octaves = this.storePlayerLFOOctaves
+        this.playerAutoFilter.start()
 
-        //this.playerReverb.generate()
-        //this.playerReverb.roomSize = this.$store.state.playerParams.reverb  // ? don't think this is working...
-        //this.playerSynth.chain(this.playerGain, this.playerDistortion).fan(Tone.Master, this.playerDelay)
-        //this.playerDelay.toMaster()
-        this.playerSynth.fan(this.playerGain, this.playerDelay)
-
-    //  this.playerGain.chain(this.playerDistortion, Tone.Master)
-    //    this.playerDelay.chain(this.playerGain, this.playerDistortion, Tone.Master)
+        /* this.playerSynth.fan(this.playerGain, this.playerDelay)
         this.playerGain.chain(this.playerDistortion, this.playerAutoFilter, Tone.Master)
-        this.playerDelay.chain(this.playerGain, this.playerDistortion, this.playerAutoFilter, Tone.Master)
-        this.playerAutoFilter.start();
-  //  this.playerAutoFilter.baseFrequency = 3200
+        this.playerDelay.chain(this.playerGain, this.playerDistortion, this.playerAutoFilter, Tone.Master) */
+
+        this.playerSynth.connect(this.playerGain)
+        this.playerGain.connect(this.playerAutoFilter)
+        this.playerAutoFilter.connect(this.playerDistortion)
+        this.playerDistortion.connect(this.playerDelay)
+        this.playerDelay.toMaster()
+
       },
 
       deactivateDelay(){

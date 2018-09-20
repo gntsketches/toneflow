@@ -40,22 +40,22 @@ export function keypress() {
       "this": this,  "prevent_default": false, "prevent_repeat": false, "is_counting": true,
   });
   listener.register_combo({
-    "keys"              : "control left",
+    "keys"              : "alt left",
     "on_keydown"        : function() { this.$store.commit('changeEditingIndex', 'zero') },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
   listener.register_combo({
-    "keys"              : "control right",
+    "keys"              : "alt right",
     "on_keydown"        : function() { this.$store.commit('changeEditingIndex', 'endcap') },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
   listener.register_combo({
-    "keys"              : "alt left",
+    "keys"              : "control left",
     "on_keydown"        : function() { this.$store.commit('changeEditingIndex', 'minusEight') },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
   listener.register_combo({
-    "keys"              : "alt right",
+    "keys"              : "control right",
     "on_keydown"        : function() { this.$store.commit('changeEditingIndex', 'plusEight') },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
