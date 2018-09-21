@@ -30,14 +30,14 @@ export default {
 	  },
 
 		computed: {
+			scene(){
+				return this.$store.state.scenes[this.$store.state.editingSceneNumber]
+			},
 			activeRegion(){
 				return this.$store.state.activeRegion
 			},
-			editingSceneNumber(){
-				return this.$store.state.editingSceneNumber
-			},
 			selectedNotes(){
-				return this.$store.state.scenes[this.editingSceneNumber].selectedNotes
+				return this.scene.selectedNotes
 			},
 		},
 

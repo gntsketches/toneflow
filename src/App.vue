@@ -419,7 +419,6 @@ export default {
       *************************************************************************************************/
 
       updatePlayerStuff(){
-        console.log('updating player stuff')
         this.playerSynth.set({
            "oscillator": { "type": this.$store.state.playerParams.waveType }
         })
@@ -473,9 +472,15 @@ export default {
 
     created(){
 
-      // TRACKS SETUP
+
+      // SCENE SETUP
       this.$store.dispatch('setUpNewScene')
-    //  this.$store.dispatch('initializeSceneAudio', this.$store.state.editingSceneNumber)
+      // this.$store.dispatch('initializeSceneAudio', this.$store.state.editingSceneNumber)
+        // check, are you already doing this in that action?
+
+      // SET SCENE ID
+      this.$store.commit('updateEditingSceneId', this.scene.id)
+        // this *should* be separate from setUpNewScene, right?
 
       // TONE SETUP
   		this.scheduleId = Tone.Transport.scheduleRepeat(time => {  // ;console.log("scheduleRepeat")  // Cleared below

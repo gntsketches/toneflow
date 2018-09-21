@@ -101,7 +101,7 @@ export const stateDefaults = {
     lastMode: 'C-dia',
     autoModulate: false,
     modulationStyle: 'drift',
-    nextModulation: '',  // this is an object, but '' is the starting value to check against
+    nextModulation: { modeBase: '', modePitches: [], modulation: '' }, // see note in autoModulate action
     editingForm: false,
     harmonicForm: [],
     formStep: -1,

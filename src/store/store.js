@@ -4,7 +4,6 @@ import {AudioManager as AM} from "../AudioManager"
 import {modeData as MODEDATA} from "../modeData"
 import {stateDefaults as STATEDEFAULTS} from "./stateDefaults"
 let stateDefaultsParsed = JSON.parse(JSON.stringify(STATEDEFAULTS))
-console.log('stateDefaultsParsed', stateDefaultsParsed)
 import {bus} from '../main.js'
 
 Vue.use(Vuex)
@@ -92,7 +91,6 @@ export const store = new Vuex.Store({
         }
         //keyToQwerty = state.keyToQwertyVal
         let qwertyVals = {" ":" "}
-        console.log("keyToQwerty", keyToQwerty)
         for (const key in keyToQwerty) {
           if (keyToQwerty[key] === "") {
             qwertyVals[key] = ""
@@ -245,7 +243,6 @@ export const store = new Vuex.Store({
         else if (change === "zero") { scene.leadCycles = 0 }
       },
       changeScene: (state) => {
-        console.log("changing scene to:", state.sceneChangeNumber)
         state.editingSceneNumber = state.sceneChangeNumber
         let scene = state.scenes[state.editingSceneNumber]
         Tone.Transport.bpm.value = scene.bpm
@@ -276,8 +273,16 @@ export const store = new Vuex.Store({
             }
           })
           if (movingSceneIndex !== state.editingSceneNumber) {
+            console.log("editing # pre", state.editingSceneNumber) // editingSceneId
+            let editingSceneId = state.scenes[state.editingSceneNumber].id
             state.scenes.splice(movingSceneIndex, 1)
             state.sceneBench.push(movingScene)
+            state.scenes.forEach( (scene, index) => {
+              if (scene.id === editingSceneId) {
+                state.editingSceneNumber = index
+              }
+            })
+            console.log("editing # post", state.editingSceneNumber)
           }
         }
         if (payload.move === 'flow') {
@@ -387,11 +392,15 @@ export const store = new Vuex.Store({
         console.log("mod", modulation)
         scene.nextModulation = modulation
       },
+      updateEditingSceneId: (state, sceneId) => {
+        if (sceneId) { state.editingSceneId = sceneId }
+        else { state.editingSceneId = state.scenes[state.editingSceneNumber].id }
+      },
 
       // INITIALIZE, ADD & REMOVE
       addNewScene: ( state, newScene ) => {
         state.scenes.push(newScene)
-        state.editingSceneId = newScene.id
+        // state.editingSceneId = newScene.id // let's not do that...
       },
       setUpNewTrack: (state, newTrack) => {
         let scene = state.scenes[state.editingSceneNumber]
@@ -558,8 +567,12 @@ export const store = new Vuex.Store({
         updatedTracks.push(scene.tracks[0])
         scene.tracks = updatedTracks.concat(tracks)
       },
-      setScenes: (state, scenes) => { // from play-n-tabs
+      dragScene: (state, scenes) => { // from play-n-tabs
+        let editingSceneId = state.editingSceneId
         state.scenes = scenes
+        state.scenes.forEach( (scene, index) => {
+          if (scene.id === editingSceneId) { state.editingSceneNumber = index }
+        })
       },
 
       // TRACK EDITING
@@ -668,6 +681,7 @@ export const store = new Vuex.Store({
       },
       updateSelectedMode: (state, modeInfo) => {
         let scene = state.scenes[state.editingSceneNumber]
+        console.log('modeInfo', modeInfo)
         scene.selectedNotes = modeInfo.modePitches
         scene.lastMode = modeInfo.modeBase + '-' + modeInfo.modulation
       },
@@ -724,7 +738,6 @@ export const store = new Vuex.Store({
         // https://www.reddit.com/r/vuejs/comments/8qmw3s/looking_for_advice_on_a_saveload_function_with/?st=jj7cs5mw&sh=21b2f617
         let retrievedState = JSON.parse(loadData)
         let newStateBuilder = JSON.parse(JSON.stringify(STATEDEFAULTS))
-        console.log('newStateBuilder', newStateBuilder)
         // properties of retrievedStatestate
         for (let retrievedProp in retrievedState) {
           if (!newStateBuilder.hasOwnProperty(retrievedProp)) { continue }
@@ -747,17 +760,13 @@ export const store = new Vuex.Store({
               else if (retrievedProp === 'sceneBench') { scenesOrBenched = retrievedState.sceneBench }
 
               scenesOrBenched.forEach( (scene, index) => {
-                console.log(newStateBuilder.newSceneDefaults)
                 let sceneObjectBuilder = JSON.parse(JSON.stringify(STATEDEFAULTS.newSceneDefaults))
                 for (let scenePropKey in scene){
                   if (!sceneObjectBuilder.hasOwnProperty(scenePropKey)) { continue }
 
                   // scene objects
                   else if (typeof scene[scenePropKey] === 'object' && !Array.isArray(scene[scenePropKey]) )  {
-                    console.log(scenePropKey)
-                    console.log('sceneObjectBuilder[scenePropkey]', sceneObjectBuilder[scenePropKey])
                     for (let scenePropLevel2 in scene[scenePropKey]) {
-                      console.log(scenePropLevel2, scene[scenePropKey][scenePropLevel2])
                       if (!sceneObjectBuilder[scenePropKey].hasOwnProperty(scenePropLevel2)){ continue }
                       else { sceneObjectBuilder[scenePropKey][scenePropLevel2] = scene[scenePropKey][scenePropLevel2] }
                     }
@@ -798,7 +807,6 @@ export const store = new Vuex.Store({
           state[property] = newStateBuilder[property]
         }
 
-        console.log('state',state)
       },
       loadScene: (state, checkedSceneData) => {
         state.scenes.push(checkedSceneData)
@@ -810,7 +818,7 @@ export const store = new Vuex.Store({
     actions: {
 
       // SCENE MANAGEMENT
-       setUpNewScene: context => {
+      setUpNewScene: context => {
         const newScene = JSON.parse(JSON.stringify(context.state.newSceneDefaults))
         let sceneIdNumber = Math.random().toString().slice(2)
         newScene.id = sceneIdNumber
@@ -980,8 +988,11 @@ export const store = new Vuex.Store({
       autoModulate: (context, onOrOff) => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
         if ( onOrOff === 'on') {
-          if  (scene.modulationStyle === 'drift' && ( scene.nextModulation === '' ||
-               context.getters.selectedModulations.indexOf(scene.nextModulation.modulation) === -1  )) {
+          console.log('turning AutoMod on')
+          console.log(context.getters.selectedModulations.indexOf(scene.nextModulation.modulation) )
+          if  (scene.modulationStyle === 'drift' && ( scene.nextModulation.modulation === '' ||
+               context.getters.selectedModulations.indexOf(scene.nextModulation.modulation) === -1  )) {  // here scene.nextModulation is checked in two different conditions, but it's a bit redundant because the second will also catch the first...
+            console.log('in drift && ')
             // DRY re: morphSelectedNotes, toggleModulationStyle
             let type = randomElement(context.getters.selectedModulations)
             let modeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
@@ -1501,7 +1512,9 @@ export const store = new Vuex.Store({
         })
       },
       morphSelectedNotes: (context, userCalled) => {
+        console.log('in morph')
         let scene = context.state.scenes[context.state.editingSceneNumber]
+        console.log('nextModulation', scene.nextModulation)
         if (scene.autoModulate || scene.modulationStyle === 'form') {
           if (scene.modulationStyle === 'drift') {
             if (!userCalled){
@@ -1555,13 +1568,10 @@ export const store = new Vuex.Store({
         }
     	},
       load: (context, loadData) => {
-        console.log(loadData)
         let parsedLoadData = JSON.parse(loadData)
-        console.log(parsedLoadData)
         if (parsedLoadData.hasOwnProperty('fileName')) {
           context.commit('improvedLoad', loadData)
         } else if (parsedLoadData.hasOwnProperty('title')) {
-          console.log("title!")
           context.dispatch('checkSceneData', loadData)
         }
         context.state.scenes.forEach( (scene, index) => {
@@ -1574,8 +1584,6 @@ export const store = new Vuex.Store({
       checkSceneData: (context, loadData) => {
           let sceneBuilder = JSON.parse(JSON.stringify(STATEDEFAULTS.newSceneDefaults))
           let sceneData = JSON.parse(loadData)
-          console.log('sceneBuilder', sceneBuilder)
-          console.log('sceneData', sceneData)
           for (let sceneKey in sceneData){
 
               // passes by properties no longer recognized by this version of the app
@@ -1583,10 +1591,7 @@ export const store = new Vuex.Store({
 
               // scene objects
               else if (typeof sceneData[sceneKey] === 'object' && !Array.isArray(sceneData[sceneKey]) )  {
-                  console.log(sceneKey)
-                  console.log('sceneBuilder[sceneKey]', sceneBuilder[sceneKey])
                   for (let sceneObjectKey in sceneData[sceneKey]) {
-                      console.log(sceneObjectKey, sceneData[sceneKey][sceneObjectKey])
                       if (!sceneBuilder[sceneKey].hasOwnProperty(sceneObjectKey)){ continue }
                       else { sceneBuilder[sceneKey][sceneObjectKey] = sceneData[sceneKey][sceneObjectKey] }
                   }
@@ -1608,11 +1613,9 @@ export const store = new Vuex.Store({
 
               // other scene properties
               else {
-                  console.log('adding prop')
                   sceneBuilder[sceneKey] = sceneData[sceneKey]
               }
           }
-          console.log('sceneBuilder', sceneBuilder)
 
           context.commit('loadScene', sceneBuilder)
 

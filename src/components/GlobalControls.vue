@@ -57,7 +57,6 @@ export default {
       return this.$store.state.entrySound ? 'Entry Sound On' : 'Entry Sound Off'
     },
     fileName(){
-      console.log("fileName in global", this.$store.state.fileName)
       return this.$store.state.fileName
     },
     hideInfoMenu(){
@@ -69,7 +68,6 @@ export default {
 
   methods: {
     toggleEditMode(){
-      console.log('toggling')
       this.$store.commit('toggleEditMode')
     },
     toggleEntrySound(){
@@ -99,7 +97,6 @@ export default {
       this.$store.commit('changeLoadTarget', loadTarget)
     },
     load(){
-      console.log("loadTarget", this.$store.state.loadTarget)
       this.$store.dispatch('load', localStorage.getItem( this.$store.state.loadTarget ))
     },
     download(){
@@ -110,7 +107,6 @@ export default {
     },
     processFile(event) {
       const file = event.target.files[0]
-      console.log(event.target.files[0].name)
       const fileReader = new FileReader()
       fileReader.addEventListener('load', () => {
         const json = JSON.parse(fileReader.result)  // JSON.parse here turns a string into a string... must be parsed *again* (in improvedLoad) to turn it into an object!

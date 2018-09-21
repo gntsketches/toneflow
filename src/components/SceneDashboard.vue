@@ -255,7 +255,6 @@ export default {
         let modeInfo = this.scene.nextModulation
         if (modeInfo === '') return ''
         let mod = ''
-        console.log('modeInfo.modulation', modeInfo.modulation)
         switch (modeInfo.modulation) {
           case 'dia': mod = 'diatonic'; break;
           case 'mel': mod = 'melodic min'; break;
@@ -286,7 +285,6 @@ export default {
         //return "working on it..."
       },
       harmonicFormArray(){
-        console.log(this.scene.harmonicForm)
         return this.scene.harmonicForm
       },
       modulatePerLeadChanges: {
