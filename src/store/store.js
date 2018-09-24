@@ -709,6 +709,9 @@ export const store = new Vuex.Store({
         let scene = state.scenes[state.editingSceneNumber]
         scene.tracks[scene.editingTrackNumber].tune = tune
         scene.editingIndex = tune.length-1
+        if (scene.editingTrackId === scene.leadTrackId) {
+          scene.selectedLength = tune.length-1
+        }
       },
       adjustRange: (state, payload) => {
         let scene = state.scenes[state.editingSceneNumber]
@@ -833,7 +836,7 @@ export const store = new Vuex.Store({
         context.commit('addNewScene', newScene)
         context.dispatch('initializeSceneAudio', context.state.scenes.length-1)
       },
-/*      // this is a potential update to setUpNewScene with some tracks automatically
+/*      // this is a potential update to setUpNewScene with some tracks automatically filled
         setUpNewScene: context => {
         const newScene = JSON.parse(JSON.stringify(context.state.newSceneDefaults))
         let sceneIdNumber = Math.random().toString().slice(2)
@@ -1186,16 +1189,17 @@ export const store = new Vuex.Store({
         if (noteArr[1] === "#") { noteArr[0] = noteArr[0]+'#'; noteArr.splice(1,1) }
         let octave = ''
         if (shift === 'octave-up') {
+          console.log("noteArr", noteArr)
           let noteArrNum = noteArr[1]
           octave = parseInt(noteArrNum, 10)
           octave++
-          if (context.getters.pitchSetFullRange.indexOf(noteArr[0]+octave) === -1) { return }
+          if (octave > 9) { return }
           else { newNote = { pitch: noteArr[0]+octave, random:random } }
         } else if (shift === 'octave-down') {
           let noteArrNum = noteArr[1]
           octave = parseInt(noteArrNum, 10)
           octave--
-          if (context.getters.pitchSetFullRange.indexOf(noteArr[0]+octave) === -1) { return }
+          if (octave < 0) { return }
           else { newNote = { pitch: noteArr[0]+octave, random:random } }
         } else if (shift === 'pitchSetFullRange-up') {
           let noteIndex = context.getters.pitchSetFullRange.indexOf(note)
@@ -1413,7 +1417,7 @@ export const store = new Vuex.Store({
         let track = scene.tracks[scene.editingTrackNumber]
         let filledTune = [{ pitch: randomElement(context.getters.pitchSets[scene.editingTrackNumber]), random:'noRests' }]
         for (let i=1; i < scene.selectedLength; i++){
-          if (Math.random()*100 < track.pitchPercent){    //if (Math.random()*100 < scene.selectedPitchPercent){
+          if (Math.random()*100 < track.pitchPercent){
             filledTune.push({ pitch: randomElement(context.getters.pitchSets[scene.editingTrackNumber]), random: 'noRests' })
           } else {
             filledTune.push({ pitch: ' ', random: 'rests' })
@@ -1435,7 +1439,7 @@ export const store = new Vuex.Store({
         let distributedTune = [{ pitch: pitchSet[0], random:'noRests' }]
         let i = 1
         while (i < pitchSet.length){
-          if (Math.random()*100 < track.pitchPercent){ //if (Math.random()*100 < scene.selectedPitchPercent){
+          if (Math.random()*100 < track.pitchPercent){
             //distributedTune.push({ pitch: pitchSet[i], random: true })
             distributedTune.push({ pitch: pitchSet[i], random: 'rests' })
             i++

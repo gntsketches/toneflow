@@ -58,7 +58,7 @@ export const stateDefaults = {
     release: 3,
   },
   playerFilter: {
-    filterWet: 0.8,
+    filterWet: 0.5,
     filterType: 'lowpass',
     filterRolloff: -12,
     filterBaseFrequency: 200,

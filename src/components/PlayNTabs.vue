@@ -17,7 +17,7 @@
                :class="{ currentScene: sceneIndex === state.editingSceneNumber }"
                @click="setUpSceneChange(sceneIndex)"
                :key="scene.id" >
-            <span>{{ scene.title }}</span><span>{{ scene.id }}</span>
+            <span>{{ scene.title }}</span>
             <div class="button-esq" v-on:click.stop="moveScene('bench', scene.id)">-</div>
           </div>
         </draggable>

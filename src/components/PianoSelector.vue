@@ -72,7 +72,9 @@ export default {
 }
 
 .piano-selector ul {
-	height:110px; width:300px;
+	height:126px; /* 110px; */
+	width:297px; /* 300px */
+	padding: 3px 0 0 3px;
 	position:relative;
 	border:1px solid #160801;
 	background: #aaf;
@@ -90,16 +92,18 @@ export default {
 
 
 .piano-selector .white {
-	height:100px; width:40px;
+	height:120px; /* 100px */
+	width:40px;
 	z-index:1;
 	border: 1px solid black;
 	background: white;
-	line-height: 165px;
+	line-height: 200px; /* 165px */
 
 }
 
 .piano-selector .black {
-	height:60px; width:30px;
+	height:75px; /* 60px */
+	width:30px;
 	margin:0 0 0 -16px;
 	z-index:2;
 	border:1px solid #000;
