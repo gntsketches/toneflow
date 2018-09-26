@@ -48,9 +48,6 @@
           v-else @click="toggleModulationStyle"
           >Form</div>
 
-          <div class="button-esq" v-if="this.scene.modulationStyle==='drift'" @click="morphSelectedNotes">Modulate</div>
-          <div class="button-esq" v-else @click="morphSelectedNotes">Advance</div>
-
           <div class="button-esq" v-if="this.scene.autoModulate" @click="autoModulate('off')">Auto On&nbsp</div>
           <div class="button-esq" v-else @click="autoModulate('on')">Auto Off</div>
 
@@ -62,6 +59,9 @@
                    @keyup.enter="enterFunction"
             />
           </div>
+
+          <div class="button-esq" v-if="this.scene.modulationStyle==='drift'" @click="morphSelectedNotes">Modulate</div>
+          <div class="button-esq" v-else @click="morphSelectedNotes">Advance</div>
 
           <br>
 
@@ -253,6 +253,7 @@ export default {
       },
       nextModulation(){
         let modeInfo = this.scene.nextModulation
+        console.log('modeInfo', modeInfo)
         if (modeInfo === '') return ''
         let mod = ''
         switch (modeInfo.modulation) {

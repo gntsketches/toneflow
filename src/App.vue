@@ -268,7 +268,11 @@ export default {
           let toneTune = this.toneTunes[index]
           let pitch = toneTune[track.toneTuneIndex]
           if (pitch != 0){
-            AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, track.noteDuration, time)
+            if (track.toneTuneIndex === toneTune.length-1 && this.$store.state.advanceTriggered) {
+              AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, '16n', time) // corrects for last note duration bleed-over on scene change
+            } else {
+              AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, track.noteDuration, time)
+            }
           }
           if (track.toneTuneIndex < toneTune.length-1) {
             this.$store.commit('changeToneTuneIndex', {change:'increment', index:index} )
