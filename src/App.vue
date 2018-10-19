@@ -423,6 +423,15 @@ export default {
       *************************************************************************************************/
 
       updatePlayerStuff(){
+
+        // clear out any prior connections
+        this.playerSynth.disconnect()
+        this.playerGain.disconnect()
+        this.playerAutoFilter.disconnect()
+        this.playerDistortion.disconnect()
+        this.playerDelay.disconnect()
+
+        // set stuff up
         this.playerSynth.set({
            "oscillator": { "type": this.$store.state.playerParams.waveType }
         })
@@ -448,25 +457,21 @@ export default {
         this.playerAutoFilter.octaves = this.storePlayerLFOOctaves
         this.playerAutoFilter.start()
 
-        /* this.playerSynth.fan(this.playerGain, this.playerDelay)
-        this.playerGain.chain(this.playerDistortion, this.playerAutoFilter, Tone.Master)
-        this.playerDelay.chain(this.playerGain, this.playerDistortion, this.playerAutoFilter, Tone.Master) */
-
         this.playerSynth.connect(this.playerGain)
         this.playerGain.connect(this.playerAutoFilter)
         this.playerAutoFilter.connect(this.playerDistortion)
-        this.playerDistortion.connect(this.playerDelay)
-        this.playerDelay.toMaster()
+        this.playerDistortion.fan(Tone.Master, this.playerDelay)
+        if (this.$store.state.playerParams.delayActive) {
+          this.playerDelay.toMaster()
+        }
 
       },
 
       deactivateDelay(){
-        console.log('deactivateDelay');
         this.playerDelay.disconnect()
       },
       reactivateDelay(){
-        this.playerDelay.chain(this.playerGain, this.playerDistortion, this.playerAutoFilter, Tone.Master)
-        console.log('reactivateDelay')
+        this.playerDelay.connect(Tone.Master)
       },
 
 

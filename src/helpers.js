@@ -206,7 +206,7 @@ function referenceMode(modeData, modulationVal){
   let root = modulationVal.match(/[c|d||f|g|a]#?|[b|e]/i)[0]
   if (root.charAt(1) === '#') { root = root.replace(/#/,'s') }
   //console.log('root', root)
-  let modulationType = modulationVal.match(/dia|mel|har|dim|aug|chr/i)[0]
+  let modulationType = modulationVal.match(/dia|mel|har|dim|aug|chr|maj|min|sus|ma7|dom|mi7|hdm|dm7|blu|pen|fth|one/i)[0]
   //console.log('mod',modulationType)
   let modePitches = modeData[modulationType][root]
   //console.log('pitchs', modePitches)

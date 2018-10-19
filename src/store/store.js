@@ -1042,7 +1042,7 @@ export const store = new Vuex.Store({
       buildHarmonicForm: (context, value) => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
         //let harmonicPreForm = value.match(/((([c|d|f|g|a]#?|[b|e])\\)?([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr))|((([c|d|f|g|a]#?|[b|e])\\)?\([a-z]\))/gi)
-        let harmonicPreForm = value.match(/((([c|d|f|g|a]#?|[b|e])\\)?([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr))|((([c|d|f|g|a]#?|[b|e])\\)?-[a-z])/gi)
+        let harmonicPreForm = value.match(/((([c|d|f|g|a]#?|[b|e])\\)?([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr|maj|min|sus|ma7|dom|mi7|hdm|dm7|blu|pen|fth|one))|((([c|d|f|g|a]#?|[b|e])\\)?-[a-z])/gi)
         if (harmonicPreForm === null) { console.log("harmonicPreForm is null!"); return }
         if (arraysEqual(harmonicPreForm, scene.harmonicForm)) { console.log('same'); return }
 
@@ -1090,12 +1090,13 @@ export const store = new Vuex.Store({
             let letterSection = section.match(/-[a-z]/i)
             let formLetter = letterSection[0].match(/[a-z]/i)[0]
             sectionMode = formLettersRef[formLetter]
-          } else if (section.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr)/i) !== null){
-            let sectionPreMode = section.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr)/i)[0]
+          } else if (section.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr|maj|min|sus|ma7|dom|mi7|hdm|dm7|blu|pen|fth|one)/i) !== null){
+            let sectionPreMode = section.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr|maj|min|sus|ma7|dom|mi7|hdm|dm7|blu|pen|fth|one)/i)[0]
             sectionMode = ucFirst(sectionPreMode)
           }
           harmonicForm.push(prefix + sectionMode)
         })
+        console.log("harmonicForm", harmonicForm)
         context.commit('updateHarmonicForm', harmonicForm)
       },
       rememberAllTunes: context => {
@@ -1538,7 +1539,7 @@ export const store = new Vuex.Store({
             //console.log('post advance formStep', scene.formStep)
             let nextFormSection = (scene.formStep < scene.harmonicForm.length-1)  ? scene.harmonicForm[scene.formStep+1] : scene.harmonicForm[0]
             //console.log('nextFormSection', nextFormSection)
-            let nextFormSectionSansPrefix = nextFormSection.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr)/i)[0]
+            let nextFormSectionSansPrefix = nextFormSection.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr|maj|min|sus|ma7|dom|mi7|hdm|dm7|blu|pen|fth|one)/i)[0]
             //console.log(nextFormSectionSansPrefix)
             let nextModeInfo = referenceMode(MODEDATA, nextFormSectionSansPrefix)
             //console.log(nextModeInfo)
