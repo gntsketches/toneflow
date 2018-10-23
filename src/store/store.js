@@ -3,10 +3,15 @@ import Vuex from 'vuex';
 import {AudioManager as AM} from "../AudioManager"
 import {modeData as MODEDATA} from "../modeData"
 import {stateDefaults as STATEDEFAULTS} from "./stateDefaults"
+import {sceneTitles as SCENETITLES} from "./stateDefaults"
+import {fullRange as FULLRANGE} from "./stateDefaults"
 let stateDefaultsParsed = JSON.parse(JSON.stringify(STATEDEFAULTS))
 import {bus} from '../main.js'
 
 Vue.use(Vuex)
+
+console.log('FULLRANGE', FULLRANGE)
+
 
 export const store = new Vuex.Store({
     strict: true,
@@ -36,8 +41,8 @@ export const store = new Vuex.Store({
           let pitchSet = []
     			let adjustedRangeLow = []
     			let adjustedRange = [] // minus the lower and higher bounds checked...
-    			for (let i=0; i < state.fullRange.length; i++){
-    				if(state.fullRange[i] === track.rangeLow){ adjustedRangeLow = state.fullRange.slice(i) }
+    			for (let i=0; i < FULLRANGE.length; i++){
+    				if(FULLRANGE[i] === track.rangeLow){ adjustedRangeLow = FULLRANGE.slice(i) }
     			}
     			for (let j=0; j <= adjustedRangeLow.length; j++){
     				if(adjustedRangeLow[j-1] === track.rangeHigh){ adjustedRange = adjustedRangeLow.slice(0, j) }
@@ -54,9 +59,9 @@ export const store = new Vuex.Store({
       pitchSetFullRange: state => {
         let scene = state.scenes[state.editingSceneNumber]
         let pitchSetFullRange = []
-        for (let i=0; i < state.fullRange.length; i++) {
-          if (scene.selectedNotes.indexOf(state.fullRange[i].slice(0,-1)) > -1) {
-            pitchSetFullRange.push(state.fullRange[i])
+        for (let i=0; i < FULLRANGE.length; i++) {
+          if (scene.selectedNotes.indexOf(FULLRANGE[i].slice(0,-1)) > -1) {
+            pitchSetFullRange.push(FULLRANGE[i])
           }
         }
         return pitchSetFullRange
@@ -825,7 +830,7 @@ export const store = new Vuex.Store({
         const newScene = JSON.parse(JSON.stringify(context.state.newSceneDefaults))
         let sceneIdNumber = Math.random().toString().slice(2)
         newScene.id = sceneIdNumber
-        let sceneTitle = randomElement(context.state.sceneTitles)
+        let sceneTitle = randomElement(SCENETITLES)
         newScene.title = sceneTitle
         //  let newTrack = JSON.parse(JSON.stringify(context.state.newTrackDefaults))
         //  let trackIdNumber = Math.random().toString().slice(2)
@@ -841,7 +846,7 @@ export const store = new Vuex.Store({
         const newScene = JSON.parse(JSON.stringify(context.state.newSceneDefaults))
         let sceneIdNumber = Math.random().toString().slice(2)
         newScene.id = sceneIdNumber
-        let sceneTitle = randomElement(context.state.sceneTitles)
+        let sceneTitle = randomElement(SCENETITLES)
         newScene.title = sceneTitle
         //  let newTrack = JSON.parse(JSON.stringify(context.state.newTrackDefaults))
         //  let trackIdNumber = Math.random().toString().slice(2)
@@ -1239,13 +1244,13 @@ export const store = new Vuex.Store({
         })
         let highRangeSplit = naturalSplit(track.rangeHigh)
         let lowRangeSplit = naturalSplit(track.rangeLow)
-        if (shift==='up' && context.state.fullRange.indexOf(track.rangeHigh) < 73){
+        if (shift==='up' && FULLRANGE.indexOf(track.rangeHigh) < 73){
           let newRangeHigh = highRangeSplit[0]+(highRangeSplit[1]+1)
           let newRangeLow = lowRangeSplit[0]+(lowRangeSplit[1]+1)
           context.commit('adjustRange', { trackNumber: scene.editingTrackNumber, range: 'high', pitch: newRangeHigh })
           context.commit('adjustRange', { trackNumber: scene.editingTrackNumber, range: 'low', pitch: newRangeLow })
         }
-        if (shift==='down' && context.state.fullRange.indexOf(track.rangeLow) > 11){
+        if (shift==='down' && FULLRANGE.indexOf(track.rangeLow) > 11){
           let newRangeHigh = highRangeSplit[0]+(highRangeSplit[1]-1)
           let newRangeLow = lowRangeSplit[0]+(lowRangeSplit[1]-1)
           context.commit('adjustRange', { trackNumber: scene.editingTrackNumber, range: 'low', pitch: newRangeLow })
@@ -1499,11 +1504,9 @@ export const store = new Vuex.Store({
         let pitchSet = context.getters.pitchSets[payload.trackIndex]
         let formSectionPrefix = payload.formSection.match(/([c|d|f|g|a]#?|[b|e])\\/i)[0]
         let rootPitch = formSectionPrefix.match(/[c|d|f|g|a]#?|[b|e]/i)[0]
-        console.log('root', rootPitch)
         let newPitch = pitchSet.find( pitch => {
           return pitch.slice(0, -1) === rootPitch
         })
-        console.log('newPitch', newPitch)
         context.commit('changeTuneNote', {
           trackIndex: payload.trackIndex,
           tuneIndex: 0,

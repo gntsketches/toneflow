@@ -31,6 +31,8 @@
 // https://www.reddit.com/r/vuejs/comments/8cchun/rendering_order_of_select_option/?st=jg1s57qb&sh=74171ee4
 
 import {bus} from '../main.js'
+import {fullRange as FULLRANGE} from "../store/stateDefaults"
+
 
 export default{
 
@@ -62,13 +64,11 @@ export default{
 			},
 
 			upperRangeOptions: function () {
-				const fullRange = this.$store.state.fullRange
-				const highRange = fullRange.slice(fullRange.indexOf(this.rangeLow))
+				const highRange = FULLRANGE.slice(FULLRANGE.indexOf(this.rangeLow))
 				return highRange.reverse()
 			},
 			lowerRangeOptions: function () {
-				const fullRange = this.$store.state.fullRange
-				const lowRange = fullRange.slice(0, fullRange.indexOf(this.rangeHigh)+1)
+				const lowRange = FULLRANGE.slice(0, FULLRANGE.indexOf(this.rangeHigh)+1)
 				return lowRange.reverse()
 			}
 	  },
