@@ -211,27 +211,38 @@ export default {
     methods : {
 
       advanceTrackStep(time){   // console.log("in pTP") //console.log(Date.now(), this.tracks)
-        if (this.tracks[this.leadTrackNumber].toneTuneIndex === 0 && this.$store.state.advanceTriggered){  // this.leadTrack.toneTuneIndex === this.toneTunes[this.leadTrackNumber].length-1
-          if (this.$store.state.chain) {
-            this.$store.commit('resetScene')
-            if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
-                this.$store.state.chainLoop === false) {
-              this.togglePlay()
-              this.$store.commit('changeScene')
-              this.$store.commit('setAdvanceTriggered', false)
-              return
-            }
+
+        const leadTrack = this.tracks[this.leadTrackNumber]
+        console.log('changeCycles', leadTrack.changeCycles)
+        // SCENE CHANGING:
+        if  ( ( leadTrack.toneTuneIndex === 0 && this.$store.state.advanceTriggered ) &&
+              (
+                ( this.scene.sceneChangeIncrement === 'perCycle' ||
+                  ( this.scene.sceneChangeIncrement === 'perModulation' && this.scene.modulationStyle === drift  ) ||
+                  ( this.scene.sceneChangeIncrement === 'perFormReset' && this.scene.modulationStyle === drift  )
+                ) ||
+                ( this.scene.sceneChangeIncrement === 'perChange' && leadTrack.changeCycles >= leadTrack.changePer ) ||
+                ( this.scene.sceneChangeIncrement === 'perModulation' && leadTrack.modulationCycles === 0  ) ||
+                ( this.scene.sceneChangeIncrement === 'perFormReset' && this.scene.formStep === 0 )
+              )
+            )
+        {
+
+          this.$store.commit('resetScene')
+          if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
+              this.$store.state.chain && this.$store.state.chainLoop === false) {
+            this.togglePlay()
             this.$store.commit('changeScene')
             this.$store.commit('setAdvanceTriggered', false)
-          } else {
-            this.$store.commit('resetScene')
-            this.$store.commit('changeScene')
-            this.$store.commit('setAdvanceTriggered', false)
+            return
           }
+          this.$store.commit('changeScene')
+          this.$store.commit('setAdvanceTriggered', false)
+
         }
-        if (this.$store.state.chain) {
-          this.$store.dispatch('setUpSceneChange', 'forward')
-        }
+
+        // SCENE STARTED & NEXT
+        if (this.$store.state.chain) { this.$store.dispatch('setUpSceneChange', 'forward') }
         if (this.scene.started === false) { this.$store.commit('startScene') }
 
         // ADVANCE and PLAY
@@ -245,26 +256,24 @@ export default {
       },
 
       advanceAndPlayTrack(track, index, time){
-        // if (this track's lock# is itself) { behave normally }
-        // else { use the toneTuneIndex of the lock# and ignore values above or below }
-          if (track.toneTuneIndex === 0) {
-            if (track.changeCycles >= track.changePer && track.changePer != 0 && !this.scene.suspendChanges ) {
-              if (track.id === this.scene.leadTrackId) {
-                // can combine with next:
-                if (this.scene.autoModulate) {
-                  // advanceModulationCycle
-                  if (this.scene.modulationCycles < this.scene.modulatePerLeadChanges-1){
-                    this.$store.commit('updateModulationCycles', 'increment')
-                  } else {
-                    this.$store.commit('updateModulationCycles', 'zero')
-                    this.$store.dispatch('morphSelectedNotes')
-                  }
+
+        // CHECK FOR MODULATION AND CHANGE
+          if (track.toneTuneIndex === 0 && track.changeCycles >= track.changePer
+              && track.changePer != 0 && !this.scene.suspendChanges ) {
+            // LEAD TRACK QUEUES MODULATION
+            if (track.id === this.scene.leadTrackId && this.scene.autoModulate) {
+                if (this.scene.modulationCycles < this.scene.modulatePerLeadChanges-1){
+                  this.$store.commit('updateModulationCycles', 'increment')
+                } else {
+                  this.$store.commit('updateModulationCycles', 'zero')
+                  this.$store.dispatch('morphSelectedNotes')
                 }
-              }
-              this.$store.dispatch('changeTune', { trackIndex: index, all: false })
-              this.$store.commit('changeCycles', {change:'zero', index: index} )
             }
+            this.$store.dispatch('changeTune', { trackIndex: index, all: false })
+            this.$store.commit('changeCycles', {change:'zero', index: index} )
           }
+
+          // PLAY NOTES
           let toneTune = this.toneTunes[index]
           let pitch = toneTune[track.toneTuneIndex]
           if (pitch != 0){
@@ -274,14 +283,17 @@ export default {
               AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, track.noteDuration, time)
             }
           }
+
+          // ADVANCE TRACK and CHECK FOR CHANGES
           if (track.toneTuneIndex < toneTune.length-1) {
             this.$store.commit('changeToneTuneIndex', {change:'increment', index:index} )
           } else {
             this.$store.commit('changeToneTuneIndex', {change:'zero', index:index} )
-            if (track.changeCycles < track.changePer && !this.scene.suspendChanges) {
+            if (track.changeCycles < track.changePer && !this.scene.suspendChanges) { // don't think you need: track.changeCycles < track.changePer, because it zeros it in CHECK FOR MODULATION AND CHANGE above.
               this.$store.commit('changeCycles', {change:'increment', index:index} )
             }
-            // Check for Scene Chaining:
+            // CHECK FOR SCENE CHAINING to TRIGGER ADVANCE
+              // can you refactor this to not use lead cycles? 
             if (track.id === this.leadTrack.id && this.$store.state.chain === true ) { // && this.scene.chainAdvancePer > 0) {
               if (this.scene.leadCycles < this.scene.chainAdvancePer-1) {
                 this.$store.commit('changeLeadCycles', 'increment' )

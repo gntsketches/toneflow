@@ -248,8 +248,8 @@ export const store = new Vuex.Store({
         else if (change === "zero") { scene.leadCycles = 0 }
       },
       changeScene: (state) => {
-        state.editingSceneNumber = state.sceneChangeNumber
         let scene = state.scenes[state.editingSceneNumber]
+        state.editingSceneNumber = state.sceneChangeNumber
         Tone.Transport.bpm.value = scene.bpm
       },
       changeTempo: (state, e) => {
@@ -878,7 +878,7 @@ export const store = new Vuex.Store({
       }, */
       setUpSceneChange: (context, change) => {
         console.log("change:", change)
-        let changeToNumber = context.state.sceneChangeNumber  // this value isnt used...
+        let changeToNumber = context.state.sceneChangeNumber  // this value isnt used... might be used to skip scenes.
         if (change === 'backward') {
           if (context.state.editingSceneNumber > 0) {
             changeToNumber = context.state.editingSceneNumber - 1
@@ -961,7 +961,8 @@ export const store = new Vuex.Store({
           AM.scenes[title].autoFilters.forEach( (autoFilter, i) => autoFilter.connect(AM.scenes[title].distortions[i]).start() )
           AM.scenes[title].distortions.forEach( (distortion, i) => {
             distortion.fan(AM.scenes[title].gains[i], AM.scenes[title].delays[i] )
-            distortion.wet.value = 0
+            //distortion.wet.value = 0
+            distortion.distortion = 0
           })
           AM.scenes[title].delays.forEach( (delay, i) => delay.connect(AM.scenes[title].gains[i]) )
           AM.scenes[title].gains.forEach( (gain, i) => gain.toMaster() )
@@ -1318,6 +1319,7 @@ export const store = new Vuex.Store({
             AM.scenes[payload.sceneTitle].delays[payload.trackNumber].feedback.value = payload.value
             break
           case 'distortion':
+            console.log(AM.scenes[payload.sceneTitle].distortions[payload.trackNumber])
             AM.scenes[payload.sceneTitle].distortions[payload.trackNumber].distortion = payload.value
             break
           case 'attack':

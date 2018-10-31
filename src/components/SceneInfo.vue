@@ -44,7 +44,8 @@
       @keyup.enter="enterFunction($event)"
     ></input>
     <div class="scene-advance-meter">
-      <div v-if="scene.started && (this.$store.state.advanceTriggered || this.$store.state.chain)" v-bind:style="{ width: sceneAdvanceProgress + '%' }"></div>
+      <div v-if="scene.started && (this.$store.state.advanceTriggered || this.$store.state.chain)"
+        v-bind:style="{ width: sceneAdvanceProgress + '%' }"></div>
     </div>
     <span>=></span>
     <div class="scene-advance-title">
