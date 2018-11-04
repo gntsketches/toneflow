@@ -21,6 +21,13 @@ export function keypress() {
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
 
+  // CTRL-ALT-S
+  listener.register_combo({
+    "keys"              : "control alt s",
+    "on_keydown"        : function() { this.$store.dispatch('setUpNewScene') },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
+  });
+
   // CTRL-
   listener.register_combo({
     "keys"              : "control d",
@@ -112,7 +119,7 @@ export let generalKeyDispatchTable = {
   "U"       : function() { this.$store.commit('toggleChainLoop')},
   "I"       : function() { this.$store.dispatch('toggleModulationStyle')},
   "O"       : function() { this.$store.dispatch('toggleAutoModulate')},
-  "P"       : function() { this.$store.dispatch('morphSelectedNotes')},
+  "P"       : function() { this.$store.dispatch('morphSelectedNotes')}, // why is this not "userCalled" true?
   "{"       : function() { this.$store.dispatch('returnAllTunes')},
   "}"       : function() { this.$store.dispatch('changeAll')},
   "|"       : function() { this.$store.commit('toggleSuspendChanges') },

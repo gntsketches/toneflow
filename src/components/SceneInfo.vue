@@ -37,6 +37,17 @@
 
     <br>
 
+    <span>Scene Change Timing Increment:</span>
+    <select id="sceneChangeIncrement"
+      v-model:value="sceneChangeIncrement"
+      @focus="focusFunction"
+      @change="enterFunction($event)"
+      >
+      <option v-for="increment in changeIncrements">{{ increment }}</option>
+    </select>
+
+    <br>
+
     <span>Chain Reps</span>
     <input type="number" min="0"
       v-model:value="chainAdvancePer"
@@ -86,6 +97,10 @@
 
 export default {
 
+  data:() => ({
+    changeIncrements: ['Lead Cycle', 'Lead Change', 'Form Step', 'Form Reset'],
+  }),
+
   computed: {
     scene(){
       return this.$store.state.scenes[this.$store.state.editingSceneNumber]
@@ -116,6 +131,14 @@ export default {
     },
     getBPM(){
       return this.scene.bpm
+    },
+    sceneChangeIncrement: {
+      get(){
+        return this.scene.sceneChangeIncrement
+      },
+      set(increment){
+        this.$store.commit('setSceneChangeIncrementType', increment)
+      },
     },
     chainAdvancePer: {
       get(){

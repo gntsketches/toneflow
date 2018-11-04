@@ -10,7 +10,6 @@ import {bus} from '../main.js'
 
 Vue.use(Vuex)
 
-console.log('FULLRANGE', FULLRANGE)
 
 
 export const store = new Vuex.Store({
@@ -242,14 +241,19 @@ export const store = new Vuex.Store({
       },
 
       // SCENE MANAGEMENT
+      setSceneChangeIncrementType: (state, increment) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.sceneChangeIncrement = increment
+        console.log('sceneChangeIncrement', scene.sceneChangeIncrement)
+      },
       changeLeadCycles: (state, change) => {
         let scene = state.scenes[state.editingSceneNumber]
         if (change === "increment") { scene.leadCycles++ }
         else if (change === "zero") { scene.leadCycles = 0 }
       },
       changeScene: (state) => {
-        let scene = state.scenes[state.editingSceneNumber]
         state.editingSceneNumber = state.sceneChangeNumber
+        let scene = state.scenes[state.editingSceneNumber]
         Tone.Transport.bpm.value = scene.bpm
       },
       changeTempo: (state, e) => {
@@ -466,10 +470,19 @@ export const store = new Vuex.Store({
         if (payload.change === 'increment') { scene.tracks[payload.index].toneTuneIndex++ }
         else if (payload.change === 'zero') { scene.tracks[payload.index].toneTuneIndex = 0 }
       },
+      toggleTrackChangeTriggered: (state, payload) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.tracks[payload.index].changeTriggered = payload.bool
+      },
       changeCycles: (state, payload) => {
         let scene = state.scenes[state.editingSceneNumber]
         if (payload.change === 'increment') { scene.tracks[payload.index].changeCycles++ }
         else if (payload.change === 'zero') { scene.tracks[payload.index].changeCycles = 0 }
+      },
+      toggleModulationTriggered: (state, bool) => {
+        console.log('in mod trig')
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.modulationTriggered = bool
       },
 
       // TRACK CONTROLS
@@ -877,8 +890,8 @@ export const store = new Vuex.Store({
         context.commit('updateLeadTrackId', value)
       }, */
       setUpSceneChange: (context, change) => {
-        console.log("change:", change)
-        let changeToNumber = context.state.sceneChangeNumber  // this value isnt used... might be used to skip scenes.
+        //console.log("change:", change)
+        let changeToNumber = context.state.sceneChangeNumber  // this value isnt used...
         if (change === 'backward') {
           if (context.state.editingSceneNumber > 0) {
             changeToNumber = context.state.editingSceneNumber - 1
@@ -961,8 +974,7 @@ export const store = new Vuex.Store({
           AM.scenes[title].autoFilters.forEach( (autoFilter, i) => autoFilter.connect(AM.scenes[title].distortions[i]).start() )
           AM.scenes[title].distortions.forEach( (distortion, i) => {
             distortion.fan(AM.scenes[title].gains[i], AM.scenes[title].delays[i] )
-            //distortion.wet.value = 0
-            distortion.distortion = 0
+            distortion.wet.value = 0
           })
           AM.scenes[title].delays.forEach( (delay, i) => delay.connect(AM.scenes[title].gains[i]) )
           AM.scenes[title].gains.forEach( (gain, i) => gain.toMaster() )
@@ -1319,7 +1331,6 @@ export const store = new Vuex.Store({
             AM.scenes[payload.sceneTitle].delays[payload.trackNumber].feedback.value = payload.value
             break
           case 'distortion':
-            console.log(AM.scenes[payload.sceneTitle].distortions[payload.trackNumber])
             AM.scenes[payload.sceneTitle].distortions[payload.trackNumber].distortion = payload.value
             break
           case 'attack':
@@ -1554,6 +1565,22 @@ export const store = new Vuex.Store({
           let type = randomElement(context.getters.selectedModulations)
           let newModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
           context.commit('updateSelectedMode', newModeInfo)
+        }
+      },
+      checkChainIncrementAndTriggerAdvance: (context, payload) => {
+        let scene = context.state.scenes[context.state.editingSceneNumber]
+        if (payload.track.id === scene.leadTrackId &&
+            context.state.chain === true &&
+            payload.increment === scene.sceneChangeIncrement
+        ) {
+          console.log('made it')
+          console.log("leadCycles", scene.leadCycles)
+          if (scene.leadCycles < scene.chainAdvancePer-1) {
+            context.commit('changeLeadCycles', 'increment' )
+          } else {
+            context.commit('changeLeadCycles', 'zero' )
+            context.commit('setAdvanceTriggered', true)
+          }
         }
       },
 
