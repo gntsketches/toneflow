@@ -211,29 +211,27 @@ export default {
     methods : {
 
       advanceTrackStep(time){   // console.log("in pTP") //console.log(Date.now(), this.tracks)
-
-        console.log('advanceTriggered', this.$store.state.advanceTriggered)
-        console.log('toneTuneIndex', this.tracks[this.leadTrackNumber].toneTuneIndex)
-        // SCENE CHANGING:
-        if (this.tracks[this.leadTrackNumber].toneTuneIndex === 0 && this.$store.state.advanceTriggered){
-          console.log('advancing!')
-          this.$store.commit('resetScene')
-          if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
-              this.$store.state.chain && this.$store.state.chainLoop === false) {
-            this.togglePlay()
-            // there is some reason these have to come after in this if-block, why?
+        if (this.tracks[this.leadTrackNumber].toneTuneIndex === 0 && this.$store.state.advanceTriggered){  // this.leadTrack.toneTuneIndex === this.toneTunes[this.leadTrackNumber].length-1
+          if (this.$store.state.chain) {
+            this.$store.commit('resetScene')
+            if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
+                this.$store.state.chainLoop === false) {
+              this.togglePlay()
+              this.$store.commit('changeScene')
+              this.$store.commit('setAdvanceTriggered', false)
+              return
+            }
             this.$store.commit('changeScene')
             this.$store.commit('setAdvanceTriggered', false)
-            return
+          } else {
+            this.$store.commit('resetScene')
+            this.$store.commit('changeScene')
+            this.$store.commit('setAdvanceTriggered', false)
           }
-          this.$store.commit('changeScene')
-          this.$store.commit('setAdvanceTriggered', false)
-
         }
-
-        // SCENE STARTED & NEXT
-        if (this.$store.state.chain) { this.$store.dispatch('setUpSceneChange', 'forward') }
-          // && sceneChangeNumber === current scene
+        if (this.$store.state.chain) {
+          this.$store.dispatch('setUpSceneChange', 'forward')
+        }
         if (this.scene.started === false) { this.$store.commit('startScene') }
 
         // ADVANCE and PLAY
@@ -242,71 +240,58 @@ export default {
           if (index === this.$store.getters.leadTrackNumber) { return }
           else { this.advanceAndPlayTrack(track, index, time) }
         })
+      //  console.log("this.leadTrack.toneTunesIndex", this.leadTrack.toneTuneIndex)
+      //  console.log("this.toneTunes[this.leadTrackNumber].length", this.toneTunes[this.leadTrackNumber].length)
       },
 
       advanceAndPlayTrack(track, index, time){
-
-        // IF LEAD TRACK, CHECK CHANGE AND MODULATION TRIGGERS
-        if (track.id === this.scene.leadTrackId){
-            if (track.toneTuneIndex === 0 && this.scene.modulationTriggered){
-                this.$store.dispatch('morphSelectedNotes')
-                this.$store.commit('toggleModulationTriggered', false)
-            }
-            if (track.toneTuneIndex === 0 && track.changeTriggered){
-                this.$store.dispatch('changeTune', { trackIndex: index, all: false } )
-                this.$store.commit('toggleTrackChangeTriggered', { index: index, bool: false } )
-            }
-        }
-
-        // ESTABLISH TONETUNE
-        let toneTune = this.toneTunes[index] // 'pass-by-reference', more complicated than I thought. When this is above CHECK CHANGE ANS MODULATION TIGEERS, play function gets the old array after change... https://stackoverflow.com/questions/7744611/pass-variables-by-reference-in-javascript
-
-        // PLAY NOTES
-        let pitch = toneTune[track.toneTuneIndex]
-        if (pitch != 0){
-          if (track.toneTuneIndex === toneTune.length-1 && this.$store.state.advanceTriggered) {
-            AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, '16n', time) // corrects for last note duration bleed-over on scene change
-          } else {
-            AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, track.noteDuration, time)
-          }
-        }
-
-        //console.log('cC:', track.changeCycles, 'cP-1:', track.changePer-1)
-        //console.log('mC:', this.scene.modulationCycles, 'mPLC-1:', this.scene.modulatePerLeadChanges-1)
-
-
-        // ADVANCE TRACK STEP and TRIGGERS CASCADE
-
-        if (track.toneTuneIndex < toneTune.length-1) {
-            this.$store.commit('changeToneTuneIndex', {change:'increment', index:index} )
-
-        } else {
-            this.$store.commit('changeToneTuneIndex', {change:'zero', index:index} )
-            this.$store.dispatch('checkChainIncrementAndTriggerAdvance', { track: track, increment: 'Lead Cycle' }  )
-            if (track.changeCycles < track.changePer-1 && !(track.changePer === 0) && !this.scene.suspendChanges) {
-                this.$store.commit('changeCycles', {change:'increment', index:index} )
-
-            } else if (!(track.changePer === 0) && !this.scene.suspendChanges) {
-                this.$store.commit('changeCycles', { change:'zero', index: index} )
-                this.$store.commit('toggleTrackChangeTriggered', { index: index, bool: true })
-                this.$store.dispatch('checkChainIncrementAndTriggerAdvance', { track: track, increment: 'Lead Change' }  )
-
-                // LEAD TRACK QUEUES MODULATION
-                if (track.id === this.scene.leadTrackId && this.scene.autoModulate) {
-                    if (this.scene.modulationCycles < this.scene.modulatePerLeadChanges-1){
-                      this.$store.commit('updateModulationCycles', 'increment')
-
-                    } else {
-                      this.$store.commit('updateModulationCycles', 'zero')
-                      this.$store.commit('toggleModulationTriggered', true)
-                      this.$store.dispatch('checkChainIncrementAndTriggerAdvance', { track: track, increment: 'Modulation' }  )
-                    }
+        // if (this track's lock# is itself) { behave normally }
+        // else { use the toneTuneIndex of the lock# and ignore values above or below }
+          if (track.toneTuneIndex === 0) {
+            if (track.changeCycles >= track.changePer && track.changePer != 0 && !this.scene.suspendChanges ) {
+              if (track.id === this.scene.leadTrackId) {
+                // can combine with next:
+                if (this.scene.autoModulate) {
+                  // advanceModulationCycle
+                  if (this.scene.modulationCycles < this.scene.modulatePerLeadChanges-1){
+                    this.$store.commit('updateModulationCycles', 'increment')
+                  } else {
+                    this.$store.commit('updateModulationCycles', 'zero')
+                    this.$store.dispatch('morphSelectedNotes')
+                  }
                 }
-
+              }
+              this.$store.dispatch('changeTune', { trackIndex: index, all: false })
+              this.$store.commit('changeCycles', {change:'zero', index: index} )
             }
-
-
-        }
+          }
+          let toneTune = this.toneTunes[index]
+          let pitch = toneTune[track.toneTuneIndex]
+          if (pitch != 0){
+            if (track.toneTuneIndex === toneTune.length-1 && this.$store.state.advanceTriggered) {
+              AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, '16n', time) // corrects for last note duration bleed-over on scene change
+            } else {
+              AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, track.noteDuration, time)
+            }
+          }
+          if (track.toneTuneIndex < toneTune.length-1) {
+            this.$store.commit('changeToneTuneIndex', {change:'increment', index:index} )
+          } else {
+            this.$store.commit('changeToneTuneIndex', {change:'zero', index:index} )
+            if (track.changeCycles < track.changePer && !this.scene.suspendChanges) {
+              this.$store.commit('changeCycles', {change:'increment', index:index} )
+            }
+            // Check for Scene Chaining:
+            if (track.id === this.leadTrack.id && this.$store.state.chain === true ) { // && this.scene.chainAdvancePer > 0) {
+              if (this.scene.leadCycles < this.scene.chainAdvancePer-1) {
+                this.$store.commit('changeLeadCycles', 'increment' )
+                console.log("leadCycles", this.scene.leadCycles)
+              } else {
+                this.$store.commit('changeLeadCycles', 'zero' )
+                this.$store.commit('setAdvanceTriggered', true)
+              }
+            }
+          }
 
       },
 

@@ -253,7 +253,7 @@ export default {
       },
       nextModulation(){
         let modeInfo = this.scene.nextModulation
-        console.log('modeInfo', modeInfo)
+        //console.log('modeInfo', modeInfo)
         if (modeInfo === '') return ''
         let mod = ''
         switch (modeInfo.modulation) {

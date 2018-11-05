@@ -77,7 +77,7 @@ export const stateDefaults = {
   newSceneDefaults: {
     title: '',
     id: '',
-    bpm: 20,
+    bpm: 10,
     selectedNotes: ["C", "D", "E", "F", "G", "A", "B"],
     selectedLength: 4,
     tracks: [],
@@ -89,8 +89,8 @@ export const stateDefaults = {
     leadCycles: 0,
     //chainIncrement: 0,  // patience...
     suspendChanges: false,
-    sceneChangeIncrement: 'Lead Cycle',
-    chainAdvancePer: 2,
+    sceneChangeIncrement: 'Form',
+    chainAdvancePer: 1,
     filterPitchesOnChange: true,
     modulatePerLeadChanges: 1,
     modulationCycles: 0,
@@ -118,7 +118,7 @@ export const stateDefaults = {
     rangeHigh: "C4",
     rangeLow: "C3",
     changeTotal: 1,
-    changePer: 2,
+    changePer: 1,
     changeTriggered: false,
     changePerRemembered: false,
     pitchPercent: 100,
@@ -151,7 +151,7 @@ export const stateDefaults = {
     attack: 0.005,
     decay: 0,
     sustain: 1,
-    noteDuration: '8n',  // UI display between attack and release, but has it's own mutation
+    noteDuration: '32n',  // UI display between attack and release, but has it's own mutation
     release: 1,
     filterWet: 0.5,
     filterType: 'lowpass',

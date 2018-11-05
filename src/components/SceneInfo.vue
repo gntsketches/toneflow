@@ -98,7 +98,7 @@
 export default {
 
   data:() => ({
-    changeIncrements: ['Lead Cycle', 'Lead Change', 'Form Step', 'Form Reset'],
+    changeIncrements: ['Lead Cycle', 'Lead Change', 'Modulation', 'Form'],
   }),
 
   computed: {

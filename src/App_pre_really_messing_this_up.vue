@@ -212,28 +212,40 @@ export default {
 
       advanceTrackStep(time){   // console.log("in pTP") //console.log(Date.now(), this.tracks)
 
-        console.log('advanceTriggered', this.$store.state.advanceTriggered)
-        console.log('toneTuneIndex', this.tracks[this.leadTrackNumber].toneTuneIndex)
+        const leadTrack = this.tracks[this.leadTrackNumber]
+        //console.log('changeCycles', leadTrack.changeCycles)
         // SCENE CHANGING:
-        if (this.tracks[this.leadTrackNumber].toneTuneIndex === 0 && this.$store.state.advanceTriggered){
-          console.log('advancing!')
-          this.$store.commit('resetScene')
-          if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
-              this.$store.state.chain && this.$store.state.chainLoop === false) {
-            this.togglePlay()
-            // there is some reason these have to come after in this if-block, why?
+        console.log('changeCycles', leadTrack.changeCycles)
+        console.log('changePer', leadTrack.changePer)
+        //console.log('modulationCycles', this.scene.modulationCycles)
+        //console.log('modulatePerLeadChanges', this.scene.modulatePerLeadChanges)
+        if  ( ( leadTrack.toneTuneIndex === 0 && this.$store.state.advanceTriggered ) &&
+              (
+                ( this.scene.sceneChangeIncrement === 'Cycle' ||
+                  ( this.scene.sceneChangeIncrement === 'Form Step' && this.scene.modulationStyle === 'drift'  ) ||
+                  ( this.scene.sceneChangeIncrement === 'Form Reset' && this.scene.modulationStyle === 'drift'  )
+                ) ||
+                ( this.scene.sceneChangeIncrement === 'Change' && leadTrack.changeCycles >= leadTrack.changePer ) ||
+                // IF AUTOMODULATE?
+                ( this.scene.sceneChangeIncrement === 'Form Step' && this.scene.modulationCycles === this.scene.modulatePerLeadChanges  ) ||
+                ( this.scene.sceneChangeIncrement === 'Form Reset' && this.scene.formStep === this.scene.harmonicForm.length-1 )
+              )
+            )
+        {
+            this.$store.commit('resetScene')
+            if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
+                this.$store.state.chain && this.$store.state.chainLoop === false) {
+              this.togglePlay()
+              this.$store.commit('changeScene')
+              this.$store.commit('setAdvanceTriggered', false)
+              return
+            }
             this.$store.commit('changeScene')
             this.$store.commit('setAdvanceTriggered', false)
-            return
-          }
-          this.$store.commit('changeScene')
-          this.$store.commit('setAdvanceTriggered', false)
-
         }
 
         // SCENE STARTED & NEXT
         if (this.$store.state.chain) { this.$store.dispatch('setUpSceneChange', 'forward') }
-          // && sceneChangeNumber === current scene
         if (this.scene.started === false) { this.$store.commit('startScene') }
 
         // ADVANCE and PLAY
@@ -242,71 +254,60 @@ export default {
           if (index === this.$store.getters.leadTrackNumber) { return }
           else { this.advanceAndPlayTrack(track, index, time) }
         })
+      //  console.log("this.leadTrack.toneTunesIndex", this.leadTrack.toneTuneIndex)
+      //  console.log("this.toneTunes[this.leadTrackNumber].length", this.toneTunes[this.leadTrackNumber].length)
       },
 
       advanceAndPlayTrack(track, index, time){
 
-        // IF LEAD TRACK, CHECK CHANGE AND MODULATION TRIGGERS
-        if (track.id === this.scene.leadTrackId){
-            if (track.toneTuneIndex === 0 && this.scene.modulationTriggered){
-                this.$store.dispatch('morphSelectedNotes')
-                this.$store.commit('toggleModulationTriggered', false)
-            }
-            if (track.toneTuneIndex === 0 && track.changeTriggered){
-                this.$store.dispatch('changeTune', { trackIndex: index, all: false } )
-                this.$store.commit('toggleTrackChangeTriggered', { index: index, bool: false } )
-            }
-        }
-
-        // ESTABLISH TONETUNE
-        let toneTune = this.toneTunes[index] // 'pass-by-reference', more complicated than I thought. When this is above CHECK CHANGE ANS MODULATION TIGEERS, play function gets the old array after change... https://stackoverflow.com/questions/7744611/pass-variables-by-reference-in-javascript
-
-        // PLAY NOTES
-        let pitch = toneTune[track.toneTuneIndex]
-        if (pitch != 0){
-          if (track.toneTuneIndex === toneTune.length-1 && this.$store.state.advanceTriggered) {
-            AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, '16n', time) // corrects for last note duration bleed-over on scene change
-          } else {
-            AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, track.noteDuration, time)
-          }
-        }
-
-        //console.log('cC:', track.changeCycles, 'cP-1:', track.changePer-1)
-        //console.log('mC:', this.scene.modulationCycles, 'mPLC-1:', this.scene.modulatePerLeadChanges-1)
-
-
-        // ADVANCE TRACK STEP and TRIGGERS CASCADE
-
-        if (track.toneTuneIndex < toneTune.length-1) {
-            this.$store.commit('changeToneTuneIndex', {change:'increment', index:index} )
-
-        } else {
-            this.$store.commit('changeToneTuneIndex', {change:'zero', index:index} )
-            this.$store.dispatch('checkChainIncrementAndTriggerAdvance', { track: track, increment: 'Lead Cycle' }  )
-            if (track.changeCycles < track.changePer-1 && !(track.changePer === 0) && !this.scene.suspendChanges) {
-                this.$store.commit('changeCycles', {change:'increment', index:index} )
-
-            } else if (!(track.changePer === 0) && !this.scene.suspendChanges) {
-                this.$store.commit('changeCycles', { change:'zero', index: index} )
-                this.$store.commit('toggleTrackChangeTriggered', { index: index, bool: true })
-                this.$store.dispatch('checkChainIncrementAndTriggerAdvance', { track: track, increment: 'Lead Change' }  )
-
-                // LEAD TRACK QUEUES MODULATION
-                if (track.id === this.scene.leadTrackId && this.scene.autoModulate) {
-                    if (this.scene.modulationCycles < this.scene.modulatePerLeadChanges-1){
-                      this.$store.commit('updateModulationCycles', 'increment')
-
-                    } else {
-                      this.$store.commit('updateModulationCycles', 'zero')
-                      this.$store.commit('toggleModulationTriggered', true)
-                      this.$store.dispatch('checkChainIncrementAndTriggerAdvance', { track: track, increment: 'Modulation' }  )
+          // CHECK FOR MODULATION AND CHANGE
+          if (track.toneTuneIndex === 0 && track.changeCycles >= track.changePer
+              && track.changePer != 0 && !this.scene.suspendChanges ) {
+              // LEAD TRACK QUEUES MODULATION
+              if (track.id === this.scene.leadTrackId && this.scene.autoModulate) {
+                  if (this.scene.modulationCycles < this.scene.modulatePerLeadChanges-1){
+                    this.$store.commit('updateModulationCycles', 'increment')
+                  } else {
+                    this.$store.commit('updateModulationCycles', 'zero')
+                    this.$store.dispatch('morphSelectedNotes')
+                    // trigger advance if chained...
+                    if (this.$store.state.chain && scene.sceneChangeIncrement === 'perModulation') {
+                      this.$store.commit('advanceChainIncrement')
                     }
-                }
+                  }
+              }
+              this.$store.dispatch('changeTune', { trackIndex: index, all: false })
+              this.$store.commit('changeCycles', {change:'zero', index: index} )
+              // trigger advance if chained...
+              if (this.$store.state.chain && this.scene.sceneChangeIncrement === 'perChange') {
+                this.$store.commit('advanceChainIncrement')
+              }
+          }
 
+          // PLAY NOTES
+          let toneTune = this.toneTunes[index]
+          let pitch = toneTune[track.toneTuneIndex]
+          if (pitch != 0){
+            if (track.toneTuneIndex === toneTune.length-1 && this.$store.state.advanceTriggered) {
+              AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, '16n', time) // corrects for last note duration bleed-over on scene change
+            } else {
+              AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, track.noteDuration, time)
             }
+          }
 
-
-        }
+          // ADVANCE TRACK and CHECK FOR CHANGES
+          if (track.toneTuneIndex < toneTune.length-1) {
+            this.$store.commit('changeToneTuneIndex', {change:'increment', index:index} )
+          } else {
+            this.$store.commit('changeToneTuneIndex', {change:'zero', index:index} )
+            if (track.changeCycles < track.changePer && !this.scene.suspendChanges) { // don't think you need: track.changeCycles < track.changePer, because it zeros it in CHECK FOR MODULATION AND CHANGE above.
+              this.$store.commit('changeCycles', {change:'increment', index:index} )
+            }
+            // CHECK FOR SCENE CHAINING to TRIGGER ADVANCE
+            if (track.id === this.leadTrack.id && this.$store.state.chain && this.scene.sceneChangeIncrement === 'perCycle') {
+                this.$store.commit('advanceChainIncrement')
+            }
+          }
 
       },
 

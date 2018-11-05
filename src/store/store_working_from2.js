@@ -311,13 +311,9 @@ export const store = new Vuex.Store({
         scene.tracks.forEach( (track, index) => {
           track.toneTuneIndex = 0
           track.changeCycles = 0
-          track.changeTriggered = false
         })
         scene.started = false
         scene.modulationCycles = 0
-        scene.modulationTriggered = false
-        state.advanceTriggered = false
-        // more... hmmm...
       },
       setSceneChangeNumber: (state, change) => {
         state.sceneChangeNumber = change
@@ -356,18 +352,6 @@ export const store = new Vuex.Store({
       },
       updateFormStep: (state, update) => {
         let scene = state.scenes[state.editingSceneNumber]
-        if (update === 'zero'){
-          scene.formStep = 0
-        } else if (update === 'increment') {
-          scene.formStep++
-        } else if (update === 'off') {
-          scene.formStep = -1
-        }
-        console.log('formStep after update', scene.formStep)
-      },
-      /*
-      updateFormStep: (state, update) => {
-        let scene = state.scenes[state.editingSceneNumber]
         console.log('formStep before advance', scene.formStep)
         if (update === 'zero'){
           scene.formStep = 0
@@ -379,7 +363,6 @@ export const store = new Vuex.Store({
         }
         console.log('formStep after advance', scene.formStep)
       },
-      */
       updateHarmonicForm: (state, harmonicForm) => {
         let scene = state.scenes[state.editingSceneNumber]
         scene.harmonicForm = harmonicForm
@@ -415,7 +398,7 @@ export const store = new Vuex.Store({
       },
       updateNextModulation: (state, modulation) => {
         let scene = state.scenes[state.editingSceneNumber]
-        //console.log("mod", modulation)
+        console.log("mod", modulation)
         scene.nextModulation = modulation
       },
       updateEditingSceneId: (state, sceneId) => {
@@ -497,6 +480,7 @@ export const store = new Vuex.Store({
         else if (payload.change === 'zero') { scene.tracks[payload.index].changeCycles = 0 }
       },
       toggleModulationTriggered: (state, bool) => {
+        console.log('in mod trig')
         let scene = state.scenes[state.editingSceneNumber]
         scene.modulationTriggered = bool
       },
@@ -715,7 +699,7 @@ export const store = new Vuex.Store({
       },
       updateSelectedMode: (state, modeInfo) => {
         let scene = state.scenes[state.editingSceneNumber]
-        //console.log('modeInfo', modeInfo)
+        console.log('modeInfo', modeInfo)
         scene.selectedNotes = modeInfo.modePitches
         scene.lastMode = modeInfo.modeBase + '-' + modeInfo.modulation
       },
@@ -1052,7 +1036,7 @@ export const store = new Vuex.Store({
         let scene = context.state.scenes[context.state.editingSceneNumber]
         if (scene.modulationStyle === 'drift') {
           if (scene.harmonicForm.length === 0) {
-            context.dispatch('buildHarmonicForm', '-a-b')  // '-a-b-a-c'
+            context.dispatch('buildHarmonicForm', '-a-b-a-c')
           }
           // a 'setUpForForm' action may be useful... is this procedure used somewhere else...
           let firstFormSection = referenceMode(MODEDATA, scene.harmonicForm[0])
@@ -1069,34 +1053,6 @@ export const store = new Vuex.Store({
           context.commit('updateModulationStyle', 'drift')
         }
       },
-      formStepAndChainIncrement: (context) => {
-        let scene = context.state.scenes[context.state.editingSceneNumber]
-        let leadTrack = scene.tracks[context.getters.leadTrackNumber]
-        console.log('fS', scene.formStep, 'hFL-1:', scene.harmonicForm.length-1)
-        if (scene.formStep < scene.harmonicForm.length-1) {
-          context.commit('updateFormStep', 'increment')
-        } else {
-          context.commit('updateFormStep', 'zero')
-          context.dispatch('checkChainIncrementAndTriggerAdvance', { track: leadTrack, increment: 'Form' }  )
-        }
-      },
-      /*
-      formStepAndChainIncrement: (context, update) => {
-        let scene = context.state.scenes[context.state.editingSceneNumber]
-        console.log('formStep before advance', scene.formStep)
-        if (update === 'zero'){  // don't think you're using this!
-          context.commit('updateFormStep', 'zero')
-        } else if (update === 'advance') {
-          context.commit('updateFormStep', 'advance')
-          if (context.state.chain && scene.sceneChangeIncrement === 'perFormReset') {
-            context.commit('advanceChainIncrement')
-          }
-        } else if (update === 'off') {
-          context.commit('updateFormStep', 'off')
-        }
-        console.log('formStep after advance', scene.formStep)
-      },
-      */
       modulatePerLeadChanges: (context, value) => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
         context.commit('updateModulatePerLeadChanges', value)
@@ -1580,7 +1536,7 @@ export const store = new Vuex.Store({
           let scene = context.state.scenes[context.state.editingSceneNumber]
           if (scene.modulationStyle === 'form') {
               context.commit('updateSelectedMode', scene.nextModulation)
-              context.dispatch('formStepAndChainIncrement')
+              context.commit('updateFormStep', 'advance')
               let nextFormSection = (scene.formStep < scene.harmonicForm.length-1)  ? scene.harmonicForm[scene.formStep+1] : scene.harmonicForm[0]
               let nextFormSectionSansPrefix = nextFormSection.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr|maj|min|sus|ma7|dom|mi7|hdm|dm7|blu|pen|fth|one)/i)[0]
               let nextModeInfo = referenceMode(MODEDATA, nextFormSectionSansPrefix)
@@ -1605,7 +1561,8 @@ export const store = new Vuex.Store({
             context.state.chain === true &&
             payload.increment === scene.sceneChangeIncrement
         ) {
-          console.log("in cCIATA, leadCycles", scene.leadCycles)
+          console.log('made it')
+          console.log("leadCycles", scene.leadCycles)
           if (scene.leadCycles < scene.chainAdvancePer-1) {
             context.commit('changeLeadCycles', 'increment' )
           } else {

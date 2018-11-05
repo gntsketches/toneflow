@@ -11,7 +11,6 @@ import {bus} from '../main.js'
 Vue.use(Vuex)
 
 
-
 export const store = new Vuex.Store({
     strict: true,
 
@@ -240,20 +239,31 @@ export const store = new Vuex.Store({
         }
       },
 
+      // GENERAL STATE MANAGEMENT
+        // maybe this is a good category?
+
       // SCENE MANAGEMENT
       setSceneChangeIncrementType: (state, increment) => {
         let scene = state.scenes[state.editingSceneNumber]
         scene.sceneChangeIncrement = increment
         console.log('sceneChangeIncrement', scene.sceneChangeIncrement)
       },
-      changeLeadCycles: (state, change) => {
+      advanceChainIncrement: (state, change) => {
+        // ?THIS SHOULD BE IN ACTIONS and call setAdvanceTriggered
         let scene = state.scenes[state.editingSceneNumber]
-        if (change === "increment") { scene.leadCycles++ }
-        else if (change === "zero") { scene.leadCycles = 0 }
+        //if (change === "increment") { scene.chainIncrement++ }
+        //else if (change === "zero") { scene.chainIncrement = 0 }
+        if (scene.chainIncrement < scene.chainAdvancePer-1) {
+          scene.chainIncrement++
+          console.log("chainIncrement", scene.chainIncrement)
+        } else {
+          scene.chainIncrement = 0
+          state.advanceTriggered = true
+        }
       },
       changeScene: (state) => {
-        state.editingSceneNumber = state.sceneChangeNumber
         let scene = state.scenes[state.editingSceneNumber]
+        state.editingSceneNumber = state.sceneChangeNumber
         Tone.Transport.bpm.value = scene.bpm
       },
       changeTempo: (state, e) => {
@@ -271,7 +281,7 @@ export const store = new Vuex.Store({
       setAdvanceTriggered: (state, bool) => {
         bool === true? state.advanceTriggered = true : state.advanceTriggered = false
       },
-      moveScene: (state, payload) => {   // "benchScene" is a better title
+      moveScene: (state, payload) => {       // "benchScene" is a better title
         let movingScene = {}
         let movingSceneIndex = ''
         if (payload.move === 'bench') {
@@ -307,17 +317,13 @@ export const store = new Vuex.Store({
       resetScene: (state) => {
         let scene = state.scenes[state.editingSceneNumber]
         // editingTrackNumber, editingTrackId, editingIndex - all left alone
-        scene.leadCycles = 0
+        scene.chainIncrement = 0
         scene.tracks.forEach( (track, index) => {
           track.toneTuneIndex = 0
           track.changeCycles = 0
-          track.changeTriggered = false
         })
         scene.started = false
         scene.modulationCycles = 0
-        scene.modulationTriggered = false
-        state.advanceTriggered = false
-        // more... hmmm...
       },
       setSceneChangeNumber: (state, change) => {
         state.sceneChangeNumber = change
@@ -355,18 +361,7 @@ export const store = new Vuex.Store({
         scene.chainAdvancePer = value
       },
       updateFormStep: (state, update) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        if (update === 'zero'){
-          scene.formStep = 0
-        } else if (update === 'increment') {
-          scene.formStep++
-        } else if (update === 'off') {
-          scene.formStep = -1
-        }
-        console.log('formStep after update', scene.formStep)
-      },
-      /*
-      updateFormStep: (state, update) => {
+        // ?THIS SHOULD BE IN ACTIONS and call setAdvanceTriggered
         let scene = state.scenes[state.editingSceneNumber]
         console.log('formStep before advance', scene.formStep)
         if (update === 'zero'){
@@ -374,12 +369,12 @@ export const store = new Vuex.Store({
         } else if (update === 'advance') {
           if (scene.formStep < scene.harmonicForm.length-1) { scene.formStep++ }
           else { scene.formStep = 0 }
+          // trigger advance if chained...
         } else if (update === 'off') {
           scene.formStep = -1
         }
         console.log('formStep after advance', scene.formStep)
       },
-      */
       updateHarmonicForm: (state, harmonicForm) => {
         let scene = state.scenes[state.editingSceneNumber]
         scene.harmonicForm = harmonicForm
@@ -415,7 +410,7 @@ export const store = new Vuex.Store({
       },
       updateNextModulation: (state, modulation) => {
         let scene = state.scenes[state.editingSceneNumber]
-        //console.log("mod", modulation)
+        console.log("mod", modulation)
         scene.nextModulation = modulation
       },
       updateEditingSceneId: (state, sceneId) => {
@@ -487,18 +482,10 @@ export const store = new Vuex.Store({
         if (payload.change === 'increment') { scene.tracks[payload.index].toneTuneIndex++ }
         else if (payload.change === 'zero') { scene.tracks[payload.index].toneTuneIndex = 0 }
       },
-      toggleTrackChangeTriggered: (state, payload) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        scene.tracks[payload.index].changeTriggered = payload.bool
-      },
       changeCycles: (state, payload) => {
         let scene = state.scenes[state.editingSceneNumber]
         if (payload.change === 'increment') { scene.tracks[payload.index].changeCycles++ }
         else if (payload.change === 'zero') { scene.tracks[payload.index].changeCycles = 0 }
-      },
-      toggleModulationTriggered: (state, bool) => {
-        let scene = state.scenes[state.editingSceneNumber]
-        scene.modulationTriggered = bool
       },
 
       // TRACK CONTROLS
@@ -715,7 +702,7 @@ export const store = new Vuex.Store({
       },
       updateSelectedMode: (state, modeInfo) => {
         let scene = state.scenes[state.editingSceneNumber]
-        //console.log('modeInfo', modeInfo)
+        console.log('modeInfo', modeInfo)
         scene.selectedNotes = modeInfo.modePitches
         scene.lastMode = modeInfo.modeBase + '-' + modeInfo.modulation
       },
@@ -906,8 +893,8 @@ export const store = new Vuex.Store({
         context.commit('updateLeadTrackId', value)
       }, */
       setUpSceneChange: (context, change) => {
-        //console.log("change:", change)
-        let changeToNumber = context.state.sceneChangeNumber  // this value isnt used...
+        console.log("change:", change)
+        let changeToNumber = context.state.sceneChangeNumber  // this value isnt used... might be used to skip scenes.
         if (change === 'backward') {
           if (context.state.editingSceneNumber > 0) {
             changeToNumber = context.state.editingSceneNumber - 1
@@ -990,7 +977,8 @@ export const store = new Vuex.Store({
           AM.scenes[title].autoFilters.forEach( (autoFilter, i) => autoFilter.connect(AM.scenes[title].distortions[i]).start() )
           AM.scenes[title].distortions.forEach( (distortion, i) => {
             distortion.fan(AM.scenes[title].gains[i], AM.scenes[title].delays[i] )
-            distortion.wet.value = 0
+            //distortion.wet.value = 0
+            distortion.distortion = 0
           })
           AM.scenes[title].delays.forEach( (delay, i) => delay.connect(AM.scenes[title].gains[i]) )
           AM.scenes[title].gains.forEach( (gain, i) => gain.toMaster() )
@@ -1052,7 +1040,7 @@ export const store = new Vuex.Store({
         let scene = context.state.scenes[context.state.editingSceneNumber]
         if (scene.modulationStyle === 'drift') {
           if (scene.harmonicForm.length === 0) {
-            context.dispatch('buildHarmonicForm', '-a-b')  // '-a-b-a-c'
+            context.dispatch('buildHarmonicForm', '-a-b-a-c')
           }
           // a 'setUpForForm' action may be useful... is this procedure used somewhere else...
           let firstFormSection = referenceMode(MODEDATA, scene.harmonicForm[0])
@@ -1060,7 +1048,7 @@ export const store = new Vuex.Store({
           context.commit('updateNextModulation', firstFormSection)
           context.commit('updateModulationStyle', 'form')
         } else if (scene.modulationStyle === 'form'){
-          context.commit('updateFormStep', 'off')
+          context.dispatch('formStepAndTriggerAdvance', 'off')
           // DRY re: morphSelectedNotes, autoModulate:
           console.log("next", scene.nextModulation)
           let type = randomElement(context.getters.selectedModulations)
@@ -1069,22 +1057,10 @@ export const store = new Vuex.Store({
           context.commit('updateModulationStyle', 'drift')
         }
       },
-      formStepAndChainIncrement: (context) => {
-        let scene = context.state.scenes[context.state.editingSceneNumber]
-        let leadTrack = scene.tracks[context.getters.leadTrackNumber]
-        console.log('fS', scene.formStep, 'hFL-1:', scene.harmonicForm.length-1)
-        if (scene.formStep < scene.harmonicForm.length-1) {
-          context.commit('updateFormStep', 'increment')
-        } else {
-          context.commit('updateFormStep', 'zero')
-          context.dispatch('checkChainIncrementAndTriggerAdvance', { track: leadTrack, increment: 'Form' }  )
-        }
-      },
-      /*
-      formStepAndChainIncrement: (context, update) => {
+      formStepAndTriggerAdvance: (context, update) => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
         console.log('formStep before advance', scene.formStep)
-        if (update === 'zero'){  // don't think you're using this!
+        if (update === 'zero'){
           context.commit('updateFormStep', 'zero')
         } else if (update === 'advance') {
           context.commit('updateFormStep', 'advance')
@@ -1096,7 +1072,6 @@ export const store = new Vuex.Store({
         }
         console.log('formStep after advance', scene.formStep)
       },
-      */
       modulatePerLeadChanges: (context, value) => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
         context.commit('updateModulatePerLeadChanges', value)
@@ -1375,6 +1350,7 @@ export const store = new Vuex.Store({
             AM.scenes[payload.sceneTitle].delays[payload.trackNumber].feedback.value = payload.value
             break
           case 'distortion':
+            console.log(AM.scenes[payload.sceneTitle].distortions[payload.trackNumber])
             AM.scenes[payload.sceneTitle].distortions[payload.trackNumber].distortion = payload.value
             break
           case 'attack':
@@ -1577,41 +1553,38 @@ export const store = new Vuex.Store({
         })
       },
       morphSelectedNotes: (context, userCalled) => {
-          let scene = context.state.scenes[context.state.editingSceneNumber]
-          if (scene.modulationStyle === 'form') {
-              context.commit('updateSelectedMode', scene.nextModulation)
-              context.dispatch('formStepAndChainIncrement')
-              let nextFormSection = (scene.formStep < scene.harmonicForm.length-1)  ? scene.harmonicForm[scene.formStep+1] : scene.harmonicForm[0]
-              let nextFormSectionSansPrefix = nextFormSection.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr|maj|min|sus|ma7|dom|mi7|hdm|dm7|blu|pen|fth|one)/i)[0]
-              let nextModeInfo = referenceMode(MODEDATA, nextFormSectionSansPrefix)
-              context.commit('updateNextModulation', nextModeInfo)
-          } else if (scene.modulationStyle === 'drift' && scene.autoModulate) {
-              if (!userCalled){
-                context.commit('updateSelectedMode', scene.nextModulation)
-              }
-              // DRY re: autoModulate & toggleModulationStyle
-              let type = randomElement(context.getters.selectedModulations)
-              let nextModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
-              context.commit('updateNextModulation', nextModeInfo)
-          } else {
-              let type = randomElement(context.getters.selectedModulations)
-              let newModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
-              context.commit('updateSelectedMode', newModeInfo)
-        }
-      },
-      checkChainIncrementAndTriggerAdvance: (context, payload) => {
+        console.log('in morph')
         let scene = context.state.scenes[context.state.editingSceneNumber]
-        if (payload.track.id === scene.leadTrackId &&
-            context.state.chain === true &&
-            payload.increment === scene.sceneChangeIncrement
-        ) {
-          console.log("in cCIATA, leadCycles", scene.leadCycles)
-          if (scene.leadCycles < scene.chainAdvancePer-1) {
-            context.commit('changeLeadCycles', 'increment' )
-          } else {
-            context.commit('changeLeadCycles', 'zero' )
-            context.commit('setAdvanceTriggered', true)
+        console.log('nextModulation', scene.nextModulation)
+        if (scene.autoModulate || scene.modulationStyle === 'form') {
+          if (scene.modulationStyle === 'drift') {
+            if (!userCalled){
+              console.log('scene.nextModulation', scene.nextModulation)
+              context.commit('updateSelectedMode', scene.nextModulation)
+            }
+            // DRY re: autoModulate & toggleModulationStyle
+            let type = randomElement(context.getters.selectedModulations)
+            console.log('type',type)
+            let nextModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
+            console.log('nextModeInfo', nextModeInfo)
+            context.commit('updateNextModulation', nextModeInfo)
+          } else if (scene.modulationStyle === 'form') {
+            context.commit('updateSelectedMode', scene.nextModulation)
+            //console.log('pre advance formStep', scene.formStep)
+            context.dispatch('formStepAndTriggerAdvance', 'advance')
+            //console.log('post advance formStep', scene.formStep)
+            let nextFormSection = (scene.formStep < scene.harmonicForm.length-1)  ? scene.harmonicForm[scene.formStep+1] : scene.harmonicForm[0]
+            //console.log('nextFormSection', nextFormSection)
+            let nextFormSectionSansPrefix = nextFormSection.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr|maj|min|sus|ma7|dom|mi7|hdm|dm7|blu|pen|fth|one)/i)[0]
+            //console.log(nextFormSectionSansPrefix)
+            let nextModeInfo = referenceMode(MODEDATA, nextFormSectionSansPrefix)
+            //console.log(nextModeInfo)
+            context.commit('updateNextModulation', nextModeInfo)
           }
+        } else {
+          let type = randomElement(context.getters.selectedModulations)
+          let newModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
+          context.commit('updateSelectedMode', newModeInfo)
         }
       },
 

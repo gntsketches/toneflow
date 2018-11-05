@@ -1,6 +1,4 @@
 
-PUSH:
-  - fixed playerDelay wiring problems
 
 
 ***********************************************************************************************************
@@ -9,6 +7,15 @@ PUSH:
 
 {
 
+  PERFORMANCES:
+    Godwaffle Noise Pancakes at Noisebridge
+    HoneyHive (discussed AntiPop Consitrium with gal from bookstore)
+    Artillery A.G. artillery.business@gmail.com
+    Friends of...
+      Kujaku - asked
+      Myriah - asked
+
+
   REPERTOIRE
 
     BUILDING
@@ -16,49 +23,155 @@ PUSH:
         Fade in the saw bassline, then unmute the triangle bass...
         b section countermelody:  E G|GB |AA |
       Crazy PWM Delay
+        Shazam calls first scene "Focus" by Aad Aalberts
         start with Q way up! add another fm track so the sound FX can be as far out as possible
       Practice
       Gradus ad Gigus
         a: Bass notes on Z keys, solo on Q keys
-        b:
-          - how to 'pull back' as it gets into chromatic section... attack and release? (raise, then lower at end?)
-          - ?next form mode of D\Cdia
-
-
+        b: between G#mel and G#chro, jump to scene c for a 8 bars.
       Big Fast Ripples
       Day Frame (100)
         - into a bit of delay with c section?
         - change note with qwerty, mouse click for playerSynth
       Swells
       Swampy Love (130)
-        - double the phrase length of the second scene (new melodic material)
+        - ? double the phrase length of the second scene (new melodic material)
+        - or copy 7 melody, then at the 3rd, then in 4ths...
       E delay (120)
         - experiment with different chord progressions
 
-    IN THE WINGS
-      Flow Five
-      A Min Melody
-      Sea Delay Set +
-
-
   COMPOSITION THOUGHTS
 
-  Nice Sounds:
-    - one sine 8 beat and one sawtooth 8 beat, C4 to C5, 160 BPM Change per 4, Mod per 8, Dia Dia Mel Har
+    Nice Sounds:
+      - one sine 8 beat and one sawtooth 8 beat, C4 to C5, 160 BPM Change per 4, Mod per 8, Dia Dia Mel Har
 
-  Stuff to Try:
-    - jamming using ABAC Form with change set to 0, the track converged to a couple notes which didnt really change much as the formStep changed.
+    Stuff to Try:
+      - jamming using ABAC Form with change set to 0, the track converged to a couple notes which didnt really change much as the formStep changed.
 
-  - Jam on diminished scale...
+    - Jam on diminished scale...
 
   PERMORMING
     - use 'Camtasia' to record jam sessions so you can get youtube vids.
 
 
   EAR TRAINING
-    opens UI space in third block - you can have a 'hide all' option (to hide upcoming mode, maybe key selections, etc.)
+    open UI space in third block - you can have a 'hide all' option (to hide upcoming mode, maybe key selections, etc.)
+
+  TITLES
+    "Trigger's Cascade"
 
 }
+
+/***************************************************************
+TRANsSMISSION
+**************************************************************/
+
+
+
+Delips noun verb exercise:
+  Take a piece of paper and put nouns on one side and verbs on another side.
+  Once you got em, take a different sheet and organize into bullet headings
+  Then take another sheet and diagram how the nouns are related to each other
+    Ie: how are certain types of functionality the same between different nouns  - this is a guide to DRY which helps remove unneeded complexity.
+  https://usabilityetc.com/2015/09/improve-your-code-by-refactoring-to-nouns-and-verbs/
+  Yes to Martin Fowler
+    https://martinfowler.com/articles/refactoring-video-store-js/
+
+JSLint - will automatially simplify some expressions for you
+
+Code Coverage tool (maybe in IDE), shows you which parts of the code you are not using
+
+
+Cascade - Daisy Chaining... (an antipattern... )
+
+
+{
+
+  SCENE CHANGING PREFERENCES / ( changeQueue? )
+
+
+
+
+
+    CHANGES MADE? TO MAKE?:
+      "sceneChangeIncrement" (cycle, changeCycle, formStep advance, modCycles)
+      "leadCycles" named "chainIncrement"
+      rename advanceTriggered to sceneAdvanceTriggered
+      resetScene should reset everything associated with this... 
+      ... theres more, I know it...
+
+      Making all these conditionals more readable: establsh all boolean values at the beginning of the function
+          then the conditional logic reads more like a sentence
+
+      WORKING. Except for FORM, which:
+        a) jumps right past the first form section after the first formCycle
+        b) does not, in fact, trigger scene advance.
+
+
+    IDEA:
+        check for mod at begging of aPT (before changes),
+        but dont advance modcycles until later, with ToneTune and PerCycles advancing.
+          tricker than you think. check out morphSelectedNotes...
+            maybe doable. modCycles is distinct from updating next mod, etc.
+          bring Form Reset cycles over here too...? (ie: remove from state...)
+            might also be doable
+        then they all are in the same code area and can all trip setAdvanceTriggered
+        AND, for user activated (Shift-W/E) scene change, that *does* use another variable, advanceSceneQueued
+          advanceSceneQueued is checked for in same section as sceneChangeIncrement is inspected & can trigger advance
+        ie: the call to setAdvanceTriggered comes from when the condition is met that:
+          its at the end of chainReps OR (advanceSceneQueued AND its at the end of an increment)
+            how DOES advancing chain reps fit in here?
+        So, FIND all calls to setAdvanceTriggered (or triggering of advance!)
+          one true in setUpSceneChange
+          two false in advanceTrackStep (scene chaining checks..)
+          one true at end of advanceAndPlayTrack, after leadCycles calls
+
+
+    CURRENT FIGURING THIS OUT STRATEGY
+        reduce to english-esq
+        memorize it, inlcluding all the increment or zero places
+        include reduction to enligh of all associated functions and memorize those
+        SEEMS like, you need to install a check for change/formStep/formReset at every turn of lead track CYCLE...?
+            and then what? do the change now? or trigger the advance?
+        Consider along with intention to have 'sections' within a scene...
+            Reset on scene change
+        ALSO plan to have functions queued like mute/unmute to happen (at lead track cycle? at change? scene change?)...
+
+
+      - setUpSceneChange seems to be called REDUNDANTLY (like, every tick) in advanceTrackStep
+      - way to CANCEL scene changes...?
+
+
+    DO
+
+      - and also with plan to have various functions in a queue...
+      // sceneChangeQueue! General setting to delay change until cycle complete...
+        - maybe changesQueued goes over on the info section? (particularly if it happens on lead change and not on modulation)
+        - doesnt affect: volume; does affect: mute, change, modulate,
+
+
+    BLUE ADVANCE BAR
+        thats advanceTriggered and count of lead track cycles
+
+
+    STRATEGIES SIDE-LIST
+        sceneChangeQueued
+
+
+    NOTES
+        - chainReps doesnt seem to be applying to sceneChangeIncrement
+        - you NEED chainIncrement BEACUSE you might have more than one chainReps!
+        - seems like in CHECK FOR SCENE CHAINING TO TRIGGER ADVANCE you need to reflect the sceneChangeIncrement
+
+      - MADE THIS WORK: ( this.scene.sceneChangeIncrement === 'perChange' && leadTrack.changeCycles >= leadTrack.changePer ) ||
+        - BUT, it was leadTrack.changeCycles === 0 ... which doesnt work, WHY is it equal to leadTrack.changePer at beginning of new cycles?
+          - this seems to be ON PURPOSE, because having it reach the .changePer count
+            is what tells it to change in CHECK FOR MODULATION AND CHANGE (THEN it zeros it)
+
+
+
+
+
 
 
 
@@ -67,11 +180,7 @@ PUSH:
 * CURRENT CODING
 **********************************************************************************************************************/
 
-{
 
-  - Form input doesnt seem to be accepting some values... JuJu progression wont advance beyond b\baug
-
-  - Track Distortion not working...
 
   - Button for changeAll
   - Shortcut for changeAll by number selected...?
@@ -97,6 +206,8 @@ PUSH:
 
   - dragging scenes leaves current editingSceneNumber (so it changes the scene...) do you want that different?
       - check out addNewScene...         state.editingSceneId = newScene.id
+
+  - why is track entry pitch so much louder than playerQWERTY?
 
 }
 
@@ -129,6 +240,9 @@ TESTING
 ***************************************************************************************************/
 
 {
+
+  - STORE & RECALL playerQWERTY settings for each composition... call them at sceneChange... also Shortcuts: Shift 1-9, Shift-0 restores default)
+
   - change each track by one note (to go along with changeAll )
   - new scene inherits tempo from previous scene
   - multiple track variations for each scene... ?
@@ -144,15 +258,16 @@ TESTING
     - all tracks for rest percent settings
     - sequence combo for modulation per: ctrl M #
 
-  // sceneChangeQueue! General setting to delay change until cycle complete...
-    - maybe changesQueued goes over on the info section? (particularly if it happens on lead change and not on modulation)
-    - doesnt affect: volume; does affect: mute, change, modulate,
+    - dangers of capslock! Disable?
+
+
+    - fill track automatically sets change to 1... on purpose?
 
 }
 
 
 ******************************************************************************************************
-* PERFORMANCE
+* CODE PERFORMANCE
 ********************************************************************************************************/
 
 {
@@ -288,6 +403,8 @@ TESTING
 
 
 BUGGIN {
+
+  Juju does no-bass note thing on lead track of A#\A#dom
 
     Text Entry
       - scenes to save with lower-case "s"
@@ -437,6 +554,10 @@ REFACTORING {
     - Be wary of Hot-Recompile... see Tone.Transport.clear...  (seems that the Tone functions are out of Vue scope!)
       - may need to brush up on lifecycle methods...
 
+
+    - track-lock feature? comment from advanceTrackStep: // if (this track's lock# is itself) { behave normally } // else { use the toneTuneIndex of the lock# and ignore values above or below }
+
+
 }
 
 
@@ -535,34 +656,38 @@ REFACTORING {
 
 
   QWERTY:
-  https://www.reddit.com/r/javascript/comments/85s591/keyboard_input_and_best_practices_for_conditional/?st=jf1rswvi&sh=6ead2280
-  https://www.reddit.com/r/vuejs/comments/85td7m/keyboard_input_and_best_practices_for_conditional/?st=jf1rdsj1&sh=39df5365
-  ?Maybe https://vuejs.org/v2/guide/components-edge-cases.html#Accessing-Child-Component-Instances-amp-Child-Elements
-  ?Maybe https://code.luasoftware.com/tutorials/vuejs/parent-call-child-component-method/
+    https://www.reddit.com/r/javascript/comments/85s591/keyboard_input_and_best_practices_for_conditional/?st=jf1rswvi&sh=6ead2280
+    https://www.reddit.com/r/vuejs/comments/85td7m/keyboard_input_and_best_practices_for_conditional/?st=jf1rdsj1&sh=39df5365
+    ?Maybe https://vuejs.org/v2/guide/components-edge-cases.html#Accessing-Child-Component-Instances-amp-Child-Elements
+    ?Maybe https://code.luasoftware.com/tutorials/vuejs/parent-call-child-component-method/
 
-  https://codepen.io/anon/pen/JvoVxb
-  https://codepen.io/anon/pen/NMqJep
+    https://codepen.io/anon/pen/JvoVxb
+    https://codepen.io/anon/pen/NMqJep
 
 
-  https://dmauro.github.io/Keypress/
-  https://github.com/madrobby/keymaster
-  https://github.com/kylestetz/AudioKeys
+    https://dmauro.github.io/Keypress/
+    https://github.com/madrobby/keymaster
+    https://github.com/kylestetz/AudioKeys
+
+
+  GENERAL JS PERFORMANCE
+    https://hackernoon.com/3-javascript-performance-mistakes-you-should-stop-doing-ebf84b9de951
 
   TONEJS:
-  https://www.reddit.com/r/vuejs/comments/8a4jlz/architectural_problem_in_use_of_tonejs_with_vuex/?st=jfo2yt35&sh=ed6e00b9
-  (demos mutating Tone.Synth() on $store.state ... )
-  https://www.reddit.com/r/webaudio/comments/8a4lrg/architectural_problem_in_use_of_tonejs_with_vuex/?st=jfo277dc&sh=37055828
-  https://groups.google.com/forum/#!forum/tonejs
-  Suspended bug: The AudioContext was not allowed to start. It must be resume (or created) after a user gesture on the page.
-  - https://groups.google.com/forum/#!searchin/tonejs/resume$20audiocontext|sort:date/tonejs/Jdcb9x3vgqY/L-ifpYHICAAJ
-  - Tone.context (logged "suspended")
-  - Tone.context.resume() fixed it...
+    https://www.reddit.com/r/vuejs/comments/8a4jlz/architectural_problem_in_use_of_tonejs_with_vuex/?st=jfo2yt35&sh=ed6e00b9
+    (demos mutating Tone.Synth() on $store.state ... )
+    https://www.reddit.com/r/webaudio/comments/8a4lrg/architectural_problem_in_use_of_tonejs_with_vuex/?st=jfo277dc&sh=37055828
+    https://groups.google.com/forum/#!forum/tonejs
+    Suspended bug: The AudioContext was not allowed to start. It must be resume (or created) after a user gesture on the page.
+    - https://groups.google.com/forum/#!searchin/tonejs/resume$20audiocontext|sort:date/tonejs/Jdcb9x3vgqY/L-ifpYHICAAJ
+    - Tone.context (logged "suspended")
+    - Tone.context.resume() fixed it...
 
-  Tone Performance:
-  https://github.com/Tonejs/Tone.js/issues/341
+  TONEJS/WEBAUDIO PERFORMANCE
+    https://github.com/Tonejs/Tone.js/issues/341
 
   KNOB
-  https://mail.google.com/mail/u/0/#inbox/163a3acf0243d273
+    https://mail.google.com/mail/u/0/#inbox/163a3acf0243d273
 
 
   SAVE/LOAD & export/ import
@@ -573,25 +698,38 @@ REFACTORING {
 
 
   MISC:
-  https://codeburst.io/throttling-and-debouncing-in-javascript-646d076d0a44
-  - Array.findIndex
-  - Array.includes
-  Vue vs Vanilla: https://itnext.io/reddits-voting-ui-in-vanilla-vs-react-vs-vue-vs-hyperapp-shedding-light-on-the-purpose-of-spa-ee6b6ac9a8cc
-  https://flaviocopes.com/vue-cheat-sheet/
-  "upload" - FileReader()! https://www.reddit.com/r/javascript/comments/997rlw/read_contents_of_userchosen_json_or_txt_file/?st=jl6pxdd1&sh=2bbae24f
+    https://codeburst.io/declaring-variables-in-es6-javascript-60ea37e38765
+    https://codeburst.io/throttling-and-debouncing-in-javascript-646d076d0a44
+    - Array.findIndex
+    - Array.includes
+    Vue vs Vanilla: https://itnext.io/reddits-voting-ui-in-vanilla-vs-react-vs-vue-vs-hyperapp-shedding-light-on-the-purpose-of-spa-ee6b6ac9a8cc
+    https://flaviocopes.com/vue-cheat-sheet/
+    "upload" - FileReader()! https://www.reddit.com/r/javascript/comments/997rlw/read_contents_of_userchosen_json_or_txt_file/?st=jl6pxdd1&sh=2bbae24f
 
 
   POSTS-GONE-BY:
-  https://www.reddit.com/r/vuejs/comments/89kkfc/vuex_getters_for_dynamic_array/?st=jfkdao52&sh=9376ba1c
-  https://github.com/Tonejs/Tone.js/issues/306
-  https://www.reddit.com/r/vuejs/comments/8kn53j/how_to_blur_all_inputs/?st=jhf63g3q&sh=5c93aa7b
-  https://css-tricks.com/debouncing-throttling-explained-examples/
+    https://www.reddit.com/r/vuejs/comments/89kkfc/vuex_getters_for_dynamic_array/?st=jfkdao52&sh=9376ba1c
+    https://github.com/Tonejs/Tone.js/issues/306
+    https://www.reddit.com/r/vuejs/comments/8kn53j/how_to_blur_all_inputs/?st=jhf63g3q&sh=5c93aa7b
+    https://css-tricks.com/debouncing-throttling-explained-examples/
 
 
   AI
    https://www.youtube.com/watch?v=HQ9q8-079vg  Tensorflow & Vue
 
 }
+
+
+************************************************************************************************
+* RESPONSIVE/MOBILE
+************************************************************************************************
+{
+  http://www.tomsguide.com/forum/id-3338952/disable-double-tap-zoom-droid-phone.html
+
+  https://css-tricks.com/the-javascript-behind-touch-friendly-sliders/
+  https://developers.google.com/web/fundamentals/design-and-ux/input/touch/
+}
+
 
 
 ************************************************************************************************

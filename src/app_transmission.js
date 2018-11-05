@@ -52,6 +52,7 @@ advanceAndPlayTrack(track, index, time){
       // LEAD TRACK QUEUES MODULATION
       if (track.id === this.scene.leadTrackId && this.scene.autoModulate) {
         if (this.scene.modulationCycles < this.scene.modulatePerLeadChanges-1){
+
           this.$store.commit('updateModulationCycles', 'increment')
         } else {
           this.$store.commit('updateModulationCycles', 'zero')
@@ -83,6 +84,8 @@ advanceAndPlayTrack(track, index, time){
       }
       // CHECK FOR SCENE CHAINING to TRIGGER ADVANCE
       if (track.id === this.leadTrack.id && this.$store.state.chain === true ) { // && this.scene.chainAdvancePer > 0) {
+
+
         if (this.scene.leadCycles < this.scene.chainAdvancePer-1) {
           this.$store.commit('changeLeadCycles', 'increment' )
           console.log("leadCycles", this.scene.leadCycles)
@@ -90,6 +93,8 @@ advanceAndPlayTrack(track, index, time){
           this.$store.commit('changeLeadCycles', 'zero' )
           this.$store.commit('setAdvanceTriggered', true)
         }
+
+
       }
     }
 
@@ -118,7 +123,7 @@ setUpSceneChange: (context, change) => {
   }
   if (context.state.playing) {
     context.commit('setSceneChangeNumber', changeToNumber)
-    if (!context.state.chain) {
+    if (!context.state.chain) {   // when called by user shift-w/e
       context.commit('setAdvanceTriggered', true)
     }
   } else {
@@ -128,49 +133,240 @@ setUpSceneChange: (context, change) => {
 },
 
 
-
-
-********** Originals
-
-// SCENE CHANGING BEFORE REFACTOR
-
-if (this.tracks[this.leadTrackNumber].toneTuneIndex === 0 && this.$store.state.advanceTriggered){  // this.leadTrack.toneTuneIndex === this.toneTunes[this.leadTrackNumber].length-1
-  //
-  if (this.$store.state.chain) {
-    this.$store.commit('resetScene')
-    if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
-        this.$store.state.chainLoop === false) {
-      this.togglePlay()
-      this.$store.commit('changeScene')
-      this.$store.commit('setAdvanceTriggered', false)
-      return
-    }
-    this.$store.commit('changeScene')
-    this.$store.commit('setAdvanceTriggered', false)
-  } else {
-    this.$store.commit('resetScene')
-    this.$store.commit('changeScene')
-    this.$store.commit('setAdvanceTriggered', false)
-  }
-}
-
-
-// CHECK FOR MODULATION AND CHANGE before Refactor
-if (track.toneTuneIndex === 0) {
-  if (track.changeCycles >= track.changePer && track.changePer != 0 && !this.scene.suspendChanges ) {
-    if (track.id === this.scene.leadTrackId) {
-      // can combine with next:
-      if (this.scene.autoModulate) {
-        // advanceModulationCycle
-        if (this.scene.modulationCycles < this.scene.modulatePerLeadChanges-1){
-          this.$store.commit('updateModulationCycles', 'increment')
-        } else {
-          this.$store.commit('updateModulationCycles', 'zero')
-          this.$store.dispatch('morphSelectedNotes')
+// refactored
+morphSelectedNotes: (context, userCalled) => {
+    let scene = context.state.scenes[context.state.editingSceneNumber]
+    if (scene.modulationStyle === 'form') {
+        context.commit('updateSelectedMode', scene.nextModulation)
+        context.commit('updateFormStep', 'advance')
+        let nextFormSection = (scene.formStep < scene.harmonicForm.length-1)  ? scene.harmonicForm[scene.formStep+1] : scene.harmonicForm[0]
+        let nextFormSectionSansPrefix = nextFormSection.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr|maj|min|sus|ma7|dom|mi7|hdm|dm7|blu|pen|fth|one)/i)[0]
+        let nextModeInfo = referenceMode(MODEDATA, nextFormSectionSansPrefix)
+        context.commit('updateNextModulation', nextModeInfo)
+    } else if (scene.modulationStyle === 'drift' && scene.autoModulate) {
+        if (!userCalled){
+          context.commit('updateSelectedMode', scene.nextModulation)
         }
+        // DRY re: autoModulate & toggleModulationStyle
+        let type = randomElement(context.getters.selectedModulations)
+        let nextModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
+        context.commit('updateNextModulation', nextModeInfo)
+    } else {
+        let type = randomElement(context.getters.selectedModulations)
+        let newModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
+        context.commit('updateSelectedMode', newModeInfo)
+  }
+},
+
+// OLD
+morphSelectedNotes: (context, userCalled) => {
+  let scene = context.state.scenes[context.state.editingSceneNumber]
+  if (scene.autoModulate || scene.modulationStyle === 'form') {
+    if (scene.modulationStyle === 'drift') {
+      if (!userCalled){
+        context.commit('updateSelectedMode', scene.nextModulation)
       }
+      // DRY re: autoModulate & toggleModulationStyle
+      let type = randomElement(context.getters.selectedModulations)
+      let nextModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
+      context.commit('updateNextModulation', nextModeInfo)
+    } else if (scene.modulationStyle === 'form') {
+      context.commit('updateSelectedMode', scene.nextModulation)
+      context.commit('updateFormStep', 'advance')
+      let nextFormSection = (scene.formStep < scene.harmonicForm.length-1)  ? scene.harmonicForm[scene.formStep+1] : scene.harmonicForm[0]
+      let nextFormSectionSansPrefix = nextFormSection.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr|maj|min|sus|ma7|dom|mi7|hdm|dm7|blu|pen|fth|one)/i)[0]
+      let nextModeInfo = referenceMode(MODEDATA, nextFormSectionSansPrefix)
+      context.commit('updateNextModulation', nextModeInfo)
     }
-    this.$store.dispatch('changeTune', { trackIndex: index, all: false })
-    this.$store.commit('changeCycles', {change:'zero', index: index} )
+  } else {
+    let type = randomElement(context.getters.selectedModulations)
+    let newModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
+    context.commit('updateSelectedMode', newModeInfo)
+  }
+},
+
+
+updateFormStep: (state, update) => {
+  let scene = state.scenes[state.editingSceneNumber]
+  if (update === 'zero'){
+    scene.formStep = 0
+  } else if (update === 'advance') {
+    if (scene.formStep < scene.harmonicForm.length-1) { scene.formStep++ }
+    else { scene.formStep = 0 }
+  } else if (update === 'off') {
+    scene.formStep = -1
+  }
+},
+
+
+
+/*************************************************************************************************************
+TRANSMISSION MAP
+*************************************************************************************************************/
+advanceTrackStep(time){   // console.log("in pTP") //console.log(Date.now(), this.tracks)
+
+    // SCENE CHANGING:
+    if its the first step of the lead track and advance is triggered:
+        reset the scene, stop playing if its the end the chain, call 'changeScene', and 'setAdvanceTriggered' false
+
+    // SCENE STARTED & NEXT
+    if chain is on, 'setUpSceneChange' forward
+    start the scene if its not started
+
+    // ADVANCE and PLAY
+    lead track 'advanceAndPlayTrack'
+    other tracks, 'advanceAndPlayTrack'
+
+},
+
+advanceAndPlayTrack(track, index, time){
+
+    // CHECK FOR CHANGE CONDITION, MODULATE AND CHANGE
+    if its the first step, and changeCycles >= changePer, and changePer isnt 0, and changes arent suspended:
+        // LEAD TRACK QUEUES MODULATION
+        if its the lead track, and its automodulating:
+            if modulationCycles < modulatePerLeadChanges-1
+                'updateModulationCycles' by 'increment'
+            else
+                'updateModulationCycles' to 'zero'
+                and 'morphSelectedNotes'
+
+        'changeTune'
+        'changeCycles' 'zero'  // NOTICE THAT YOU LET THE changeCycles GET AHEAD of changePer FOR THE CHECK, then zero them after...
+
+    // PLAY NOTES
+    play whichever note is up
+
+    // ADVANCE TRACK STEP and CHECK FOR CHANGES
+    if toneTuneIndex < toneTune.length-1
+        'changeToneTuneIndex' by 'increment'
+    else
+        'changeToneTuneIndex' to 'zero'
+        if changeCycles < changePer and changes arent suspented
+            'changeCycles' by 'increment'
+
+        // CHECK FOR SCENE CHAINING to TRIGGER ADVANCE   (leadCycles is on scene... )
+        if its the lead track and chain is on
+            if leadCycles < chainAdvancePer-1
+                'changeLeadCycles' by 'increment'
+            else
+                'changeLeadCycles' to 'zero'
+                'setAdvanceTriggered' to true
+
+},
+
+
+
+OTHER ASSOCIATED FUNCTIONS
+    setUpSceneChange (action)
+
+
+
+
+
+
+***********************************************
+!!!  https://code2flow.com/app
+*************************************************
+advanceTrackStep
+
+if(lead=0 & advTrig) {
+  resetScene
+  if(chain & end) {
+    stop (return)
+  }
+  changeScene
+  advTrig(false)
+}
+
+setUpSceneChange(forward)
+trackStarted(true)
+
+advanceAndPlayTrack (lead First)
+
+if(step 0 & cC >= cP & !cp=0& !susp){
+  if(lead & autoMod){
+    if(modulationCycles < modulatePerLeadChanges-1)
+        updateModulationCycles by increment
+    } else {
+        updateModulationCycles to 0
+        morphSelectedNotes
+  }
+  changeTune
+  changeCycles(zero)
+}
+
+PLAY NOTES
+
+
+if (tTI < tT.length-1) {
+  changeToneTuneIndex(increment)
+} else {
+  changeToneTuneIndex(zero)
+  if (changeCycles < changePer && !suspendChanges) {
+    changeCycles(increment)
+  }
+
+  if (leadTrack && chain) {
+
+    if (leadCycles < chainAdvancePer-1) {
+      changeLeadCycles(increment)
+    } else {
+      changeLeadCycles(zero)
+      setAdvanceTriggered(true)
+    }
   }
 }
+
+
+
+
+
+
+
+
+
+
+/************************************************************************
+MORE WORKSHOPPING
+****************************************************************************/
+
+
+
+morphSelectedNotes: (context, userCalled) => {
+    let scene = context.state.scenes[context.state.editingSceneNumber]
+    if (scene.modulationStyle === 'form') {
+        context.commit('updateSelectedMode', scene.nextModulation)
+        context.commit('updateFormStep', 'advance')
+        let nextFormSection = (scene.formStep < scene.harmonicForm.length-1) ? scene.harmonicForm[scene.formStep+1] : scene.harmonicForm[0]
+        let nextFormSectionSansPrefix = nextFormSection.match(/([c|d||f|g|a]#?|[b|e])(dia|mel|har|dim|aug|chr|maj|min|sus|ma7|dom|mi7|hdm|dm7|blu|pen|fth|one)/i)[0]
+        let nextModeInfo = referenceMode(MODEDATA, nextFormSectionSansPrefix)
+        context.commit('updateNextModulation', nextModeInfo)
+    } else if (scene.modulationStyle === 'drift' && scene.autoModulate) {
+        if (!userCalled){
+          context.commit('updateSelectedMode', scene.nextModulation)
+        }
+        // DRY re: autoModulate & toggleModulationStyle
+        let type = randomElement(context.getters.selectedModulations)
+        let nextModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
+        context.commit('updateNextModulation', nextModeInfo)
+    } else {
+        let type = randomElement(context.getters.selectedModulations)
+        let newModeInfo = pickMode(MODEDATA, type, scene.lastMode, scene.selectedRootPitches)
+        context.commit('updateSelectedMode', newModeInfo)
+  }
+},
+
+
+
+
+
+
+
+
+
+
+
+/***************************************
+HMMMMMMM
+*****************************************/

@@ -119,7 +119,7 @@ export let generalKeyDispatchTable = {
   "U"       : function() { this.$store.commit('toggleChainLoop')},
   "I"       : function() { this.$store.dispatch('toggleModulationStyle')},
   "O"       : function() { this.$store.dispatch('toggleAutoModulate')},
-  "P"       : function() { this.$store.dispatch('morphSelectedNotes')}, // why is this not "userCalled" true?
+  "P"       : function() { this.$store.dispatch('morphSelectedNotes', true)},
   "{"       : function() { this.$store.dispatch('returnAllTunes')},
   "}"       : function() { this.$store.dispatch('changeAll')},
   "|"       : function() { this.$store.commit('toggleSuspendChanges') },
