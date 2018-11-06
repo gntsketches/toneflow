@@ -21,6 +21,18 @@ export function keypress() {
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
 
+// SEQUENCE
+listener.register_combo({
+  "keys"              : "control shift z",
+  "on_keydown"        : function() { console.log("*") },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift a",
+  "on_keydown"        : function() { console.log("*** *** ***") },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+
   // CTRL-ALT-S
   listener.register_combo({
     "keys"              : "control alt s",

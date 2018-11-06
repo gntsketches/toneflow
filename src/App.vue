@@ -216,16 +216,18 @@ export default {
         console.log('toneTuneIndex', this.tracks[this.leadTrackNumber].toneTuneIndex)
         // SCENE CHANGING:
         if (this.tracks[this.leadTrackNumber].toneTuneIndex === 0 && this.$store.state.advanceTriggered){
-          console.log('advancing!')
+          console.log('advancing scene')
           this.$store.commit('resetScene')
           if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
               this.$store.state.chain && this.$store.state.chainLoop === false) {
             this.togglePlay()
             // there is some reason these have to come after in this if-block, why?
+            this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & advanceTriggered biz
             this.$store.commit('changeScene')
             this.$store.commit('setAdvanceTriggered', false)
             return
           }
+          this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & advanceTriggered biz
           this.$store.commit('changeScene')
           this.$store.commit('setAdvanceTriggered', false)
 
@@ -283,6 +285,8 @@ export default {
         } else {
             this.$store.commit('changeToneTuneIndex', {change:'zero', index:index} )
             this.$store.dispatch('checkChainIncrementAndTriggerAdvance', { track: track, increment: 'Lead Cycle' }  )
+            this.$store.dispatch('checkAdvanceCueVsChangeIncrement', { track: track, increment: 'Lead Cycle' } )
+
             if (track.changeCycles < track.changePer-1 && !(track.changePer === 0) && !this.scene.suspendChanges) {
                 this.$store.commit('changeCycles', {change:'increment', index:index} )
 
@@ -290,6 +294,7 @@ export default {
                 this.$store.commit('changeCycles', { change:'zero', index: index} )
                 this.$store.commit('toggleTrackChangeTriggered', { index: index, bool: true })
                 this.$store.dispatch('checkChainIncrementAndTriggerAdvance', { track: track, increment: 'Lead Change' }  )
+                this.$store.dispatch('checkAdvanceCueVsChangeIncrement', { track: track, increment: 'Lead Change' } )
 
                 // LEAD TRACK QUEUES MODULATION
                 if (track.id === this.scene.leadTrackId && this.scene.autoModulate) {
@@ -300,6 +305,7 @@ export default {
                       this.$store.commit('updateModulationCycles', 'zero')
                       this.$store.commit('toggleModulationTriggered', true)
                       this.$store.dispatch('checkChainIncrementAndTriggerAdvance', { track: track, increment: 'Modulation' }  )
+                      this.$store.dispatch('checkAdvanceCueVsChangeIncrement', { track: track, increment: 'Modulation' } )
                     }
                 }
 

@@ -71,13 +71,14 @@ export const stateDefaults = {
 
   editingSceneNumber: 0, // currently lacks a mutation to change this
   editingSceneId: '',
+  sceneAdvanceCued: false,
   advanceTriggered: false,
   sceneChangeNumber: 0,
 
   newSceneDefaults: {
     title: '',
     id: '',
-    bpm: 10,
+    bpm: 40,
     selectedNotes: ["C", "D", "E", "F", "G", "A", "B"],
     selectedLength: 4,
     tracks: [],
@@ -89,7 +90,7 @@ export const stateDefaults = {
     leadCycles: 0,
     //chainIncrement: 0,  // patience...
     suspendChanges: false,
-    sceneChangeIncrement: 'Form',
+    sceneChangeIncrement: 'Lead Cycle',
     chainAdvancePer: 1,
     filterPitchesOnChange: true,
     modulatePerLeadChanges: 1,

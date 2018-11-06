@@ -68,6 +68,7 @@ TRANsSMISSION
 
 
 
+
 Delips noun verb exercise:
   Take a piece of paper and put nouns on one side and verbs on another side.
   Once you got em, take a different sheet and organize into bullet headings
@@ -90,14 +91,20 @@ Cascade - Daisy Chaining... (an antipattern... )
   SCENE CHANGING PREFERENCES / ( changeQueue? )
 
 
-
+  Seems to be working except for:
+      - needs to only do mod & form if there is a mod or form (default to something else otherwise)
+      - with 2 form steps, & modulate per 2, cued Advance on Form jumps after one run of second form step
+      - track is not changing sometimes with 1 per 1
+        - in fact it's advancing the scene every time when it's on Lead Cycle...
+        - dosnt happen with checkAdvanceCueVsChangeIncrement commented...
+          - didn't actually check for sceneAdvanceCued! duh. test will all increment options. 
 
 
     CHANGES MADE? TO MAKE?:
       "sceneChangeIncrement" (cycle, changeCycle, formStep advance, modCycles)
       "leadCycles" named "chainIncrement"
       rename advanceTriggered to sceneAdvanceTriggered
-      resetScene should reset everything associated with this... 
+      resetScene should reset everything associated with this...
       ... theres more, I know it...
 
       Making all these conditionals more readable: establsh all boolean values at the beginning of the function

@@ -268,6 +268,9 @@ export const store = new Vuex.Store({
           }
         })
       },
+      setSceneAdvanceCued: (state, bool) => {
+        bool === true? state.sceneAdvanceCued = true : state.sceneAdvanceCued = false
+      },
       setAdvanceTriggered: (state, bool) => {
         bool === true? state.advanceTriggered = true : state.advanceTriggered = false
       },
@@ -926,7 +929,8 @@ export const store = new Vuex.Store({
         if (context.state.playing) {
           context.commit('setSceneChangeNumber', changeToNumber)
           if (!context.state.chain) {
-            context.commit('setAdvanceTriggered', true)
+            context.commit('setSceneAdvanceCued', true)
+            //context.commit('setAdvanceTriggered', true)
           }
         } else {
           context.commit('setSceneChangeNumber', changeToNumber)
@@ -1075,9 +1079,10 @@ export const store = new Vuex.Store({
         console.log('fS', scene.formStep, 'hFL-1:', scene.harmonicForm.length-1)
         if (scene.formStep < scene.harmonicForm.length-1) {
           context.commit('updateFormStep', 'increment')
+          context.dispatch('checkChainIncrementAndTriggerAdvance', { track: leadTrack, increment: 'Form' }  )
+          context.dispatch('checkAdvanceCueVsChangeIncrement', { track: leadTrack, increment: 'Form' } )
         } else {
           context.commit('updateFormStep', 'zero')
-          context.dispatch('checkChainIncrementAndTriggerAdvance', { track: leadTrack, increment: 'Form' }  )
         }
       },
       /*
@@ -1612,6 +1617,16 @@ export const store = new Vuex.Store({
             context.commit('changeLeadCycles', 'zero' )
             context.commit('setAdvanceTriggered', true)
           }
+        }
+      },
+      checkAdvanceCueVsChangeIncrement: (context, payload) => {
+        let scene = context.state.scenes[context.state.editingSceneNumber]
+        if (payload.track.id === scene.leadTrackId &&
+            payload.increment === scene.sceneChangeIncrement &&
+            context.state.sceneAdvanceCued
+        ) {
+          context.commit('setAdvanceTriggered', true)
+          context.commit('setSceneAdvanceCued', false)
         }
       },
 
