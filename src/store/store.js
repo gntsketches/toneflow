@@ -1079,10 +1079,10 @@ export const store = new Vuex.Store({
         console.log('fS', scene.formStep, 'hFL-1:', scene.harmonicForm.length-1)
         if (scene.formStep < scene.harmonicForm.length-1) {
           context.commit('updateFormStep', 'increment')
-          context.dispatch('checkChainIncrementAndTriggerAdvance', { track: leadTrack, increment: 'Form' }  )
-          context.dispatch('checkAdvanceCueVsChangeIncrement', { track: leadTrack, increment: 'Form' } )
         } else {
           context.commit('updateFormStep', 'zero')
+          context.dispatch('checkChainIncrementAndTriggerAdvance', { track: leadTrack, increment: 'Form' }  )
+          context.dispatch('checkAdvanceCueVsChangeIncrement', { track: leadTrack, increment: 'Form' } )
         }
       },
       /*
