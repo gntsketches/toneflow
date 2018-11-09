@@ -246,10 +246,10 @@ export const store = new Vuex.Store({
         scene.sceneChangeIncrement = increment
         console.log('sceneChangeIncrement', scene.sceneChangeIncrement)
       },
-      changeLeadCycles: (state, change) => {
+      changechainIncrement: (state, change) => {
         let scene = state.scenes[state.editingSceneNumber]
-        if (change === "increment") { scene.leadCycles++ }
-        else if (change === "zero") { scene.leadCycles = 0 }
+        if (change === "increment") { scene.chainIncrement++ }
+        else if (change === "zero") { scene.chainIncrement = 0 }
       },
       changeScene: (state) => {
         state.editingSceneNumber = state.sceneChangeNumber
@@ -310,7 +310,7 @@ export const store = new Vuex.Store({
       resetScene: (state) => {
         let scene = state.scenes[state.editingSceneNumber]
         // editingTrackNumber, editingTrackId, editingIndex - all left alone
-        scene.leadCycles = 0
+        scene.chainIncrement = 0
         scene.tracks.forEach( (track, index) => {
           track.toneTuneIndex = 0
           track.changeCycles = 0
@@ -1610,11 +1610,11 @@ export const store = new Vuex.Store({
             context.state.chain === true &&
             payload.increment === scene.sceneChangeIncrement
         ) {
-          console.log("in cCIATA, leadCycles", scene.leadCycles)
-          if (scene.leadCycles < scene.chainAdvancePer-1) {
-            context.commit('changeLeadCycles', 'increment' )
+          console.log("in cCIATA, chainIncrement", scene.chainIncrement)
+          if (scene.chainIncrement < scene.chainAdvancePer-1) {
+            context.commit('changechainIncrement', 'increment' )
           } else {
-            context.commit('changeLeadCycles', 'zero' )
+            context.commit('changechainIncrement', 'zero' )
             context.commit('setAdvanceTriggered', true)
           }
         }

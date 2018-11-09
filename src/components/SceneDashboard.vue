@@ -245,10 +245,13 @@ export default {
         let leadTuneLength = this.$store.getters.toneTunes[this.$store.getters.leadTrackNumber].length
         if (leadTuneLength === 0) { return 0}
         let stepsNeeded = leadTrack.changePer * leadTuneLength * this.scene.modulatePerLeadChanges
-        let modCycleSteps = this.scene.modulationCycles * leadTrack.changePer * leadTuneLength
         let currentChangeCycleSteps = leadTrack.changeCycles * leadTuneLength
-        let stepsSoFar = modCycleSteps + currentChangeCycleSteps + leadTrack.toneTuneIndex
-        let progress = stepsSoFar / stepsNeeded * 100
+        let modCycleSteps = this.scene.modulationCycles * leadTrack.changePer * leadTuneLength
+        let stepsByCycleCount = modCycleSteps + currentChangeCycleSteps + leadTrack.toneTuneIndex
+        let modProgBarDisplayCount = (this.scene.modulationCycles === 0 && leadTrack.changeCycles === 0 &&
+            leadTrack.toneTuneIndex === 0 && this.scene.started)
+            ? stepsNeeded : stepsByCycleCount
+        let progress = modProgBarDisplayCount / stepsNeeded * 100
         return progress <= 100 ? progress :  100 // if modulatePerLeadChanges is dropped during the cycle, stepsSoFar may exceed stepsNeeded
       },
       nextModulation(){

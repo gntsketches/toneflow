@@ -20,6 +20,18 @@ export function keypress() {
     "on_keydown"        : function() { this.$store.dispatch('trackOctaveShift', 'up') },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
+  listener.register_combo({
+    "keys"              : "control shift w",
+    "on_keydown"        : function() { this.$store.commit('setSceneAdvanceCued', false) },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
+  });
+  listener.register_combo({
+    "keys"              : "control shift e",
+    "on_keydown"        : function() { this.$store.commit('setSceneAdvanceCued', false) },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
+  });
+
+
 
 // SEQUENCE
 listener.register_combo({
@@ -32,6 +44,8 @@ listener.register_combo({
   "on_keydown"        : function() { console.log("*** *** ***") },
   "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
 });
+
+
 
   // CTRL-ALT-S
   listener.register_combo({

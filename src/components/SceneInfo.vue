@@ -55,12 +55,12 @@
       @keyup.enter="enterFunction($event)"
     ></input>
     <div class="scene-advance-meter">
-      <div v-if="scene.started && (this.$store.state.advanceTriggered || this.$store.state.chain)"
+      <div v-if="scene.started && (this.$store.state.advanceTriggered || this.$store.state.sceneAdvanceCued || this.$store.state.chain)"
         v-bind:style="{ width: sceneAdvanceProgress + '%' }"></div>
     </div>
     <span>=></span>
     <div class="scene-advance-title">
-      <div v-if="this.$store.state.advanceTriggered || this.$store.state.chain" >{{ advanceSceneTitle }}</div>
+      <div v-if="this.$store.state.advanceTriggered || this.$store.state.sceneAdvanceCued || this.$store.state.chain" >{{ advanceSceneTitle }}</div>
     </div>
 
     <br>
@@ -150,19 +150,73 @@ export default {
       },
     },
     sceneAdvanceProgress(){
-      let leadTrackStepTotal = this.toneTunes[this.leadTrackNumber].length
-      if (this.$store.state.chain) {
-        let stepsNeeded = leadTrackStepTotal * this.scene.chainAdvancePer
-        let wellThoughtOutVariableName = leadTrackStepTotal * this.scene.leadCycles + this.scene.tracks[this.leadTrackNumber].toneTuneIndex
-        let stepsSoFar = (wellThoughtOutVariableName === 0) ? stepsNeeded : wellThoughtOutVariableName
-        let stepPercent = isNaN(stepsSoFar/stepsNeeded) ? 0 : (stepsSoFar/stepsNeeded) * 100
-        return stepPercent
-      } else {
-        let stepsNeeded = leadTrackStepTotal
-        let toneTuneIndex =  this.scene.tracks[this.leadTrackNumber].toneTuneIndex
-        let stepsSoFar = (toneTuneIndex === 0) ? stepsNeeded : toneTuneIndex
-        let stepPercent = isNaN(stepsSoFar/stepsNeeded) ? 0 : (stepsSoFar/stepsNeeded) * 100
-        return stepPercent
+      let leadTrack = this.scene.tracks[this.leadTrackNumber]
+      let leadTrackTune = this.toneTunes[this.leadTrackNumber]
+
+      switch (this.scene.sceneChangeIncrement){
+          case 'Lead Cycle':
+              if (this.$store.state.chain) {
+                let stepsNeeded = leadTrackTune.length * this.scene.chainAdvancePer
+                let wellThoughtOutVariableName = leadTrackTune.length * this.scene.chainIncrement + leadTrack.toneTuneIndex
+                let stepsSoFar = (wellThoughtOutVariableName === 0) ? stepsNeeded : wellThoughtOutVariableName
+                let stepPercent = stepsSoFar/stepsNeeded * 100 // isNaN(stepsSoFar/stepsNeeded) ? 0 : (stepsSoFar/stepsNeeded) * 100
+                return stepPercent
+              } else {
+                let stepsNeeded = leadTrackTune.length
+                let stepsSoFar = (leadTrack.toneTuneIndex === 0) ? stepsNeeded : leadTrack.toneTuneIndex
+                let stepPercent = stepsSoFar/stepsNeeded * 100 // isNaN(stepsSoFar/stepsNeeded) ? 0 : (stepsSoFar/stepsNeeded) * 100
+                return stepPercent
+              }
+              break
+
+          case 'Lead Change':
+              if (this.$store.state.chain) {
+                let stepsNeeded = leadTrackTune.length * leadTrack.changePer * this.scene.chainAdvancePer
+                let veryWellThoughtOutVariableName = (leadTrackTune.length * leadTrack.changePer * this.scene.chainIncrement)
+                                                  + (leadTrackTune.length * leadTrack.changeCycles)
+                                                  + leadTrack.toneTuneIndex
+                let stepsSoFar = (veryWellThoughtOutVariableName === 0) ? stepsNeeded : veryWellThoughtOutVariableName
+                let stepPercent = stepsSoFar/stepsNeeded * 100 // isNaN(stepsSoFar/stepsNeeded) ? 0 : (stepsSoFar/stepsNeeded) * 100
+                return stepPercent
+              } else {
+                let stepsNeeded = leadTrackTune.length * leadTrack.changePer
+                let veryWellThoughtOutVariableName2 = leadTrackTune.length * leadTrack.changeCycles + leadTrack.toneTuneIndex
+                let stepsSoFar = (veryWellThoughtOutVariableName2 === 0) ? stepsNeeded : veryWellThoughtOutVariableName2
+                let stepPercent = stepsSoFar/stepsNeeded * 100 // isNaN(stepsSoFar/stepsNeeded) ? 0 : (stepsSoFar/stepsNeeded) * 100
+                return stepPercent
+              }
+              break
+
+          case 'Modulation':
+              if (this.$store.state.chain){
+                  let leadTuneLength = this.$store.getters.toneTunes[this.$store.getters.leadTrackNumber].length
+                  if (leadTuneLength === 0) { return 0 }
+                  let stepsNeeded = leadTrack.changePer * leadTuneLength * this.scene.modulatePerLeadChanges  * this.scene.chainAdvancePer
+                  let currentChangeCycleSteps = leadTrack.changeCycles * leadTuneLength
+                  let modCycleSteps = this.scene.modulationCycles * leadTrack.changePer * leadTuneLength
+                  let stepsByCycleCount = modCycleSteps + currentChangeCycleSteps + leadTrack.toneTuneIndex
+                  let modProgBarDisplayCount = (this.scene.modulationCycles === 0 && leadTrack.changeCycles === 0 &&
+                      leadTrack.toneTuneIndex === 0 && this.scene.started)
+                      ? stepsNeeded : stepsByCycleCount
+                  let progress = modProgBarDisplayCount / stepsNeeded * 100
+                  return progress <= 100 ? progress :  100 // if modulatePerLeadChanges is dropped during the cycle, stepsSoFar may exceed stepsNeeded
+              } else {
+                  let leadTuneLength = this.$store.getters.toneTunes[this.$store.getters.leadTrackNumber].length
+                  if (leadTuneLength === 0) { return 0 }
+                  let stepsNeeded = leadTrack.changePer * leadTuneLength * this.scene.modulatePerLeadChanges
+                  let currentChangeCycleSteps = leadTrack.changeCycles * leadTuneLength
+                  let modCycleSteps = this.scene.modulationCycles * leadTrack.changePer * leadTuneLength
+                  let stepsByCycleCount = modCycleSteps + currentChangeCycleSteps + leadTrack.toneTuneIndex
+                  let modProgBarDisplayCount = (this.scene.modulationCycles === 0 && leadTrack.changeCycles === 0 &&
+                      leadTrack.toneTuneIndex === 0 && this.scene.started)
+                      ? stepsNeeded : stepsByCycleCount
+                  let progress = modProgBarDisplayCount / stepsNeeded * 100
+                  return progress <= 100 ? progress :  100 // if modulatePerLeadChanges is dropped during the cycle, stepsSoFar may exceed stepsNeeded
+              }
+              break
+
+          case 'Form':
+              break
       }
     },
     advanceSceneTitle(){

@@ -210,41 +210,9 @@ export default {
 
     methods : {
 
-      advanceTrackStep(time){   // console.log("in pTP") //console.log(Date.now(), this.tracks)
-
-        console.log('advanceTriggered', this.$store.state.advanceTriggered)
-        console.log('toneTuneIndex', this.tracks[this.leadTrackNumber].toneTuneIndex)
-        // SCENE CHANGING:
-/*        if (this.tracks[this.leadTrackNumber].toneTuneIndex === 0 && this.$store.state.advanceTriggered){
-          console.log('advancing scene')
-          this.$store.commit('resetScene')
-          if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
-              this.$store.state.chain && this.$store.state.chainLoop === false) {
-            this.togglePlay()
-            // there is some reason these have to come after in this if-block, why?
-            this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & advanceTriggered biz
-            this.$store.commit('changeScene')
-            this.$store.commit('setAdvanceTriggered', false)
-            return
-          }
-          this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & advanceTriggered biz
-          this.$store.commit('changeScene')
-          this.$store.commit('setAdvanceTriggered', false)
-        }
-*/
-        // SCENE STARTED & NEXT
+      advanceAndPlayTrack(track, index, time){
 
         if (this.scene.started === false) { this.$store.commit('startScene') }
-
-        // ADVANCE and PLAY
-        this.advanceAndPlayTrack(this.tracks[this.$store.getters.leadTrackNumber], this.$store.getters.leadTrackNumber, time)
-        this.tracks.forEach( (track, index) => {
-          if (index === this.$store.getters.leadTrackNumber) { return }
-          else { this.advanceAndPlayTrack(track, index, time) }
-        })
-      },
-
-      advanceAndPlayTrack(track, index, time){
 
         // IF LEAD TRACK, CHECK CHANGE AND MODULATION TRIGGERS
         if (track.id === this.scene.leadTrackId){
@@ -257,20 +225,19 @@ export default {
                 this.$store.commit('toggleTrackChangeTriggered', { index: index, bool: false } )
             }
             if (this.$store.state.advanceTriggered){
-              console.log('advancing scene')
-              this.$store.commit('resetScene')
-              if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
+                this.$store.commit('resetScene')
+                if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
                   this.$store.state.chain && this.$store.state.chainLoop === false) {
-                this.togglePlay()
-                // there is some reason these have to come after in this if-block, why?
+                    this.togglePlay()
+                    // there is some reason these have to come after in this if-block, why?
+                    this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & advanceTriggered biz
+                    this.$store.commit('changeScene')
+                    this.$store.commit('setAdvanceTriggered', false)
+                    return
+                }
                 this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & advanceTriggered biz
                 this.$store.commit('changeScene')
                 this.$store.commit('setAdvanceTriggered', false)
-                return
-              }
-              this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & advanceTriggered biz
-              this.$store.commit('changeScene')
-              this.$store.commit('setAdvanceTriggered', false)
             }
             if (this.$store.state.chain) { this.$store.dispatch('setUpSceneChange', 'forward') }
               // && sceneChangeNumber === current scene
@@ -289,11 +256,8 @@ export default {
           }
         }
 
-        //console.log('cC:', track.changeCycles, 'cP-1:', track.changePer-1)
-        //console.log('mC:', this.scene.modulationCycles, 'mPLC-1:', this.scene.modulatePerLeadChanges-1)
 
         // ADVANCE TRACK STEP and TRIGGERS CASCADE
-
         if (track.toneTuneIndex < toneTune.length-1) {
             this.$store.commit('changeToneTuneIndex', {change:'increment', index:index} )
 
@@ -528,7 +492,11 @@ export default {
 
       // TONE SETUP
   		this.scheduleId = Tone.Transport.scheduleRepeat(time => {  // ;console.log("scheduleRepeat")  // Cleared below
-  			this.advanceTrackStep(time);
+        this.advanceAndPlayTrack(this.tracks[this.$store.getters.leadTrackNumber], this.$store.getters.leadTrackNumber, time)
+        this.tracks.forEach( (track, index) => {
+          if (index === this.$store.getters.leadTrackNumber) { return }
+          else { this.advanceAndPlayTrack(track, index, time) }
+        })
   		}, '8n');
   		Tone.Transport.bpm.value = this.$store.state.scenes[this.$store.state.editingSceneNumber].bpm;
 
