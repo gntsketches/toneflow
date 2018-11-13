@@ -1621,9 +1621,10 @@ export const store = new Vuex.Store({
       },
       checkAdvanceCueVsChangeIncrement: (context, payload) => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
-        if (payload.track.id === scene.leadTrackId &&
-            payload.increment === scene.sceneChangeIncrement &&
-            context.state.sceneAdvanceCued
+        if (context.state.sceneAdvanceCued &&
+            payload.track.id === scene.leadTrackId &&
+            payload.increment === scene.sceneChangeIncrement
+
         ) {
           context.commit('setAdvanceTriggered', true)
           context.commit('setSceneAdvanceCued', false)

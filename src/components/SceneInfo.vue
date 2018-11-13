@@ -56,7 +56,9 @@
     ></input>
     <div class="scene-advance-meter">
       <div v-if="scene.started && (this.$store.state.advanceTriggered || this.$store.state.sceneAdvanceCued || this.$store.state.chain)"
-        v-bind:style="{ width: sceneAdvanceProgress + '%' }"></div>
+        v-bind:style="{ width: sceneAdvanceProgress + '%' }">
+        <span v-if="scene.sceneChangeIncrement==='Form' && scene.formStep===-1" class="loading-harmonic-form-message" >loading...</span>
+      </div>
     </div>
     <span>=></span>
     <div class="scene-advance-title">
@@ -99,6 +101,7 @@ export default {
 
   data:() => ({
     changeIncrements: ['Lead Cycle', 'Lead Change', 'Modulation', 'Form'],
+    stepsTowardSceneChange: 0,
   }),
 
   computed: {
@@ -129,6 +132,9 @@ export default {
         this.$store.commit('updateLeadTrack', value )
       },
     },
+    leadTrackStep(){
+      return this.scene.tracks[this.leadTrackNumber].toneTuneIndex
+    },
     getBPM(){
       return this.scene.bpm
     },
@@ -152,6 +158,7 @@ export default {
     sceneAdvanceProgress(){
       let leadTrack = this.scene.tracks[this.leadTrackNumber]
       let leadTrackTune = this.toneTunes[this.leadTrackNumber]
+
 
       switch (this.scene.sceneChangeIncrement){
           case 'Lead Cycle':
@@ -189,33 +196,46 @@ export default {
 
           case 'Modulation':
               if (this.$store.state.chain){
-                  let leadTuneLength = this.$store.getters.toneTunes[this.$store.getters.leadTrackNumber].length
-                  if (leadTuneLength === 0) { return 0 }
-                  let stepsNeeded = leadTrack.changePer * leadTuneLength * this.scene.modulatePerLeadChanges  * this.scene.chainAdvancePer
-                  let currentChangeCycleSteps = leadTrack.changeCycles * leadTuneLength
-                  let modCycleSteps = this.scene.modulationCycles * leadTrack.changePer * leadTuneLength
+                  if (leadTrackTune.length === 0) { return 0 }
+                  let stepsNeeded = leadTrackTune.length * leadTrack.changePer * this.scene.modulatePerLeadChanges  * this.scene.chainAdvancePer
+                  let currentChangeCycleSteps = leadTrack.changeCycles * leadTrackTune.length
+                  let modCycleSteps = this.scene.modulationCycles * leadTrack.changePer * leadTrackTune.length
                   let stepsByCycleCount = modCycleSteps + currentChangeCycleSteps + leadTrack.toneTuneIndex
                   let modProgBarDisplayCount = (this.scene.modulationCycles === 0 && leadTrack.changeCycles === 0 &&
-                      leadTrack.toneTuneIndex === 0 && this.scene.started)
-                      ? stepsNeeded : stepsByCycleCount
+                                                leadTrack.toneTuneIndex === 0 && this.scene.started)
+                                                ? stepsNeeded : stepsByCycleCount
                   let progress = modProgBarDisplayCount / stepsNeeded * 100
                   return progress <= 100 ? progress :  100 // if modulatePerLeadChanges is dropped during the cycle, stepsSoFar may exceed stepsNeeded
               } else {
-                  let leadTuneLength = this.$store.getters.toneTunes[this.$store.getters.leadTrackNumber].length
-                  if (leadTuneLength === 0) { return 0 }
-                  let stepsNeeded = leadTrack.changePer * leadTuneLength * this.scene.modulatePerLeadChanges
-                  let currentChangeCycleSteps = leadTrack.changeCycles * leadTuneLength
-                  let modCycleSteps = this.scene.modulationCycles * leadTrack.changePer * leadTuneLength
+                  if (leadTrackTune.length === 0) { return 0 }
+                  let stepsNeeded = leadTrackTune.length * leadTrack.changePer * this.scene.modulatePerLeadChanges
+                  let currentChangeCycleSteps = leadTrack.changeCycles * leadTrackTune.length
+                  let modCycleSteps = this.scene.modulationCycles * leadTrack.changePer * leadTrackTune.length
                   let stepsByCycleCount = modCycleSteps + currentChangeCycleSteps + leadTrack.toneTuneIndex
                   let modProgBarDisplayCount = (this.scene.modulationCycles === 0 && leadTrack.changeCycles === 0 &&
-                      leadTrack.toneTuneIndex === 0 && this.scene.started)
-                      ? stepsNeeded : stepsByCycleCount
+                                                leadTrack.toneTuneIndex === 0 && this.scene.started)
+                                                ? stepsNeeded : stepsByCycleCount
                   let progress = modProgBarDisplayCount / stepsNeeded * 100
                   return progress <= 100 ? progress :  100 // if modulatePerLeadChanges is dropped during the cycle, stepsSoFar may exceed stepsNeeded
               }
               break
 
           case 'Form':
+              let stepsNeeded = 0
+              if (this.$store.state.chain){
+                  stepsNeeded = leadTrack.changePer * leadTrackTune.length * this.scene.modulatePerLeadChanges * this.scene.harmonicForm.length * this.scene.chainAdvancePer
+              } else {
+                  stepsNeeded = leadTrack.changePer * leadTrackTune.length * this.scene.modulatePerLeadChanges * this.scene.harmonicForm.length
+              }
+              if (this.scene.formStep === -1){
+                  return 0
+              }
+              if (this.stepsTowardSceneChange >= stepsNeeded) {
+                  this.stepsTowardSceneChange = 0
+                  return 100
+              } else {
+                  return (this.stepsTowardSceneChange/stepsNeeded) * 100
+              }
               break
       }
     },
@@ -241,6 +261,19 @@ export default {
       }
       return remembered
     },
+  },
+
+  watch: {
+    leadTrackStep: function (val) {
+      if ( ! (this.scene.sceneChangeIncrement === "Form" && this.scene.formStep===-1) ) {
+        console.log('ticking')
+        this.stepsTowardSceneChange++
+      }
+      if (this.scene.started === false) {
+        this.stepsTowardSceneChange = 0
+      }
+    },
+
   },
 
   methods: {
@@ -283,6 +316,33 @@ export default {
 
 }
 
+/*
+case 'Form':
+    if (this.$store.state.chain){
+        let stepsNeeded = leadTrack.changePer * leadTrackTune.length * this.scene.modulatePerLeadChanges * this.scene.harmonicForm.length *this.scene.chainAdvancePer
+        let excessivelyWellThoughtOutVariableName = (leadTrackTune.length * leadTrack.changePer * this.scene.modulationCycles)
+                                          + (leadTrackTune.length * leadTrack.changePer * this.scene.chainIncrement)
+                                          + (leadTrackTune.length * leadTrack.changeCycles)
+                                          + leadTrack.toneTuneIndex
+    } else {
+        let stepsNeeded = leadTrack.changePer * leadTrackTune.length * this.scene.modulatePerLeadChanges * this.scene.harmonicForm.length
+        console.log('form', leadTrackTune.length * leadTrack.changePer * this.scene.modulatePerLeadChanges * this.scene.formStep)
+        console.log('mod', leadTrackTune.length * leadTrack.changePer * this.scene.modulationCycles)
+        console.log('change', leadTrackTune.length * leadTrack.changeCycles)
+        console.log('step', leadTrack.toneTuneIndex)
+        console.log('*')
+        let variableName = (leadTrackTune.length * leadTrack.changePer * this.scene.modulatePerLeadChanges * this.scene.formStep)
+                            + (leadTrackTune.length * leadTrack.changePer * this.scene.modulationCycles)
+                            + (leadTrackTune.length * leadTrack.changeCycles)
+                            + leadTrack.toneTuneIndex
+        if (variableName < 0) { return 0 }
+        let stepsSoFar = (variableName === 0) ? stepsNeeded : variableName
+        let stepPercent = stepsSoFar/stepsNeeded * 100 // isNaN(stepsSoFar/stepsNeeded) ? 0 : (stepsSoFar/stepsNeeded) * 100
+        return stepPercent
+    }
+
+    break
+*/
 
 </script>
 
@@ -319,6 +379,9 @@ export default {
 .scene-advance-meter div{
   height: 14px;
   background: blue;
+}
+.loading-harmonic-form-message {
+  font-size: 12px;
 }
 .scene-advance-title {
   display: inline-block;

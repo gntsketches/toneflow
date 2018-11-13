@@ -90,7 +90,7 @@ export const stateDefaults = {
     chainIncrement: 0,
     //chainIncrement: 0,  // patience...
     suspendChanges: false,
-    sceneChangeIncrement: 'Lead Change',
+    sceneChangeIncrement: 'Form',
     chainAdvancePer: 1,
     filterPitchesOnChange: true,
     modulatePerLeadChanges: 1,
