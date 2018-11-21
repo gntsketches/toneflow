@@ -224,20 +224,24 @@ export default {
                 this.$store.dispatch('changeTune', { trackIndex: index, all: false } )
                 this.$store.commit('toggleTrackChangeTriggered', { index: index, bool: false } )
             }
-            if (this.$store.state.advanceTriggered){
+            if (this.$store.state.sceneAdvanceTriggered){
                 this.$store.commit('resetScene')
+                if (this.scene.resetRememberedOnSceneChange) {
+                  console.log('reseting remembered')
+                  this.$store.dispatch('returnAllTunes')
+                }
                 if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
                   this.$store.state.chain && this.$store.state.chainLoop === false) {
                     this.togglePlay()
                     // there is some reason these have to come after in this if-block, why?
-                    this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & advanceTriggered biz
+                    this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & sceneAdvanceTriggered biz
                     this.$store.commit('changeScene')
-                    this.$store.commit('setAdvanceTriggered', false)
+                    this.$store.commit('setSceneAdvanceTriggered', false)
                     return
                 }
-                this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & advanceTriggered biz
+                this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & sceneAdvanceTriggered biz
                 this.$store.commit('changeScene')
-                this.$store.commit('setAdvanceTriggered', false)
+                this.$store.commit('setSceneAdvanceTriggered', false)
             }
             if (this.$store.state.chain) { this.$store.dispatch('setUpSceneChange', 'forward') }
               // && sceneChangeNumber === current scene
@@ -249,7 +253,7 @@ export default {
         // PLAY NOTES
         let pitch = toneTune[track.toneTuneIndex]
         if (pitch != 0){
-          if (track.toneTuneIndex === toneTune.length-1 && this.$store.state.advanceTriggered) {
+          if (track.toneTuneIndex === toneTune.length-1 && this.$store.state.sceneAdvanceTriggered) {
             AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, '16n', time) // corrects for last note duration bleed-over on scene change
           } else {
             AM.scenes[this.scene.title].synths[index].triggerAttackRelease(pitch, track.noteDuration, time)

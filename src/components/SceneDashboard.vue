@@ -30,7 +30,7 @@
 
       <div class="modulation-options">
           <div class="mode-advance-meter">
-            <div v-if="this.scene.autoModulate" v-bind:style="{ width: progressTillChange + '%' }"></div>
+            <div v-if="this.scene.autoModulate && !this.scene.suspendChanges" v-bind:style="{ width: progressTillChange + '%' }"></div>
           </div>
           <span>=></span>
           <div class="mode-advance-title">

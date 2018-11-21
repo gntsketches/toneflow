@@ -1,3 +1,40 @@
+/* old version of setUpSceneChange, only could advance one at a time...
+  stored because who knows if this breaks something else...?
+ */
+
+setUpSceneChange: (context, change) => {
+  //console.log("change:", change)
+  let changeToNumber = context.state.sceneChangeNumber  // this value isnt used...
+  if (change === 'backward') {
+    if (context.state.editingSceneNumber > 0) {
+      changeToNumber = context.state.editingSceneNumber - 1
+    } else if (context.state.editingSceneNumber === 0) {
+      changeToNumber = context.state.scenes.length-1
+    }
+  } else if (change === 'forward') {
+    if (context.state.editingSceneNumber < context.state.scenes.length-1 ) {
+      changeToNumber = context.state.editingSceneNumber + 1
+    } else {
+      changeToNumber = 0
+    }
+  } else {
+    changeToNumber = change
+  }
+  if (context.state.playing) {
+    context.commit('setSceneChangeNumber', changeToNumber)
+    if (!context.state.chain) {
+      context.commit('setSceneAdvanceCued', true)
+    }
+  } else {
+    context.commit('setSceneChangeNumber', changeToNumber)
+    context.commit('changeScene')
+  }
+},
+
+
+
+
+
 noteShift: (context, shift) => {
   let scene= context.state.scenes[context.state.editingSceneNumber]
   // let track = scene.tracks[scene.editingTrackNumber]

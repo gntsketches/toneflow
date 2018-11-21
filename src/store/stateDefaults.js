@@ -72,7 +72,7 @@ export const stateDefaults = {
   editingSceneNumber: 0, // currently lacks a mutation to change this
   editingSceneId: '',
   sceneAdvanceCued: false,
-  advanceTriggered: false,
+  sceneAdvanceTriggered: false,
   sceneChangeNumber: 0,
 
   newSceneDefaults: {
@@ -87,10 +87,11 @@ export const stateDefaults = {
     editingIndex: 0,
     leadTrackId: '',
     started: false,
+    resetRememberedOnSceneChange: false,
     chainIncrement: 0,
     //chainIncrement: 0,  // patience...
     suspendChanges: false,
-    sceneChangeIncrement: 'Form',
+    sceneChangeIncrement: 'Lead Change',
     chainAdvancePer: 1,
     filterPitchesOnChange: true,
     modulatePerLeadChanges: 1,
@@ -135,13 +136,13 @@ export const stateDefaults = {
     soundPanel: true,
     // TRACK SOUND INFO:
     waveType: 'sawtooth',
-    gain: 0.5,
+    gain: 0.25,
     muted: false,
     gainPreMute: '',
     portamento: 0,
     harmonicity: 1,
     modulationType: 'square',
-    modulationIndex: 2,
+    modulationIndex: 2,   // not related to scene form!
     count: 2,
     spread: 20,
     modulationFrequency: 0.4,

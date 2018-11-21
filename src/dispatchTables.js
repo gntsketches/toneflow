@@ -30,6 +30,11 @@ export function keypress() {
     "on_keydown"        : function() { this.$store.commit('setSceneAdvanceCued', false) },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
   });
+  listener.register_combo({
+    "keys"              : "control shift }",
+    "on_keydown"        : function() { this.$store.dispatch('changeAll', 'all')},
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
+  });
 
 
 
@@ -147,7 +152,7 @@ export let generalKeyDispatchTable = {
   "O"       : function() { this.$store.dispatch('toggleAutoModulate')},
   "P"       : function() { this.$store.dispatch('morphSelectedNotes', true)},
   "{"       : function() { this.$store.dispatch('returnAllTunes')},
-  "}"       : function() { this.$store.dispatch('changeAll')},
+  "}"       : function() { this.$store.dispatch('changeAll', 'changeTotal')},
   "|"       : function() { this.$store.commit('toggleSuspendChanges') },
 
   // ASDFGH

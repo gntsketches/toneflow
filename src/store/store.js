@@ -271,8 +271,8 @@ export const store = new Vuex.Store({
       setSceneAdvanceCued: (state, bool) => {
         bool === true? state.sceneAdvanceCued = true : state.sceneAdvanceCued = false
       },
-      setAdvanceTriggered: (state, bool) => {
-        bool === true? state.advanceTriggered = true : state.advanceTriggered = false
+      setSceneAdvanceTriggered: (state, bool) => {
+        bool === true? state.sceneAdvanceTriggered = true : state.sceneAdvanceTriggered = false
       },
       moveScene: (state, payload) => {   // "benchScene" is a better title
         let movingScene = {}
@@ -319,8 +319,8 @@ export const store = new Vuex.Store({
         scene.started = false
         scene.modulationCycles = 0
         scene.modulationTriggered = false
-        state.advanceTriggered = false
-        // more... hmmm...
+        state.sceneAdvanceTriggered = false
+        // ?scene.formStep = 0 // scene.formStep = 1 ?
       },
       setSceneChangeNumber: (state, change) => {
         state.sceneChangeNumber = change
@@ -424,6 +424,11 @@ export const store = new Vuex.Store({
       updateEditingSceneId: (state, sceneId) => {
         if (sceneId) { state.editingSceneId = sceneId }
         else { state.editingSceneId = state.scenes[state.editingSceneNumber].id }
+      },
+      toggleResetRememberedOnSceneChange: state => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.resetRememberedOnSceneChange = !scene.resetRememberedOnSceneChange
+        console.log('rrosc', scene.resetRememberedOnSceneChange)
       },
 
       // INITIALIZE, ADD & REMOVE
@@ -545,7 +550,6 @@ export const store = new Vuex.Store({
         let track = scene.tracks[trackNumber]
         let remembered = JSON.parse(JSON.stringify(track.rememberedTune))
         if (trackNumber === scene.editingTrackNumber) {
-          console.log(state)
           console.log(JSON.parse(JSON.stringify(state.endcap)))
           remembered.push(JSON.parse(JSON.stringify(state.endcap)))
         }
@@ -909,17 +913,16 @@ export const store = new Vuex.Store({
         context.commit('updateLeadTrackId', value)
       }, */
       setUpSceneChange: (context, change) => {
-        //console.log("change:", change)
-        let changeToNumber = context.state.sceneChangeNumber  // this value isnt used...
+        let changeToNumber = context.state.sceneChangeNumber
         if (change === 'backward') {
-          if (context.state.editingSceneNumber > 0) {
-            changeToNumber = context.state.editingSceneNumber - 1
-          } else if (context.state.editingSceneNumber === 0) {
+          if (context.state.sceneChangeNumber > 0) {
+            changeToNumber = context.state.sceneChangeNumber - 1
+          } else if (context.state.sceneChangeNumber === 0) {
             changeToNumber = context.state.scenes.length-1
           }
         } else if (change === 'forward') {
-          if (context.state.editingSceneNumber < context.state.scenes.length-1 ) {
-            changeToNumber = context.state.editingSceneNumber + 1
+          if (context.state.sceneChangeNumber < context.state.scenes.length-1 ) {
+            changeToNumber = context.state.sceneChangeNumber + 1
           } else {
             changeToNumber = 0
           }
@@ -930,7 +933,6 @@ export const store = new Vuex.Store({
           context.commit('setSceneChangeNumber', changeToNumber)
           if (!context.state.chain) {
             context.commit('setSceneAdvanceCued', true)
-            //context.commit('setAdvanceTriggered', true)
           }
         } else {
           context.commit('setSceneChangeNumber', changeToNumber)
@@ -1000,7 +1002,6 @@ export const store = new Vuex.Store({
           AM.scenes[title].gains.forEach( (gain, i) => gain.toMaster() )
 
       },
-
       enterTrack: context => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
         let enteringTrack = JSON.parse(JSON.stringify(scene.tracks[0]))
@@ -1575,10 +1576,17 @@ export const store = new Vuex.Store({
           pitch: newPitch, // 'C4'
         })
       },
-      changeAll: (context) => {
+      changeAll: (context, number) => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
         scene.tracks.forEach( (track, index) => {
-          context.dispatch('changeTune', { trackIndex: index, all: true })
+          switch (number) {
+            case 'all':
+              context.dispatch('changeTune', { trackIndex: index, all: true })
+              break
+            case 'changeTotal':
+              context.dispatch('changeTune', { trackIndex: index, all: false })
+              break
+          }
         })
       },
       morphSelectedNotes: (context, userCalled) => {
@@ -1615,7 +1623,7 @@ export const store = new Vuex.Store({
             context.commit('changechainIncrement', 'increment' )
           } else {
             context.commit('changechainIncrement', 'zero' )
-            context.commit('setAdvanceTriggered', true)
+            context.commit('setSceneAdvanceTriggered', true)
           }
         }
       },
@@ -1626,7 +1634,7 @@ export const store = new Vuex.Store({
             payload.increment === scene.sceneChangeIncrement
 
         ) {
-          context.commit('setAdvanceTriggered', true)
+          context.commit('setSceneAdvanceTriggered', true)
           context.commit('setSceneAdvanceCued', false)
         }
       },

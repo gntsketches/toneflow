@@ -55,14 +55,14 @@
       @keyup.enter="enterFunction($event)"
     ></input>
     <div class="scene-advance-meter">
-      <div v-if="scene.started && (this.$store.state.advanceTriggered || this.$store.state.sceneAdvanceCued || this.$store.state.chain)"
+      <div v-if="scene.started && (this.$store.state.sceneAdvanceTriggered || this.$store.state.sceneAdvanceCued || this.$store.state.chain)"
         v-bind:style="{ width: sceneAdvanceProgress + '%' }">
         <span v-if="scene.sceneChangeIncrement==='Form' && scene.formStep===-1" class="loading-harmonic-form-message" >loading...</span>
       </div>
     </div>
     <span>=></span>
     <div class="scene-advance-title">
-      <div v-if="this.$store.state.advanceTriggered || this.$store.state.sceneAdvanceCued || this.$store.state.chain" >{{ advanceSceneTitle }}</div>
+      <div v-if="this.$store.state.sceneAdvanceTriggered || this.$store.state.sceneAdvanceCued || this.$store.state.chain" >{{ advanceSceneTitle }}</div>
     </div>
 
     <br>
@@ -83,6 +83,12 @@
              v-bind:class="{ greyOut: !tunesRemembered }"
         >Return All</div>
     </div>
+
+    <div class="track-options">
+        <span>Return Remembered On Scene Change:</span>
+        <input type="checkbox" v-model="resetRememberedOnSceneChange">
+    </div>
+
 
 
 
@@ -158,7 +164,6 @@ export default {
     sceneAdvanceProgress(){
       let leadTrack = this.scene.tracks[this.leadTrackNumber]
       let leadTrackTune = this.toneTunes[this.leadTrackNumber]
-
 
       switch (this.scene.sceneChangeIncrement){
           case 'Lead Cycle':
@@ -261,12 +266,21 @@ export default {
       }
       return remembered
     },
+    resetRememberedOnSceneChange: {
+      get(){
+        return this.scene.resetRememberedOnSceneChange
+      },
+      set(){
+        this.$store.commit('toggleResetRememberedOnSceneChange')
+      },
+    },
+
   },
 
-  watch: {
+  watch: {   // watchers expensive? https://www.reddit.com/r/vuejs/comments/9w57sz/performance_cost_of_emit/
     leadTrackStep: function (val) {
-      if ( ! (this.scene.sceneChangeIncrement === "Form" && this.scene.formStep===-1) ) {
-        console.log('ticking')
+      if ( ! (this.scene.sceneChangeIncrement === "Form" && this.scene.formStep===-1 ) &&
+           this.scene.suspendChanges === false )  {
         this.stepsTowardSceneChange++
       }
       if (this.scene.started === false) {
@@ -399,6 +413,7 @@ case 'Form':
 .track-options input {
   width: 35px;
 }
+
 .random-fill {
 }
 .random-distribute {
