@@ -15,7 +15,7 @@
       @change="changeTempo"
       @focus="focusFunction"
       @keyup.enter="enterFunction($event)"
-    ></input>
+    >
     <!--      @keyup.enter="$event.target.blur()" -->
 
     <span>Lead#</span>
@@ -23,26 +23,39 @@
     <!-- https://stackoverflow.com/questions/50434769/receive-event-object-in-vuex-v-model-setter?noredirect=1#comment87903913_50434769 -->
     <!-- note that v-model set is only called when the value changes. @keyup.enter="enterFunction($event)" doesn't work, is it possible to get enter to work on this some other way? For the moment looks like you'd need to use the global keyup listener (blur selects, possibly testing for active element as region)  -->
     <select id="leadSelect"
-      v-model:value="leadTrackNumber"
+      v-model:value="leadTrackNumberAdjust"
       @focus="focusFunction"
       @change="enterFunction($event)"
+      @blur="enterFunction($event)"
       >
       <option
         v-for="(track, index) in scene.tracks "
         :key="Math.random().toString().slice(2)"
-      >{{ index }}</option>
+      >{{ index+1 }}</option>
     </select>
 
     <div class="button-esq" v-on:click="resetScene" >Reset Scene</div>
 
     <br>
 
-    <span>Scene Change Timing Increment:</span>
+    <span>Load qwerty:</span>
+
+    <select id="qwertySettingOnSceneChange"
+      v-model:value="qwertySettingOnSceneChange"
+      @focus="focusFunction"
+      @change="enterFunction($event)"
+      @blur="enterFunction($event)"
+    >
+      <option v-for="setting in qwertySettings">{{ setting }}</option>
+    </select>
+
+    <span>Scene change on:</span>
     <select id="sceneChangeIncrement"
       v-model:value="sceneChangeIncrement"
       @focus="focusFunction"
       @change="enterFunction($event)"
-      >
+      @blur="enterFunction($event)"
+    >
       <option v-for="increment in changeIncrements">{{ increment }}</option>
     </select>
 
@@ -53,7 +66,8 @@
       v-model:value="chainAdvancePer"
       @focus="focusFunction"
       @keyup.enter="enterFunction($event)"
-    ></input>
+      @blur="enterFunction($event)"
+    >
     <div class="scene-advance-meter">
       <div v-if="scene.started && (this.$store.state.sceneAdvanceTriggered || this.$store.state.sceneAdvanceCued || this.$store.state.chain)"
         v-bind:style="{ width: sceneAdvanceProgress + '%' }">
@@ -68,29 +82,34 @@
     <br>
 
     <div class="track-options">
-        <div class="button-esq random-fill" v-on:click='fill' >Fill</div>
-        <input  type="number" min="1"
-                v-bind:value="length"
-                v-on:change="updateSelectedLength"
-                @focus="focusFunction"
-                @keyup.enter="enterFunction"
-        ></input>
-        <div class="button-esq random-distribute" v-on:click='distribute' >Distribute</div>
 
-        <div class="button-esq" @click="rememberAllTunes" >Remember All</div>
+        <div class="button-esq" @click="rememberAllTunes" >Remember Tracks</div>
         <div class="button-esq"
              @click="returnAllTunes"
              v-bind:class="{ greyOut: !tunesRemembered }"
-        >Return All</div>
+        >Return Tracks</div>
+
+        <span>on Scene Change:</span>
+
+        <div class="track-options">
+            <input class="reset-option" type="checkbox" v-model="resetRememberedOnSceneChange">
+        </div>
+
     </div>
 
-    <div class="track-options">
-        <span>Return Remembered On Scene Change:</span>
-        <input type="checkbox" v-model="resetRememberedOnSceneChange">
-    </div>
+    <br>
 
+    <div class="button-esq random-fill" v-on:click='fill' >Fill Track</div>
+    <input  type="number" min="1"
+            v-bind:value="length"
+            v-on:change="updateSelectedLength"
+            @focus="focusFunction"
+            @keyup.enter="enterFunction"
+            @blur="enterFunction($event)"
+    >
+    <div class="button-esq random-distribute" v-on:click='distribute' >Distribute</div>
 
-
+    <div class="button-esq add-track" v-on:click='addTrack' >Add New Track</div>
 
 
   </div>
@@ -101,6 +120,7 @@
 <script>
 
   /*https://forum.vuejs.org/t/how-to-listen-for-an-enter-on-an-element-ui-form/11631 */
+  import {bus} from '../main.js'
 
 
 export default {
@@ -125,18 +145,24 @@ export default {
         this.$store.dispatch('updateSceneTitle', title)
       },
     },
-    leadTrackNumber: {
+    leadTrackNumberAdjust: {
       get(){
         let leadTrackNumber = ''
         this.scene.tracks.forEach( (track, index) => {
           if (track.id === this.scene.leadTrackId) { leadTrackNumber = index }
         })
-        return leadTrackNumber
-        // return this.$store.getters.leadTrackNumber ...?
+        return leadTrackNumber+1
       },
       set(value){
-        this.$store.commit('updateLeadTrack', value )
+        this.$store.commit('updateLeadTrack', value-1 )
       },
+    },
+    leadTrackNumber(){
+      let leadTrackNumber = ''
+      this.scene.tracks.forEach( (track, index) => {
+        if (track.id === this.scene.leadTrackId) { leadTrackNumber = index }
+      })
+      return leadTrackNumber
     },
     leadTrackStep(){
       return this.scene.tracks[this.leadTrackNumber].toneTuneIndex
@@ -162,8 +188,10 @@ export default {
       },
     },
     sceneAdvanceProgress(){
+
       let leadTrack = this.scene.tracks[this.leadTrackNumber]
       let leadTrackTune = this.toneTunes[this.leadTrackNumber]
+      console.log('tTI', leadTrack.toneTuneIndex)
 
       switch (this.scene.sceneChangeIncrement){
           case 'Lead Cycle':
@@ -203,10 +231,13 @@ export default {
               if (this.$store.state.chain){
                   if (leadTrackTune.length === 0) { return 0 }
                   let stepsNeeded = leadTrackTune.length * leadTrack.changePer * this.scene.modulatePerLeadChanges  * this.scene.chainAdvancePer
-                  let currentChangeCycleSteps = leadTrack.changeCycles * leadTrackTune.length
+                  let chainSteps = this.scene.chainIncrement * this.scene.modulatePerLeadChanges * leadTrack.changePer * leadTrackTune.length
                   let modCycleSteps = this.scene.modulationCycles * leadTrack.changePer * leadTrackTune.length
-                  let stepsByCycleCount = modCycleSteps + currentChangeCycleSteps + leadTrack.toneTuneIndex
-                  let modProgBarDisplayCount = (this.scene.modulationCycles === 0 && leadTrack.changeCycles === 0 &&
+                  let currentChangeCycleSteps = leadTrack.changeCycles * leadTrackTune.length
+                  let stepsByCycleCount = chainSteps + modCycleSteps + currentChangeCycleSteps + leadTrack.toneTuneIndex
+
+                  let modProgBarDisplayCount = (this.scene.chainIncrement === 0 &&
+                                                this.scene.modulationCycles === 0 && leadTrack.changeCycles === 0 &&
                                                 leadTrack.toneTuneIndex === 0 && this.scene.started)
                                                 ? stepsNeeded : stepsByCycleCount
                   let progress = modProgBarDisplayCount / stepsNeeded * 100
@@ -274,6 +305,33 @@ export default {
         this.$store.commit('toggleResetRememberedOnSceneChange')
       },
     },
+    qwertySettings(){
+      let qwertySettings = ['none', 'default']
+      this.$store.state.playerParamSettings.forEach( (setting, index) => {
+        if (setting.assigned && index!= 0){ qwertySettings.push(index) } // index.toString() not needed, it automatically makes it a string
+      })
+      return qwertySettings
+    },
+    qwertySettingOnSceneChange: {
+      get(){
+        let loadQwerty = this.scene.loadQwertySettingOnSceneChange
+        if (loadQwerty == 0) { return 'default' }
+        return loadQwerty  // works because JS is loosely typed! livin' dangerous...
+      },
+      set(value){
+        console.log(typeof value, value)
+        switch (value){
+          case 'none':
+            this.$store.commit('updateLoadQwertySettingOnSceneChange', value)
+            break
+          case 'default':
+            this.$store.commit('updateLoadQwertySettingOnSceneChange', 0)
+            break
+          default:  // otherwise it's a string with a number value
+            this.$store.commit('updateLoadQwertySettingOnSceneChange', value) //parseInt(value, 10))
+        }
+      },
+    },
 
   },
 
@@ -306,6 +364,7 @@ export default {
     enterFunction(event){
       event.target.blur()
       this.$store.commit('changeActiveRegion', this.$store.state.previousRegion)
+      bus.$emit('clearKeyFromDown', 'Enter')
     },
     fill(){
       this.$store.dispatch('fill')
@@ -321,6 +380,9 @@ export default {
     },
     returnAllTunes(){
       this.$store.dispatch('returnAllTunes')
+    },
+    addTrack(){
+      this.$store.dispatch('addTrack')
     },
 
   },
@@ -409,6 +471,7 @@ case 'Form':
 }
 
 .track-options {
+  display: inline-block;
 }
 .track-options input {
   width: 35px;
@@ -419,6 +482,9 @@ case 'Form':
 .random-distribute {
 }
 
+.reset-option {
+/* sort of a pain in the ass to try and style a checkbox... */
+}
 
 /*
 .image-button {

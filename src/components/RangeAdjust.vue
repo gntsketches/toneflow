@@ -8,7 +8,8 @@
 			 					v-model:value="rangeLow"
 			 					@focus="focusFunction"
        					@change="changeFunction($event)"
-			 >
+                @blur="cahngeFunction($event)"
+       >
 				 <option v-for="pitch in lowerRangeOptions" :key="Math.random().toString().slice(2)" >{{ pitch }}</option>
 			 </select>
 		 </div>
@@ -18,7 +19,8 @@
 									v-model:value="rangeHigh"
 									@focus="focusFunction"
 									@change="changeFunction($event)"
-				>
+                  @blur="changeFunction($event)"
+        >
 					<option v-for="pitch in upperRangeOptions" :key="Math.random().toString().slice(2)" >{{ pitch }}</option>
 				</select>
 			</div>
@@ -75,7 +77,6 @@ export default{
 
 		methods: {
 			focusFunction(){
-	      console.log("focussing")
 				this.$store.commit('changePreviousRegion', this.$store.state.activeRegion)
 				this.$store.commit('changeActiveRegion', 'track-controls')
 	    },

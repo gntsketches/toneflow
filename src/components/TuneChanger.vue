@@ -12,7 +12,7 @@
           @focus="focusFunction"
           @keyup.enter="enterFunction($event)"
           @blur="enterFunction($event)"
-  ></input>
+  >
   <span>per</span>
   <input  :id="'changePer-'+trackId"
           v-bind:class="{ greyOut: scene.suspendChanges }"
@@ -22,7 +22,7 @@
           @focus="focusFunction"
           @keyup.enter="enterFunction($event)"
           @blur="enterFunction($event)"
-  ></input>
+  >
 
 </div>
 

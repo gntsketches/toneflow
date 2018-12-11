@@ -3,7 +3,7 @@
 
     <div class="track-controls-left">
         <div class="track-number-lead" v-if="trackNumber===leadTrackNumber" >Lead</div>
-        <div class="track-number" v-else>Track {{ trackNumber }}</div>
+        <div class="track-number" v-else>Track {{ trackNumber+1 }}</div>
         <div v-if="track.hidePitches" class="toggle-hide-pitches" @click="toggleHidePitches">Show</div>
         <div v-else class="toggle-hide-pitches" @click="toggleHidePitches">Hide</div>
         <div class="toggle-sound-panel-wrapper">

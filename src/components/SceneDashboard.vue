@@ -1,4 +1,4 @@
-<template>
+ <template>
 
 <div class="scene-dashboard">
 
@@ -53,7 +53,7 @@
 
           <div class="modulate-per-lead-changes" :class="{ greyOut: !this.scene.autoModulate }">
             <span>per</span>
-            <input type="number" min="1"
+            <input id="modulatePerLeadChanges" type="number" min="1"
                    v-model="modulatePerLeadChanges"
                    @focus="focusFunction"
                    @keyup.enter="enterFunction"
@@ -224,6 +224,7 @@
 import SceneInfo from './SceneInfo.vue'
 import PianoSelector from './PianoSelector.vue'
 import {modeData as MODEDATA} from "../modeData"
+import {bus} from '../main.js'
 
 
 export default {
@@ -242,6 +243,7 @@ export default {
       progressTillChange(){
         // is this expensive? Maybe there is a way to save some calc time?
         let leadTrack = this.scene.tracks[this.$store.getters.leadTrackNumber]
+        console.log('dash tTI', leadTrack.toneTuneIndex)
         let leadTuneLength = this.$store.getters.toneTunes[this.$store.getters.leadTrackNumber].length
         if (leadTuneLength === 0) { return 0}
         let stepsNeeded = leadTrack.changePer * leadTuneLength * this.scene.modulatePerLeadChanges
@@ -378,8 +380,10 @@ export default {
         this.$store.commit('changeActiveRegion', 'scene-dashboard')
       },
       enterFunction(event){
+        console.log('in SceneDashBoard enterFunction')
         event.target.blur()
         this.$store.commit('changeActiveRegion', this.$store.state.previousRegion)
+        bus.$emit('clearKeyFromDown', 'Enter')
       },
     },
 

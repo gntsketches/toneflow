@@ -70,7 +70,7 @@
 export default {
   name: "",
 
-  props: ['down', 'playerSynth'],
+  props: ['down', 'playerInstrument'],
 
   data: () => ({
     mouseplaying: ["test"],
@@ -92,11 +92,15 @@ export default {
   methods: {
     startPitch(key){
       // in-progress: getting the keys to light up on mousedown
-      this.playerSynth.triggerAttack(this.qwertyVals[key], Tone.context.currentTime)
+      this.playerInstrument.triggerAttack(this.qwertyVals[key], Tone.context.currentTime)
       this.mouseplaying.push(key)
     },
     stopPitch(key){
-      this.playerSynth.triggerRelease(this.qwertyVals[key])
+      if (this.$store.state.playerParams.instrumentType === 'monoSynth'){
+        this.playerInstrument.triggerRelease()
+      } else {
+        this.playerInstrument.triggerRelease(this.qwertyVals[key])
+      }
       this.mouseplaying.splice(this.mouseplaying.indexOf(key), 1)
     },
 /*  Not using...

@@ -13,7 +13,7 @@
           <p>...is an app for music composition, improvisation, and interactive ear training.
             It is built to be played with the <em>QWERTY</em> keyboard and offers randomized notes in patterns chosen by the user.
             <em>Keyboard shortcuts</em> are used for swift navigation.
-            The sounds emulate the basic features of old-school synthesizers.
+            The sounds feature instrument samples and emulation of old-school synthesizers.
             Toneflow currently works best in the Chrome browser.
             <!-- (see the <span style="text-decoration: underline; cursor: pointer;" @click="changeInfoSection('help')">HELP</span> menu.)-->
           </p>
@@ -44,7 +44,7 @@
 
           <h1>Versions</h1>
           <p>
-            Toneflow is in version 3.0.0 <br><br>
+            Toneflow is in version 3.1.0 <br><br>
             <a target="_blank" href="http://www.gntsketches.com/toneflow.php">Toneflow 1</a> had the basic elements of randomized selection for meditative ear training.<br><br>
             <a target="_blank" href="http://gntsketches.com/toneflow2.html">Toneflow 2</a> was my first attempt at a multi-track program. It lacks compositional features and has a slow UI,
               but there are other charms to be discovered. Big thanks to William Turner and his book
@@ -70,6 +70,10 @@
       <div class="info-text info-guide" v-if="infoSection === 'guide'">
           <h1>Getting Started</h1>
           <p>
+            (New updates! Including samples, improved track entry, more flexible scene changing, and settings for the QWERTY keyboard.
+            Documentation on those coming soon...)
+
+            <br><br>
             Toneflow is played using the <em>QWERTY</em> computer keyboard.
             When the app first loads, pressing the keys add notes to the first <strong>track</strong> one at a time.
             'Rests' are added with the <em>space bar</em>. Notes can be removed with the <em>Delete</em> key.
@@ -95,7 +99,7 @@
           </p>
           <br>
           <p>
-            If you press <em>enter</em> when the Track Region is focused, a new track will be created above the previous.
+            If you press <em>ctrl-enter</em> when the Track Region is focused, a new track will be created above the previous.
             (You can add multiple tracks, though performance degrades eventually.)
             <em>Up and down arrow keys</em> move the editing cursor up and down tracks.
             The dotted outline indicates what note on each track is currently playing;

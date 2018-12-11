@@ -2,7 +2,7 @@
   <div class="player-ui-wrapper">
 
     <player-info></player-info>
-    <qwerty :down="down" :playerSynth="playerSynth" ref="qwertyDisplay"></qwerty>
+    <qwerty :down="down" :playerInstrument="playerInstrument" ref="qwertyDisplay"></qwerty>
     <player-controls-filters></player-controls-filters>
 
   </div>
@@ -20,7 +20,7 @@ export default {
     'qwerty': Qwerty,
     'player-controls-filters': PlayerControlsFilters,
   },
-  props: ['down', 'playerSynth'],
+  props: ['down', 'playerInstrument'],
 
   data: () => ({
 

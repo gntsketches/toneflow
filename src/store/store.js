@@ -85,9 +85,12 @@ export const store = new Vuex.Store({
       },
       qwertyVals: state => {
         let keyToQwerty = []
-        switch (state.keyToQwertyDisplay){
+        switch (state.playerParams.keyToQwertyDisplay){
           case 'Rows-Octave':
             keyToQwerty = state.keyToQwertyValRowsOctave
+            break
+          case 'Rows-Fifth':
+            keyToQwerty = state.keyToQwertyValRowsFifth
             break
           case 'Clusters':
             keyToQwerty = state.keyToQwertyValClusters
@@ -102,13 +105,13 @@ export const store = new Vuex.Store({
             let suffix = keyToQwerty[key].slice(-3)
             let val = keyToQwerty[key].slice(0, -3)
             if (suffix === "-Lo") {
-              qwertyVals[key] = val + state.qwertyOctave
+              qwertyVals[key] = val + state.playerParams.qwertyOctave
             }
             else if (suffix === "-Hi") {
-              qwertyVals[key] = val + (state.qwertyOctave+1)
+              qwertyVals[key] = val + (state.playerParams.qwertyOctave+1)
             }
             else if (suffix === "-Hx") {
-              qwertyVals[key] = val + (state.qwertyOctave+2)
+              qwertyVals[key] = val + (state.playerParams.qwertyOctave+2)
             }
           }
         }
@@ -146,17 +149,20 @@ export const store = new Vuex.Store({
 
       // PLAYER UI
       changeQwertyOctave: (state, change) => {
-        if (change ==="increment") { state.qwertyOctave++ }
-        else if (change ==="decrement") { state.qwertyOctave-- }
+        if (change ==="increment") { state.playerParams.qwertyOctave++ }
+        else if (change ==="decrement") { state.playerParams.qwertyOctave-- }
       },
       changeQwertyDisplay: (state, value) => {
-        state.keyToQwertyDisplay = value
+        state.playerParams.keyToQwertyDisplay = value
+      },
+      changePlayerInstrumentType: (state, instrumentType) => {
+        state.playerParams.instrumentType = instrumentType
       },
       changePlayerWaveType: (state, waveType) => {
         state.playerParams.waveType = waveType
-        AM.playerSynth.set({
-  	       "oscillator": { "type": state.playerParams.waveType }
-        })
+      },
+      changePlayerSampleType: (state, sampleType) => {
+        state.playerParams.sampleType = sampleType
       },
       toggleDelayActive: state => {
         if (state.playerParams.delayActive) {
@@ -167,77 +173,105 @@ export const store = new Vuex.Store({
           state.playerParams.delayActive = true
         }
       },
-      adjustSoundParam: (state, payload) => {
+      updatePlayerParam: (state, payload) => {
+        if (payload.value === '' || (typeof payload.value === 'string' && payload.value.slice(0,1) === '.') ) { return }
         switch(payload.param) {
+          // Param Basics
           case 'gain':
-            state.playerParams.gain = payload.paramPercent
+            state.playerParams.gain = payload.value
             break
-          case 'delayTime':
-            state.playerParams.delayTime = payload.paramPercent
-            break
-          case 'delayFeedback':
-            state.playerParams.delayFeedback = payload.paramPercent
-          case 'reverb':
-            state.playerParams.reverb = payload.paramPercent
-            break
-          case 'distortion':
-            state.playerParams.distortion = payload.paramPercent
-            break
-        }
-      },
-      updatePlayerADSR: (state, payload) => {
-        switch(payload.adsr) {
           case 'attack':
-            state.playerADSR.attack = payload.value
-            AM.playerSynth.set({ 'envelope': { attack: payload.value } })
+            state.playerParams.attack = payload.value
             break
           case 'decay':
-            state.playerADSR.decay = payload.value
-            AM.playerSynth.set({ 'envelope': { decay: payload.value } })
+            state.playerParams.decay = payload.value
             break
           case 'sustain':
-            state.playerADSR.sustain = payload.value
-            AM.playerSynth.set({ 'envelope': { sustain: payload.value } })
+            state.playerParams.sustain = payload.value
             break
           case 'release':
-            state.playerADSR.release = payload.value
-            AM.playerSynth.set({ 'envelope': { release: payload.value } })
+            state.playerParams.release = payload.value
             break
-        }
-      },
-      updatePlayerFilter: (state, payload) => {
-        switch(payload.param) {
+          case 'portamento':
+            state.playerParams.portamento = payload.value
+            break
+          case 'harmonicity':
+            state.playerParams.harmonicity = payload.value
+            break
+          case 'modulationType':
+            state.playerParams.modulationType = payload.value
+            break
+          case 'modulationIndex':
+            state.playerParams.modulationIndex = payload.value
+            break
+          case 'count':
+            state.playerParams.count = payload.value
+            break
+          case 'spread':
+            state.playerParams.spread = payload.value
+            break
+          case 'modulationFrequency':
+            state.playerParams.modulationFrequency = payload.value
+            break
+
+          // Param Effects
+          case 'delayTime':
+            state.playerParams.delayTime = payload.value
+            break
+          case 'delayFeedback':
+            state.playerParams.delayFeedback = payload.value
+            break
+          case 'distortion':
+            state.playerParams.distortion = payload.value
+            break
           case 'filterWet':
-            state.playerFilter.filterWet = payload.value
+            state.playerParams.filterWet = payload.value
             break
           case 'filterType':
-            state.playerFilter.filterType = payload.value
+            state.playerParams.filterType = payload.value
             break
           case 'filterRolloff':
             let rolloff = parseInt(payload.value, 10)
-            state.playerFilter.filterRolloff = rolloff
+            state.playerParams.filterRolloff = rolloff
             break
           case 'filterBaseFrequency':
-            state.playerFilter.filterBaseFrequency = payload.value
+            state.playerParams.filterBaseFrequency = payload.value
             break
           case 'filterQ':
-            state.playerFilter.filterQ = payload.value
+            state.playerParams.filterQ = payload.value
             break
           case 'LFOWaveType':
-            state.playerFilter.LFOWaveType = payload.value
+            state.playerParams.LFOWaveType = payload.value
             break
           case 'LFOFrequency':
-            state.playerFilter.LFOFrequency = payload.value
+            state.playerParams.LFOFrequency = payload.value
             break
           case 'LFODepth':
-            state.playerFilter.LFODepth = payload.value
+            state.playerParams.LFODepth = payload.value
             break
           case 'LFOOctaves':
-            state.playerFilter.LFOOctaves = payload.value
+            state.playerParams.LFOOctaves = payload.value
             break
-
-
         }
+      },
+      assignPlayerParamSetting: (state, settingIndex) => {
+        if (state.playerParamSettings[settingIndex].assigned){
+          const check = confirm("Update Settings #"+settingIndex+"?")
+          if (check === false){ return }
+        }
+        const settings = JSON.parse(JSON.stringify(state.playerParams))
+        Vue.set(state.playerParamSettings, settingIndex, settings)
+      },
+      activatePlayerParamSettings: (state, settingIndex) => {
+        if (settingIndex === 'default'){ settingIndex = 0 }
+        console.log('settingIndex', settingIndex)
+        if (state.playerParamSettings[settingIndex].assigned === true){
+          const settings = JSON.parse(JSON.stringify(state.playerParamSettings[settingIndex]))
+          state.playerParams = settings
+          // note that watchers will likely automatically respond to that, so $emit may be redundant...?
+          //bus.$emit('updatePlayerStuff')
+        }
+        state.playerParamCurrent = settingIndex
       },
 
       // SCENE MANAGEMENT
@@ -430,26 +464,19 @@ export const store = new Vuex.Store({
         scene.resetRememberedOnSceneChange = !scene.resetRememberedOnSceneChange
         console.log('rrosc', scene.resetRememberedOnSceneChange)
       },
+      updateLoadQwertySettingOnSceneChange: (state, setting) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.loadQwertySettingOnSceneChange = setting
+      },
 
       // INITIALIZE, ADD & REMOVE
       addNewScene: ( state, newScene ) => {
         state.scenes.push(newScene)
         // state.editingSceneId = newScene.id // let's not do that...
       },
-      setUpNewTrack: (state, newTrack) => {
-        let scene = state.scenes[state.editingSceneNumber]
-
-        // now that there is a newTrack getter for the next 3 lines, maybe an action should house this
-        //  let newTrack = JSON.parse(JSON.stringify(state.newTrackDefaults))
-        //  let idNumber = Math.random().toString().slice(2)
-        //  newTrack.id = idNumber
-        scene.tracks.splice(0, 1, newTrack)
-        scene.editingTrackId = newTrack.id
-        scene.editingIndex = newTrack.tune.length-1
-      },
       addTrack: (state, track) => {
         let scene = state.scenes[state.editingSceneNumber]
-        scene.tracks.splice(1, 0, track)
+        scene.tracks.push(track)
       },
       removeTrack: (state, trackNumber) => {
         let scene = state.scenes[state.editingSceneNumber]
@@ -470,10 +497,12 @@ export const store = new Vuex.Store({
       changeActiveRegion: (state, region) => {
         console.log('cAR', region)
         state.activeRegion = region
+        console.log('new activeReg', state.activeRegion)
       },
       changePreviousRegion: (state, region) => {
         console.log('cPR', region)
         state.previousRegion = region
+        console.log('new prevReg', state.previousRegion)
       },
       togglePlay: state => {
         state.playing = !state.playing
@@ -598,15 +627,13 @@ export const store = new Vuex.Store({
       },
 
       // DRAGGABLE
+      updateTracks: (state, tracks) => {
+        let scene = state.scenes[state.editingSceneNumber]
+        scene.tracks = tracks
+      },
       updateEditingTrackNumber: (state, indexOfEditingTrack) => {
         console.log('iOET', indexOfEditingTrack)
         state.scenes[state.editingSceneNumber].editingTrackNumber = indexOfEditingTrack
-      },
-      updateEnteredTracks: (state, tracks) => {
-        let updatedTracks = []
-        let scene = state.scenes[state.editingSceneNumber]
-        updatedTracks.push(scene.tracks[0])
-        scene.tracks = updatedTracks.concat(tracks)
       },
       dragScene: (state, scenes) => { // from play-n-tabs
         let editingSceneId = state.editingSceneId
@@ -668,7 +695,7 @@ export const store = new Vuex.Store({
           scene.tracks[scene.editingTrackNumber].tune.splice(scene.editingIndex, 1);
         }
       },
-      toggleNoteRandom: (state) => {
+      toggleNoteRandom: (state) => {  // random what?
         let scene = state.scenes[state.editingSceneNumber]
         let noteRandomValue = scene.tracks[scene.editingTrackNumber].tune[scene.editingIndex].random
         console.log("nrv", noteRandomValue)
@@ -681,8 +708,7 @@ export const store = new Vuex.Store({
           //noteRandomValue = 'fixed'  (why doesn't this work? I guess since it's a string it's a pass by value)
           scene.tracks[scene.editingTrackNumber].tune[scene.editingIndex].random = 'fixed'
         }
-
-      },  // random what?
+      },
       spliceNoteIntoTune: (state, payload) => {
         let scene = state.scenes[state.editingSceneNumber]
         scene.tracks[scene.editingTrackNumber].tune.splice(payload.start, payload.delete, payload.insert)
@@ -868,10 +894,9 @@ export const store = new Vuex.Store({
         newScene.id = sceneIdNumber
         let sceneTitle = randomElement(SCENETITLES)
         newScene.title = sceneTitle
-        //  let newTrack = JSON.parse(JSON.stringify(context.state.newTrackDefaults))
-        //  let trackIdNumber = Math.random().toString().slice(2)
-        //  newTrack.id = trackIdNumber
-        newScene.tracks.push(context.getters.newTrack())
+        let firstTrack = context.getters.newTrack()
+        firstTrack.tune.push({pitch:"_",random:'fixed'})
+        newScene.tracks.push(firstTrack)
         newScene.editingTrackId = newScene.tracks[0].id
         newScene.leadTrackId = newScene.tracks[0].id
         context.commit('addNewScene', newScene)
@@ -913,16 +938,20 @@ export const store = new Vuex.Store({
         context.commit('updateLeadTrackId', value)
       }, */
       setUpSceneChange: (context, change) => {
-        let changeToNumber = context.state.sceneChangeNumber
+        //let changeToNumber = context.state.sceneChangeNumber
+        let changeToNumber = context.state.playing ? context.state.sceneChangeNumber : context.state.editingSceneNumber
+          // ok this may work if you change all the references to context.state.sceneChangeNumber below to just changeToNumber
+        console.log('changeToNumber', changeToNumber)
         if (change === 'backward') {
-          if (context.state.sceneChangeNumber > 0) {
-            changeToNumber = context.state.sceneChangeNumber - 1
-          } else if (context.state.sceneChangeNumber === 0) {
+          if (changeToNumber > 0) {  // context.state.sceneChangeNumber > 0) {
+            changeToNumber-- // = context.state.sceneChangeNumber - 1
+          } else if (changeToNumber === 0) { // context.state.sceneChangeNumber === 0) {
             changeToNumber = context.state.scenes.length-1
           }
         } else if (change === 'forward') {
-          if (context.state.sceneChangeNumber < context.state.scenes.length-1 ) {
-            changeToNumber = context.state.sceneChangeNumber + 1
+          //if (context.state.sceneChangeNumber < context.state.scenes.length-1 ) {
+          if (changeToNumber < context.state.scenes.length-1 ) {
+            changeToNumber++  //= context.state.sceneChangeNumber + 1
           } else {
             changeToNumber = 0
           }
@@ -936,10 +965,18 @@ export const store = new Vuex.Store({
           }
         } else {
           context.commit('setSceneChangeNumber', changeToNumber)
-          context.commit('changeScene')
+          context.dispatch('changeScene')
+        }
+      },
+      changeScene: (context) => {
+        context.commit('changeScene')
+        let scene = context.state.scenes[context.state.editingSceneNumber]
+        if (scene.loadQwertySettingOnSceneChange != 'none'){
+          context.commit('activatePlayerParamSettings', scene.loadQwertySettingOnSceneChange)
         }
       },
       initializeSceneAudio: (context, sceneNumber) => {
+          console.log('initializing scene audio')
           let title = context.state.scenes[sceneNumber].title
           let sceneAudio = AM.scenes[title]
           for (let nodeList in sceneAudio){
@@ -948,27 +985,10 @@ export const store = new Vuex.Store({
               nodeListItem.dispose()
             })
           }
-          AM.scenes[title] = { synths:[], autoFilters: [], gains:[], delays:[], distortions:[] } // https://stackoverflow.com/questions/1168807/how-can-i-add-a-key-value-pair-to-a-javascript-object
+          AM.scenes[title] = { instruments:[], autoFilters: [], gains:[], delays:[], distortions:[] } // https://stackoverflow.com/questions/1168807/how-can-i-add-a-key-value-pair-to-a-javascript-object
           context.state.scenes[sceneNumber].tracks.forEach( (track, tracksIndex) =>  {
-            /*let trackSynth = new Tone.PolySynth(6, Tone.Synth, {
-              "oscillator" : {
-                  "type": "triangle",
-              }
-            })*/
-            let trackSynth = new Tone.Synth()
-            trackSynth.set({
-      	      "oscillator" : {
-                "type"     : track.waveType
-              },
-              "envelope"   : {
-                "attack"   : track.attack ,
-                "decay"    : track.decay,
-                "sustain"  : track.sustain,
-                "release"  : track.release,
-              },
-              "portamento" : track.portamento,
-            })
-            AM.scenes[title].synths.push(trackSynth)
+            let trackInstrument = AM.instrument(track.instrumentType, track.sampleType, track)
+            AM.scenes[title].instruments.push(trackInstrument)
             let autoFilter = new Tone.AutoFilter({
               frequency  : track.LFOFrequency,
               type  : track.LFOWaveType,
@@ -990,32 +1010,37 @@ export const store = new Vuex.Store({
             let trackGain  = new Tone.Gain(track.gain)
             AM.scenes[title].gains.push(trackGain)
 
+            let gainValue = ( () => {
+              switch (track.instrumentType){
+                case 'polySynth': return track.polySynthGainDefault
+                case 'monoSynth': return track.monoSynthGainDefault
+                case 'sampler': return track.samplerGainDefault
+              }
+            })()
+            context.dispatch('updateTrackSoundParams', { param:'gain', trackNumber: tracksIndex, value:gainValue, track: track })
+
           })
-          //AM.scenes[title].synths.forEach( (synth, i) => synth.toMaster() )
-          AM.scenes[title].synths.forEach( (synth, i) => synth.connect(AM.scenes[title].autoFilters[i]) )
+          //AM.scenes[title].instruments.forEach( (synth, i) => synth.toMaster() )
+          AM.scenes[title].instruments.forEach( (instrument, i) => instrument.connect(AM.scenes[title].autoFilters[i]) )
           AM.scenes[title].autoFilters.forEach( (autoFilter, i) => autoFilter.connect(AM.scenes[title].distortions[i]).start() )
           AM.scenes[title].distortions.forEach( (distortion, i) => {
             distortion.fan(AM.scenes[title].gains[i], AM.scenes[title].delays[i] )
-            distortion.wet.value = 0
+            distortion.wet.value = 0.5
+            //distortion.distortion = 0
           })
           AM.scenes[title].delays.forEach( (delay, i) => delay.connect(AM.scenes[title].gains[i]) )
           AM.scenes[title].gains.forEach( (gain, i) => gain.toMaster() )
 
       },
-      enterTrack: context => {
+      addTrack: context => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
-        let enteringTrack = JSON.parse(JSON.stringify(scene.tracks[0]))
-        enteringTrack.tune.pop()
-        console.log("enteringTrack.id", enteringTrack.id)
-        //enteringTrack.id = Math.random().toString().slice(2)
-        context.commit('addTrack', enteringTrack)
-        context.commit('setUpNewTrack', context.getters.newTrack())
+        context.commit('addTrack', context.getters.newTrack())
         context.dispatch('initializeSceneAudio', context.state.editingSceneNumber)
       },
       removeTrack: (context, removeTrackNumber) => {
         // console.log("removeTrackNumber", removeTrackNumber)
         let scene = context.state.scenes[context.state.editingSceneNumber]
-        if (scene.editingTrackNumber === removeTrackNumber ) {
+        if (scene.editingTrackNumber === removeTrackNumber && removeTrackNumber != 0 ) {
           context.commit('changeEditingTrackNumber', 'decrement')
           context.commit('assignEditingTrackIdFromNumber')
           context.commit('moveEndcap')
@@ -1180,9 +1205,11 @@ export const store = new Vuex.Store({
         }
       },
       toggleQwertyDisplay: context => {
-        if (context.state.keyToQwertyDisplay === 'Rows-Octave'){
+        if (context.state.playerParams.keyToQwertyDisplay === 'Rows-Octave'){
+          context.commit('changeQwertyDisplay', 'Rows-Fifth')
+        } else if (context.state.playerParams.keyToQwertyDisplay === 'Rows-Fifth'){
           context.commit('changeQwertyDisplay', 'Clusters')
-        } else if (context.state.keyToQwertyDisplay === 'Clusters'){
+        } else if (context.state.playerParams.keyToQwertyDisplay === 'Clusters'){
           context.commit('changeQwertyDisplay', 'Rows-Octave')
         }
       },
@@ -1362,14 +1389,17 @@ export const store = new Vuex.Store({
       },
 
       // TRACK CONTROLS
+      changeTrackInstrumentOrSample: (context, payload) => {
+        context.commit('updateTrackSoundParams', payload)
+        context.dispatch('initializeSceneAudio', context.state.editingSceneNumber)
+      },
       changeTrackWave: (context, payload) => {
         context.commit('changeTrackWave', payload)
-        AM.scenes[context.getters.activeSceneTitle].synths[payload.trackNumber].set({
+        AM.scenes[context.getters.activeSceneTitle].instruments[payload.trackNumber].set({
            'oscillator': { 'type': payload.wave }
         })
       },
       setTrackAMSoundParams: (context, payload) => {
-        console.log(payload)
         switch (payload.param){
           case 'gain':
             AM.scenes[payload.sceneTitle].gains[payload.trackNumber].gain.value = payload.value
@@ -1384,37 +1414,46 @@ export const store = new Vuex.Store({
             AM.scenes[payload.sceneTitle].distortions[payload.trackNumber].distortion = payload.value
             break
           case 'attack':
-            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'envelope': { attack: payload.value } })
+            if (payload.track.instrumentType === 'monoSynth' || payload.track.instrumentType === 'polySynth'){
+              AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'envelope': { attack: payload.value } })
+            } else {
+              AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'attack': payload.value })
+            }
             break
           case 'decay':
-            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'envelope': { decay: payload.value } })
+            AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'envelope': { decay: payload.value } })
             break
           case 'sustain':
-            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'envelope': { sustain: payload.value } })
+            AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'envelope': { sustain: payload.value } })
             break
           case 'release':
-            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'envelope': { release: payload.value } })
+            if (payload.track.instrumentType === 'monoSynth' || payload.track.instrumentType === 'polySynth'){
+              AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'envelope': { release: payload.value } })
+            } else {
+              AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'release': payload.value })
+              console.log('release', AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].release)
+            }
             break
           case 'portamento':
-            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'portamento': payload.value })
+            AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'portamento': payload.value })
             break
           case 'modulationType':
-            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'modulationType' : payload.value } })
+            AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'oscillator': { 'modulationType' : payload.value } })
             break
           case 'modulationIndex':
-            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'modulationIndex' : payload.value } })
+            AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'oscillator': { 'modulationIndex' : payload.value } })
             break
           case 'harmonicity':
-            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'harmonicity' : payload.value } })
+            AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'oscillator': { 'harmonicity' : payload.value } })
             break
           case 'count':
-            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'count' : payload.value } })
+            AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'oscillator': { 'count' : payload.value } })
             break
           case 'spread':
-            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'spread' : payload.value } })
+            AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'oscillator': { 'spread' : payload.value } })
             break
           case 'modulationFrequency':
-            AM.scenes[payload.sceneTitle].synths[payload.trackNumber].set({ 'oscillator': { 'modulationFrequency' : payload.value } })
+            AM.scenes[payload.sceneTitle].instruments[payload.trackNumber].set({ 'oscillator': { 'modulationFrequency' : payload.value } })
             break
           case 'filterWet':
             AM.scenes[payload.sceneTitle].autoFilters[payload.trackNumber].wet.value = payload.value
@@ -1452,7 +1491,9 @@ export const store = new Vuex.Store({
         //context.commit('updateTrackSoundParams', { param: payload.param, trackNumber: payload.trackNumber, value: payload.value })
       },
       updateTrackSoundParams: (context, payload) => {
-        context.dispatch('setTrackAMSoundParams',  { param: payload.param, sceneTitle: context.getters.activeSceneTitle, trackNumber: payload.trackNumber, value: payload.value } )
+        console.log('payload', payload)
+        if (payload.value === '' || (typeof payload.value === 'string' && payload.value.slice(0,1) === '.') ) { return }
+        context.dispatch('setTrackAMSoundParams',  { param: payload.param, sceneTitle: context.getters.activeSceneTitle, trackNumber: payload.trackNumber, value: payload.value, track: payload.track } )
         context.commit('updateTrackSoundParams', { param: payload.param, trackNumber: payload.trackNumber, value: payload.value })
       },
       toggleTrackMute: (context, trackNumber) => {
@@ -1467,12 +1508,10 @@ export const store = new Vuex.Store({
       },
 
       // DRAGGABLE
-      setEnteredTracks: (context, enteredTracks) => {
-          //console.log("set: enteredTracks", enteredTracks)
-          //let editingTrackId = context.state.tracks[context.state.editingTrackNumber].id // console.log("editingTrackID", editingTrackID)
-          context.commit('updateEnteredTracks', enteredTracks)
-          let indexOfEditingTrack = ''
+      setTracks: (context, tracks) => {
           let scene = context.state.scenes[context.state.editingSceneNumber]
+          context.commit('updateTracks', tracks)
+          let indexOfEditingTrack = ''
           scene.tracks.forEach( (track, index) => {
             if (track.id === scene.editingTrackId) { indexOfEditingTrack = index }
           })
@@ -1528,6 +1567,7 @@ export const store = new Vuex.Store({
       changeTune: (context, payload)  => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
         let track = scene.tracks[payload.trackIndex]
+        if (track.tune.length === 0 || track.tune[0].pitch === '_') { return }
         let changeableNoteIndexes = []
         let pitchSet = context.getters.pitchSets[payload.trackIndex]
         track.tune.forEach( (note, index) => {
@@ -1545,7 +1585,9 @@ export const store = new Vuex.Store({
           } else {
             newPitch = pitchSet[0]
           }
-          if (track.tune[changeableNoteIndexes[i]].random === 'rests' &&  Math.random()*100 > track.pitchPercent) { newPitch = ' ' }  // why is this after the doWhile? shouldn't this be first and doWhile be in an else?
+          if (track.tune[changeableNoteIndexes[i]].random === 'rests' &&  Math.random()*100 > track.pitchPercent) { newPitch = ' ' }
+            // why is this after the doWhile? shouldn't this be first and doWhile be in an else?
+            // && (prevPitch != ' ' || pitchSet.length === 1) // see commentary
           context.commit('changeTuneNote', {
             trackIndex: payload.trackIndex,
             tuneIndex: changeableNoteIndexes[i],
@@ -1563,19 +1605,6 @@ export const store = new Vuex.Store({
           context.dispatch('updateTuneWithPrefix', {trackIndex: payload.trackIndex, formSection: formSection})
         }
       },
-      updateTuneWithPrefix: (context, payload) => {
-        let pitchSet = context.getters.pitchSets[payload.trackIndex]
-        let formSectionPrefix = payload.formSection.match(/([c|d|f|g|a]#?|[b|e])\\/i)[0]
-        let rootPitch = formSectionPrefix.match(/[c|d|f|g|a]#?|[b|e]/i)[0]
-        let newPitch = pitchSet.find( pitch => {
-          return pitch.slice(0, -1) === rootPitch
-        })
-        context.commit('changeTuneNote', {
-          trackIndex: payload.trackIndex,
-          tuneIndex: 0,
-          pitch: newPitch, // 'C4'
-        })
-      },
       changeAll: (context, number) => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
         scene.tracks.forEach( (track, index) => {
@@ -1587,6 +1616,19 @@ export const store = new Vuex.Store({
               context.dispatch('changeTune', { trackIndex: index, all: false })
               break
           }
+        })
+      },
+      updateTuneWithPrefix: (context, payload) => {
+        let pitchSet = context.getters.pitchSets[payload.trackIndex]
+        let formSectionPrefix = payload.formSection.match(/([c|d|f|g|a]#?|[b|e])\\/i)[0]
+        let rootPitch = formSectionPrefix.match(/[c|d|f|g|a]#?|[b|e]/i)[0]
+        let newPitch = pitchSet.find( pitch => {
+          return pitch.slice(0, -1) === rootPitch
+        })
+        context.commit('changeTuneNote', {
+          trackIndex: payload.trackIndex,
+          tuneIndex: 0,
+          pitch: newPitch, // 'C4'
         })
       },
       morphSelectedNotes: (context, userCalled) => {

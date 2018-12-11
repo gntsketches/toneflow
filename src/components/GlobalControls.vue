@@ -9,8 +9,8 @@
     <div class="button-esq" v-on:click="saveScene" >Save Scene</div>
     <div class="button-esq" v-on:click="load" >Load</div>
 
-    <select v-on:change="changeLoadTarget" v-bind:value="fileName">
-      <option v-for="name in fileNames" >{{ name }}</option>
+    <select v-on:change="changeLoadTarget" v-bind:value="fileName" @focus="focusFunction" @change="enterFunction($event)" @blur="enterFunction($event)">
+      <option v-for="name in fileNames" @keyup.enter="enterTest" >{{ name }}</option>
     </select>
 
     <div class="button-esq" v-on:click="download" >Download</div>
@@ -39,6 +39,8 @@
 
 
 <script>
+
+import {bus} from '../main.js'
 
 export default {
 
@@ -114,9 +116,22 @@ export default {
       })
       fileReader.readAsText(file)
     },
-
     toggleInfoMenu(){
       this.$store.commit('toggleInfoMenu')
+    },
+
+    focusFunction(){
+      this.$store.commit('changePreviousRegion', this.$store.state.activeRegion)
+      this.$store.commit('changeActiveRegion', 'qwerty-info')
+    },
+    enterFunction(event){
+      console.log('in enterFunction')
+      event.target.blur()
+      this.$store.commit('changeActiveRegion', this.$store.state.previousRegion)
+      bus.$emit('clearKeyFromDown', 'Enter')
+    },
+    enterTest(){
+      console.log('enterTest')
     },
   },
 

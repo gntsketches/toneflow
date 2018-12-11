@@ -31,6 +31,11 @@ export function keypress() {
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
   });
   listener.register_combo({
+    "keys"              : "control shift m",
+    "on_keydown"        : function() { findAndFocus.call(this, '#modulatePerLeadChanges') },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
+  });
+  listener.register_combo({
     "keys"              : "control shift }",
     "on_keydown"        : function() { this.$store.dispatch('changeAll', 'all')},
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
@@ -39,6 +44,57 @@ export function keypress() {
 
 
 // SEQUENCE
+
+listener.register_combo({
+  "keys"              : "control shift 1",
+  "on_keydown"        : function() { this.$store.commit('assignPlayerParamSetting', 1) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift 2",
+  "on_keydown"        : function() { this.$store.commit('assignPlayerParamSetting', 2) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift 3",
+  "on_keydown"        : function() { this.$store.commit('assignPlayerParamSetting', 3) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift 4",
+  "on_keydown"        : function() { this.$store.commit('assignPlayerParamSetting', 4) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift 5",
+  "on_keydown"        : function() { this.$store.commit('assignPlayerParamSetting', 5) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift 6",
+  "on_keydown"        : function() { this.$store.commit('assignPlayerParamSetting', 6) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift 7",
+  "on_keydown"        : function() { this.$store.commit('assignPlayerParamSetting', 7) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift 8",
+  "on_keydown"        : function() { this.$store.commit('assignPlayerParamSetting', 8) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift 9",
+  "on_keydown"        : function() { this.$store.commit('assignPlayerParamSetting', 9) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift 0",
+  "on_keydown"        : function() { this.$store.commit('assignPlayerParamSetting', 0) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
 listener.register_combo({
   "keys"              : "control shift z",
   "on_keydown"        : function() { console.log("*") },
@@ -49,17 +105,35 @@ listener.register_combo({
   "on_keydown"        : function() { console.log("*** *** ***") },
   "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
 });
+listener.register_combo({
+  "keys"              : "control shift p",
+  "on_keydown"        : function() { this.$store.commit('toggleSoundPanel', this.editingTrackNumber) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift i",
+  "on_keydown"        : function() { this.$store.dispatch('initializeSceneAudio', this.$store.state.editingSceneNumber) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
 
 
 
-  // CTRL-ALT-S
+  // CTRL-ALT
   listener.register_combo({
     "keys"              : "control alt s",
     "on_keydown"        : function() { this.$store.dispatch('setUpNewScene') },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
 
+
+
   // CTRL-
+
+  listener.register_combo({
+    "keys"              : "control enter",
+    "on_keydown"        : function()  { this.$store.dispatch('addTrack') },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
+  });
   listener.register_combo({
     "keys"              : "control d",
     "on_keydown"        : function() { this.$store.dispatch('doubleTune') },
@@ -137,6 +211,16 @@ export let generalKeyDispatchTable = {
   "Escape"  : function() { this.togglePlay() },
 
   // 12345
+  "!"       : function() { this.$store.commit('activatePlayerParamSettings', 1) },
+  "@"       : function() { this.$store.commit('activatePlayerParamSettings', 2) },
+  "#"       : function() { this.$store.commit('activatePlayerParamSettings', 3) },
+  "$"       : function() { this.$store.commit('activatePlayerParamSettings', 4) },
+  "%"       : function() { this.$store.commit('activatePlayerParamSettings', 5) },
+  "^"       : function() { this.$store.commit('activatePlayerParamSettings', 6) },
+  "&"       : function() { this.$store.commit('activatePlayerParamSettings', 7) },
+  "*"       : function() { this.$store.commit('activatePlayerParamSettings', 8) },
+  "("       : function() { this.$store.commit('activatePlayerParamSettings', 9) },
+  ")"       : function() { this.$store.commit('activatePlayerParamSettings', 0) },
   "+"       : function() { this.toggleEntrySound() },
 
   // QWERTY
@@ -164,10 +248,10 @@ export let generalKeyDispatchTable = {
   "G"       : function() { this.$store.dispatch('changeTune', { trackIndex: this.editingTrackNumber, all: false }) },
   "H"       : function() { this.$store.commit('toggleHidePitches', this.editingTrackNumber)},
   "J"       : function() { findAndFocus.call(this, '#trackGain-'+this.scene.tracks[this.editingTrackNumber].id) },
-  "K"       : function() { findAndFocus.call(this, '#trackFilterWet-'+this.scene.tracks[this.editingTrackNumber].id) },
+  "K"       : function() { findAndFocus.call(this, '#trackDelayTime-'+this.scene.tracks[this.editingTrackNumber].id) },
   "L"       : function() { findAndFocus.call(this, '#trackLFOFrequency-'+this.scene.tracks[this.editingTrackNumber].id) },
   ":"       : function() { findAndFocus.call(this, '#changeTotal-'+this.scene.tracks[this.editingTrackNumber].id) },
-  '"'       : function() { findAndFocus.call(this, '#changePer-'+this.scene.tracks[this.editingTrackNumber].id) },
+  '"'       : function() { findAndFocus.call(this, '#changePitchPercent-'+this.scene.tracks[this.editingTrackNumber].id) },
 
   // ZXCVBN
   "Z"       : function() { findAndBlur.call(this);
@@ -177,7 +261,7 @@ export let generalKeyDispatchTable = {
   "V"       : function() { this.$store.commit('toggleDelayActive') },
   "B"       : function() { this.$store.dispatch('toggleQwertyDisplay') },
   "N"       : function() { findAndFocus.call(this, '#playerGain') },
-  "M"       : function() { findAndFocus.call(this, '#playerAttack') },
+  "M"       : function() { findAndFocus.call(this, '#playerDelayTime') },
   "<"       : function() { findAndFocus.call(this, '#playerFilterWet') },
   ">"       : function() { findAndFocus.call(this, '#playerLFOFrequency') },
   "?"       : function() { this.$store.commit('toggleInfoMenu') },
@@ -233,11 +317,5 @@ export let tuneEntryDispatchTable = {
                           if (this.editingTrackNumber > 0 )
                             { this.$store.dispatch('changeEditingTrack', 'decrement' ) }
                         },
-  'Enter'       : function()  {
-                          if (this.editingTrackNumber === 0 ) {
-                              this.$store.dispatch('enterTrack')
-                          } else {
-                            console.log("double track feature goes here")
-                          }
-                        },
+  //'Enter'       : function()  { this.$store.dispatch('addTrack') },
 }
