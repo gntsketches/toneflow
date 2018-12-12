@@ -62,7 +62,7 @@ export const stateDefaults = {
   playerParams:  {
     // Basics
     assigned: true,
-    instrumentType: 'monoSynth',
+    instrumentType: 'polySynth',
     sampleType: 'piano',
     waveType: 'sawtooth',
     qwertyOctave: 3,

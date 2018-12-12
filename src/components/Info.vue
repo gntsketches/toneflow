@@ -82,8 +82,10 @@
             To edit notes in your track, press the <em>left and right arrow keys</em>.
             This moves the (flashing & underlined) cursor along the track.
             You can toggle the editing cursor between <strong>overwrite</strong> and
-            <strong>insert</strong> modes by button (in the upper right),
+            <strong>insert</strong> modes with the button in the upper right,
             or by pressing the <em>insert</em> key. The tempo can be changed in the <strong>BPM</strong> input.
+            By default tracks play a sample of an acoustic guitar swell; this and other sound parameters can be changed in the track
+            <strong>Sound Panel</strong> below the notes. (Toneflow's sounds are discussed below.)
           </p>
           <br>
           <p>
@@ -93,23 +95,24 @@
             this is a hardware issue, not a bug in Toneflow.) To the left of the display, the <strong>Octave</strong>
             can be changed as well as the keyboard <strong>Layout</strong>.
             Pressing the arrow keys while playing the Qwerty will bend the pitch.
-            (Other sound controls for the track are discussed in "Synthesizers" below.)
             To return focus to the <strong>Track Region</strong>, press <em>shift-a</em>.
             You can also use the mouse to play tones by clicking on the Qwerty keyboard display.
+            By default, the Player Region has a polyphonic synthesizer sound, which along with other parameters
+            can be adjusted.
           </p>
           <br>
           <p>
-            If you press <em>ctrl-enter</em> when the Track Region is focused, a new track will be created above the previous.
+            You can add tracks with <em>Add Track</em> button, or by pressing <em>ctrl-enter</em> when the Track Region is focused.
             (You can add multiple tracks, though performance degrades eventually.)
             <em>Up and down arrow keys</em> move the editing cursor up and down tracks.
             The dotted outline indicates what note on each track is currently playing;
-            to reset the tracks, click the "Reset Section" button or press <em>shift-r</em>.
-            Once entered, tracks can be rearranged by dragging.
+            to reset the tracks, click the "Reset Scene" button or press <em>shift-r</em>.
+            Tracks can be rearranged by dragging.
             By deafualt, the first track entered is the <strong>Lead</strong> track (which affects a variety of things) -
-            this can be changed next to the BPM input in the dashboard.
+            the lead track can be changed next to the BPM input in the dashboard.
             Also by default, the notes sound as they are entered - this can be toggled by button (upper right) or by pressing <em>shift-=</em>.
             When tracks have been entered, they may be deleted with the <strong>(X)</strong> button on the right-hand side.
-            (The Lead track cannot be deleted.)
+            (The lead track cannot be deleted.)
           </p>
           <br>
           <h1>Randomizing & Track Controls</h1>
@@ -117,11 +120,11 @@
             To add random notes, press the <em>backtick (`)</em> key with the cursor at the end of a track.
             Notice that these notes are circular.
             Pressing the backtick while the cursor is on a note affects the shape, indicating the <strong>change status</strong> of that note.
-            Square notes are fixed; circular notes are subject to <strong>auto-change</strong> and may be a rest;
+            Square notes are fixed and never change; circular notes are subject to <strong>auto-change</strong> and may be a rest;
             squares with rounded corners will auto-change but will never be a rest.
-            Pressing <em>shift-`</em> on a note will pick a new random pitch.
+            Pressing <em>shift-`</em>(shift-backtick) on a note will pick a new random pitch.
             <br><br>
-            The <strong>number of notes</strong> to change, and <strong>frequency</strong>
+            The <strong>number of notes</strong> that change, and <strong>frequency</strong>
             of auto-change (in track cycles) can be adjusted in the <strong>track controls</strong>
             section using the input fields to the right of the <strong>Change</strong> button.
             Clicking this button will cause the track to change immediately, and <em>shift-g</em> will change the track that currently has the cursor.
@@ -133,17 +136,18 @@
             <strong>lo</strong> and <strong>hi</strong> selection fields. The <strong>Piano Selector</strong> (in the middle of the dashboard)
             is used to specify which of the 12 chromatic pitches are used (selected pitches are green.) This selection applies to all tracks,
             though each track can have a different range. Click on the piano keys to change the selection, or focus the piano with <em>shift-q</em>
-            and use the Qwerty keys. When <strong>Filter On</strong> (dashboard right) is selected, any changeable note in the track which is <noscript>
-            selected in the piano will be randomly assigned a new note.
-            </noscript>
+            and use the Qwerty keys. When <strong>Filter On</strong> (dashboard right) is selected, any changeable
+            note in the track which is not selected in the piano will be randomly assigned a new note.
+
             <br><br>
             The <strong>percentage (%)</strong> field detemines the odds that a randomized note will be a pitch (rather than a rest) when it changes.
             This field also determines track density when using the <strong>Fill</strong> and <strong>Distribute</strong> buttons (dashboard left).
-            Fill length can be is in a field by the button, and also changes automatically with the length of the lead track.
-            The distribute feature will use each of the green pitches in the Piano Selector once.
+            Fill length is in a field by the button, and also changes automatically with the length of the lead track.
+            The distribute feature will use every pitch in the Piano Selector once.
             <br><br>
             The <strong>Remember</strong> and <strong>Return</strong> buttons can be used to allow a track to evolve randomly and return to its original state.
             These buttons are also available on the dashboard, where they affect all tracks.
+            (Tracks can be reset to their remembered states when a scene loads.)
             Further features of the Track Controls sections include the track number,
             a <strong>Hide/Show</strong> button for track pitches (useful in ear training),
             a <strong>Mute</strong> button (<strong>M</strong>),
