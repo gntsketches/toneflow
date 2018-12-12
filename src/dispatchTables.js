@@ -11,6 +11,16 @@ export function keypress() {
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
   listener.register_combo({
+    "keys"              : "control shift d",
+    "on_keydown"        : function() { this.$store.dispatch('doubleTune') },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
+  });
+  listener.register_combo({
+    "keys"              : "control shift f",
+    "on_keydown"        : function() { this.$store.commit('toggleFilterOnChange') },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
+  });
+  listener.register_combo({
     "keys"              : "control shift x",
     "on_keydown"        : function() { this.$store.dispatch('trackOctaveShift', 'down') },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
@@ -135,11 +145,6 @@ listener.register_combo({
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
   listener.register_combo({
-    "keys"              : "control d",
-    "on_keydown"        : function() { this.$store.dispatch('doubleTune') },
-    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
-  });
-  listener.register_combo({
       "keys"              : "control b",
       "on_keydown"        : function(e, count){ this.$store.dispatch('getTrackGroupings') },
       "this": this,  "prevent_default": false, "prevent_repeat": true, "is_counting": false,
@@ -261,7 +266,7 @@ export let generalKeyDispatchTable = {
   "V"       : function() { this.$store.commit('toggleDelayActive') },
   "B"       : function() { this.$store.dispatch('toggleQwertyDisplay') },
   "N"       : function() { findAndFocus.call(this, '#playerGain') },
-  "M"       : function() { findAndFocus.call(this, '#playerDelayTime') },
+  "M"       : function() { findAndFocus.call(this, '#playerPortamento') },
   "<"       : function() { findAndFocus.call(this, '#playerFilterWet') },
   ">"       : function() { findAndFocus.call(this, '#playerLFOFrequency') },
   "?"       : function() { this.$store.commit('toggleInfoMenu') },

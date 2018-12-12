@@ -30,7 +30,10 @@
     <div class="button-esq global-controls-right" v-on:click="toggleEditMode">{{ editMode }}</div>
     <div class="button-esq global-controls-right" v-on:click="toggleEntrySound">{{ entrySound }}</div>
 
-
+    <span>&nbsp Sleep</span>
+    <input type="number" class="sleep-input" min="0" v-model="sleepSetting" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)">
+    <span v-if="this.$store.state.playing && this.$store.state.sleepSetting > 0">in {{ tillSleepyTime }}</span>
+    <span>min</span>
 
   </div>
 
@@ -63,8 +66,22 @@ export default {
     },
     hideInfoMenu(){
       return this.$store.state.hideInfoMenu
-    }
-
+    },
+    sleepSetting: {
+      get(){
+        return this.$store.state.sleepSetting
+      },
+      set(value){
+        this.$store.commit('updateSleepSetting', value)
+      },
+    },
+    tillSleepyTime() {
+      const millisTill = this.$store.state.sleepSetting * 60000 - (this.$store.state.currentTime - this.$store.state.startTime)
+      let tillSleepyTime = millisTill > 0 ? this.millisToMinutesAndSeconds(millisTill) : 0
+      if (this.$store.state.sleepSetting > 0) {
+        return tillSleepyTime
+      }
+    },
   },
 
 
@@ -118,6 +135,11 @@ export default {
     },
     toggleInfoMenu(){
       this.$store.commit('toggleInfoMenu')
+    },
+    millisToMinutesAndSeconds(millis) {
+      const minutes = Math.floor(millis / 60000)
+      const seconds = Math.floor((millis % 60000) / 1000) // ((millis % 60000) / 1000).toFixed(0)
+      return minutes + ":" + (seconds < 10 ? '0' : '') + seconds
     },
 
     focusFunction(){
@@ -196,6 +218,10 @@ export default {
 .info-menu-button {
   float: right;
   margin: 0 10px 0 0;
+}
+
+.sleep-input {
+  width: 30px;
 }
 
 </style>

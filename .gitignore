@@ -13,4 +13,4 @@ yarn-error.log
 *.zip
 
 src/commentary.js
-src/use_of.js
+src/use_of.txt

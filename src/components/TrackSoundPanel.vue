@@ -319,10 +319,10 @@ export default {
       get(){ return Math.round(this.track.distortion*100)/100 },
       set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'distortion', trackNumber: this.trackNumber, value:value, track:this.track }) },
     },
-    duration: {
+    /*duration: {
       get(){ return Math.round(this.track.noteDuration*10)/10 },
       set(value){ this.$store.commit('changeTrackNoteDuration', { trackNumber: this.trackNumber, duration: value } ) },
-    },
+    },*/
     durationRelative: {
       get(){ return this.track.noteDuration },
       set(value){ this.$store.commit('changeTrackNoteDuration', { trackNumber: this.trackNumber, duration: value } ) },

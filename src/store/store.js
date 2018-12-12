@@ -484,6 +484,15 @@ export const store = new Vuex.Store({
       },
 
       // GENERAL PLAY & ENTRY
+      updateSleepSetting: (state, value) => {
+        state.sleepSetting = value
+      },
+      updateStartTime: (state, value) => {
+        state.startTime = value
+      },
+      updateCurrentTime: (state, value) => {
+        state.currentTime = value
+      },
       toggleInfoMenu: state => {
         state.hideInfoMenu = !state.hideInfoMenu
       },
@@ -590,13 +599,6 @@ export const store = new Vuex.Store({
         let scene = state.scenes[state.editingSceneNumber]
         scene.tracks[payload.trackNumber].waveType = payload.wave
       },
-/*    updateTrackGain: (state, payload) => {  // don't think this is in use anymore...
-        let scene = state.scenes[state.editingSceneNumber]
-        let track = scene.tracks[payload.trackNumber]
-        track.gain = payload.value
-        console.log('muted?', track.muted)
-        if (track.muted) { track.muted = false }
-      },*/
       updateTrackSoundParams: (state, payload) => {
         let scene = state.scenes[state.editingSceneNumber]
         let track = scene.tracks[payload.trackNumber]
@@ -1082,7 +1084,7 @@ export const store = new Vuex.Store({
         let scene = context.state.scenes[context.state.editingSceneNumber]
         if (scene.modulationStyle === 'drift') {
           if (scene.harmonicForm.length === 0) {
-            context.dispatch('buildHarmonicForm', '-a-b')  // '-a-b-a-c'
+            context.dispatch('buildHarmonicForm', context.state.harmonicFormDefault) // '-a-b')  // '-a-b-a-c'
           }
           // a 'setUpForForm' action may be useful... is this procedure used somewhere else...
           let firstFormSection = referenceMode(MODEDATA, scene.harmonicForm[0])
@@ -1355,6 +1357,9 @@ export const store = new Vuex.Store({
         let doubledTune = originalTune.concat(double)
         doubledTune.push({ pitch:'_', random:'fixed' })
         context.commit('overwriteTrackTune', { trackNumber: scene.editingTrackNumber, newTune: doubledTune })
+        if (scene.editingTrackNumber === context.getters.leadTrackNumber) {
+          context.commit('updateSelectedLength', doubledTune.length - 1)
+        }
       },
       spreadTune: context => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
@@ -1367,6 +1372,9 @@ export const store = new Vuex.Store({
         }
         newTune.push({ pitch:'_', random:'fixed' })
         context.commit('overwriteTrackTune', { trackNumber: scene.editingTrackNumber, newTune: newTune })
+        if (scene.editingTrackNumber === context.getters.leadTrackNumber) {
+          context.commit('updateSelectedLength', newTune.length - 1)
+        }
       },
       getTrackGroupings: context => {
         const promptData = prompt("Enter track line lengths, separated by spaces:")
@@ -1389,7 +1397,12 @@ export const store = new Vuex.Store({
       },
 
       // TRACK CONTROLS
-      changeTrackInstrumentOrSample: (context, payload) => {
+      changeTrackInstrumentOrSample: (context, payload) => {  // this may actually be confusing/problematic to not have two different functions for this, even though they would be the same
+        if ( (payload.value === 'polySynth' || payload.value === 'monoSynth') && payload.track.instrumentType ==='sampler' ) {
+          context.commit('changeTrackNoteDuration', { trackNumber: payload.trackNumber, duration: '8n' } )
+        } else if (payload.value === 'sampler' && (payload.track.instrumentType === 'monoSynth' || payload.track.instrumentType === 'polySynth') ) {
+          context.commit('changeTrackNoteDuration', { trackNumber: payload.trackNumber, duration: '1m' })
+        }
         context.commit('updateTrackSoundParams', payload)
         context.dispatch('initializeSceneAudio', context.state.editingSceneNumber)
       },
@@ -1486,9 +1499,7 @@ export const store = new Vuex.Store({
             AM.scenes[payload.sceneTitle].autoFilters[payload.trackNumber].octaves = payload.value
             break
 
-
         }
-        //context.commit('updateTrackSoundParams', { param: payload.param, trackNumber: payload.trackNumber, value: payload.value })
       },
       updateTrackSoundParams: (context, payload) => {
         console.log('payload', payload)

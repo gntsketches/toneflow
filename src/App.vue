@@ -417,13 +417,18 @@ export default {
         this.$store.commit('toggleEntrySound')
       },
       togglePlay(){
+        console.log('toggling play')
         this.$store.commit('togglePlay')
       },
-  		play(){ Tone.Transport.start() },   // .start('+0.1')
-  		stop(){ Tone.Transport.stop() },
-      reset(){
-        this.$store.commit('reset')
+  		play(){
+        const d = new Date
+        this.$store.commit('updateStartTime', d.getTime())
+        Tone.Transport.start()
+      },   // .start('+0.1')
+  		stop(){
+        Tone.Transport.stop()
       },
+
 
       /** KEY ENTRY *****************************************************************************************************
       *
@@ -701,6 +706,12 @@ export default {
           if (index === this.$store.getters.leadTrackNumber) { return }
           else { this.advanceAndPlayTrack(track, index, time) }
         })
+        const d = new Date
+        this.$store.commit('updateCurrentTime', d.getTime())
+        if (this.$store.state.sleepSetting > 0 && this.$store.state.currentTime - this.$store.state.startTime >= this.$store.state.sleepSetting * 60000){
+          this.togglePlay()
+          this.$store.commit('updateCurrentTime', this.$store.state.startTime)
+        }
   		}, '8n');
   		Tone.Transport.bpm.value = this.$store.state.scenes[this.$store.state.editingSceneNumber].bpm;
 
