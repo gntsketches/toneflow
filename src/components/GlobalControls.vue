@@ -31,7 +31,7 @@
     <div class="button-esq global-controls-right" v-on:click="toggleEntrySound">{{ entrySound }}</div>
 
     <span>&nbsp Sleep</span>
-    <input type="number" class="sleep-input" min="0" v-model="sleepSetting" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)">
+    <input type="number" class="sleep-input" min="0" v-model.lazy="sleepSetting" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)">
     <span v-if="this.$store.state.playing && this.$store.state.sleepSetting > 0">in {{ tillSleepyTime }}</span>
     <span>min</span>
 
