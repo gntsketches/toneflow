@@ -17,8 +17,6 @@ Reddit: Use the IDEs refactor > rename function when renaming files.
 - check Vue forum post re: keyup.enter for selects
   - note that you probably don't want to do that anyway because if you're tabbing through inputs, you'll need to use Enter to open the dropdowns (unless you want to install something like https://stackoverflow.com/questions/6210800/javascript-force-select-element-to-dropdown )
 
- (played Rylo Kylie)
-Anish - Noc Noc on Sundays
 
 ********************************************************************************************************************
 * CURRENT CODING
@@ -28,31 +26,40 @@ Anish - Noc Noc on Sundays
 
 TODO:
 
----> for Yotam... multi-track tester: https://codepen.io/anon/pen/zLJzdq
-
-- reduce track sample default gain
-- ABAC form
-- doubling lead track doesn't update fill length
-
-- player Selection buttons doesn't highlight border on scene change
+OBS: https://www.youtube.com/watch?v=DTk99mHDX_I
 
 
+- if you arrow up to increase sleep from 0 it stops right away (sometimes...!)
+- sleep "min" breaks the layout on website
 
-- test with save & load
+- nicer settings for initial load-up
+
+
+---> for Yotam...
+  - https://github.com/Tonejs/Tone.js/issues/404
+  - multi-track tester: https://codepen.io/anon/pen/zLJzdq
+    - https://codepen.io/anon/pen/LMpegy?editors=1010
+  - https://cdnjs.com/libraries/tone
+
+
+- https://www.reddit.com/r/vuejs/comments/a5apqr/strategiesbest_practices_for_dev_vs_live_folder/
+
+
+- likewise adjust gain for player-qwerty
+
+
+- Test with save & load
+  - make a page with the old build to see what they were supposed to sound like...
   - some scenes on desktop saved with 'synth' rather than 'monosynth'
-  - loadQwertySettingOnSceneChange might cause a bug
-  - will track.instrumentType crash compositions established without it? (not if I did it right...)
 
-- test! qwerty updates with updatePlayerStuff()
-
-
+  - (ok...) loadQwertySettingOnSceneChange might cause a bug
+  - (ok...) will track.instrumentType crash compositions established without it? (not if I did it right...)
+  - (ok...) test qwerty updates with updatePlayerStuff()
 
 ****************************************************************************
 BEAUTIFY
 ******************************************************
 - working with distortions .wet.value = 0.5
-- more nuanced auto-adjusting of various settings for synth vs. sample
-
 - try compression? as recommended: https://www.reddit.com/r/webaudio/comments/8uxg8j/understanding_performance_with_webaudio_and_tonejs/
 
 
@@ -62,28 +69,34 @@ BEAUTIFY
 {
 
   Easier:
-    - shortcut to toggle filterPitchesOnChange
-    - sleep feature
     - shortcut to add random to all tracks or remove last from all tracks (ctrl shift +/-)
     - Make track-all-rests shortcut
-    - change note curvature on mouse click (for better mobile use)
 
   More Involved:
+    - new algorithm for rest notes - so that a track with low pitch% always changes _something_
+    - one mouse click on note brings editing cursor - if you click a qwerty it'll change to that note...
+    - change note curvature on mouse double click (for better mobile use)
+    - function to clear all sounds. option on scene change & shortcut shift - minus!)
     - option to apply portamento only when multiple keys are pressed
       - why does the non-app version do that by default?!
       - can you pass in ' ' or 0 to synth to clear the last note?
-    - record options: mp3 & MIDI export
-    - shortcut to clear all sounds (shift - minus!)
+    - record options: mp3 & MIDI export (& soundcloud upload...)
+      - will require a rebuild of GlobalControls - to incorporate dropdowns
     - change size of info box... https://www.npmjs.com/pac/vue-draggable-resizable
     - option to make all first notes the same in drift modulation
     - move playing indexes forward/backward with arrows... which shortcuts? (a bit tricky, because you want to do this without invoking changes)
+    - (is this needed?) more nuanced auto-adjusting of various settings for synth vs. sample
+    - copy & paste: Vue-Drag-Select,   https://github.com/JSmith01/vue-selectable
 
   Misc:
+    - option button to click in notes to a track from Qwerty
+      - would need space & delete buttons too
     - shortcut to extend range up or down an octave (ctrl shift up arrow ctrl shift down arrow)... or perhaps it widens/narrows it in both directions?
     - track edit arrow keys repeat ok (will need to be keypress)
     - option to use spacebar like a pedal?
     - shortcut ('toggle') to apply various settings to all track notes for note shape (square, curved, circle)... all square, all curved, all circle, all circle but first curved, random,
     - delays: if/else for synch to tempo '8n' vs value in seconds?
+    - https://vuejsexamples.com/vue-js-right-click-menu/
 
     - Scene stuff:
       - don't allow two scenes to have the same name, changes to one will affect the other
@@ -273,6 +286,10 @@ TRANsSMISSION (advanceAndPlayTrack)
 
       - (advance meter for til-change on each track? ... not until you understand the performance cost)
 
+			- what if modulation or form increment is selected and there is none?
+				- It doesn't advance. I guess that's fine. It's disruptive to have it default or switch to Lead Cycle/Change - the user might want to toggle autoModulate or form/drift on/off for compositional reasons.
+
+
     DESIGN HMMM:
       - better highlighting for focussed elements
       - entry tone: use ableton-esq headphones icon?
@@ -339,16 +356,14 @@ BUGGIN {
   - (Oops, deleted 'giant step'!) Watch for this bug: 'giant step' doesnt fill first note on lead track for a#\d#dia
 
   - param entry
+      - https://forum.vuejs.org/t/use-of-keyup-with-select-elements/50928/4
       - hmmm. tab/shift-tab highlights QWERTY  when tabbing through select options
           - review the whole active-region thing... some bugs there...
-          - Inputs doesnt always send you back to previous region on blur... if youve been in other input fields I think it overwrites 'previousRegion'
           - HTML "select" items (will? do?) now have changeFunction (?), using bus...
               - is anything actually using the bus to call clearKeyFromDown? yet at least in TuneChanger it does so...
       - validate...
-          - if you enter or leave a field after spacebar, it stays blank. should resume previous (or at least defaults.)
-          - ".2" as durartion will crash Tone (vs "0.2")
-      - shortcuts around trackControls sometimes will leave a field blank, and also
-      - Enter doesnt always take you back to editingTrack
+        - if you enter or leave a field after spacebar, it stays blank. should resume previous (or at least defaults.)
+        - shortcuts around trackControls sometimes will leave a field blank, and also
 
 
   - when track removed ...
@@ -536,7 +551,7 @@ CLEANING IT UP:
 
 GITHUB
 {
-  .gitignore file is for ignoring! it's in the repo home directory...  
+  .gitignore file is for ignoring! it's in the repo home directory...
 }
 
 

@@ -33,11 +33,10 @@
             <br><br>
             <ul>
               <li>Improved performance: better audio quality, responsiveness, and capacity to handle faster changes and more tracks</li>
-              <li>A more diverse collection of sounds</li>
+              <li>Recording of MP3 and MIDI</li>
               <li>More responsive and elegant design and user-interface</li>
               <li>Expanded features for compositional and harmonic structure</li>
               <li>Educational tutorials and 'games' for ear training and music theory</li>
-              <li>Capactity to export to MIDI for refinement of compositions in other digital workspaces</li>
             </ul>
           </p>
           <br>
@@ -56,7 +55,7 @@
 
           <h1>Technical</h1>
           <p>
-            Toneflow 3 is built using:<br>
+            Toneflow is built using:<br>
             <a href="https://vuejs.org/" target="_blank">Vue.js</a>,<br>
             <a href="https://tonejs.github.io/" target="_blank">Tone.js</a>,<br>
             <a href="https://dmauro.github.io/Keypress/" target="_blank">Keypress.js</a>,<br>
@@ -70,12 +69,31 @@
       <div class="info-text info-guide" v-if="infoSection === 'guide'">
           <h1>Getting Started</h1>
           <p>
-            (New updates! Including samples, improved track entry, more flexible scene changing, and settings for the QWERTY keyboard.
-            Documentation on those coming soon...)
+            <br>
+            <strong class="underline">Naviagtion</strong><br>
+            Toneflow is played primarily with the <em>QWERTY</em> computer keyboard (the mouse plays a supporting role.)
+            There are four main 'regions' which can be focused to accept keyboard input.<br><br>
+            <ul>
+              <li>The <strong>QWERTY Player</strong> at the bottom of the screen, which allows you to play the computer keyboard as an instrument.
+                Focus this with <em>shift-z</em>.</li>
+              <li>The <strong>Track Entry</strong> zone mid-screen, where looping and changing tracks can be composed.
+                Focus this with <em>shift-a</em>.</li>
+              <li>The <strong>Piano Selector</strong> at the top of the screen
+                (in the middle of the "<strong>Dashboard</strong>")
+                allows you to specify which pitches will be chosen from upon when the app picks random notes.
+                Focus this with <em>shift-q</em>.</li>
+              <li>The <strong>General Inputs</strong> such as number fields and drop-down menus which change app settings.
+                Focus these with mouse-click or one of various shortcuts (such as <em>shift-t</em> to change the tempo/BPM).
+                You can move forward or backward through these input fields by pressing <em>tab</em> or <em>shift-tab</em>.
+                Drop-down menues can be opened and selected with the <em>enter</em> key.</li>
+              Each region (or the specific general input) becomes highlighted when focused.
+              Entering a value into an input will return focus to the QWERTY player, Track Entry, or Piano Selector (whichever was previously focused.)
+            </ul>
 
             <br><br>
-            Toneflow is played using the <em>QWERTY</em> computer keyboard.
-            When the app first loads, pressing the keys add notes to the first <strong>track</strong> one at a time.
+            <strong class="underline">Track Entry</strong><br>
+            When the app loads, the Track Entry region is focused.
+            Pressing the keys add notes to the first <strong>track</strong> one at a time.
             'Rests' are added with the <em>space bar</em>. Notes can be removed with the <em>Delete</em> key.
             The track-loop can be started and stopped with the <strong>Play</strong> button in the upper left
             of the <strong>dashboard</strong>, or with the <em>Esc</em> key.
@@ -89,22 +107,9 @@
           </p>
           <br>
           <p>
-            To play tones on the Qwerty without altering the track, press <em>shift-z</em>.
-            This will change the <strong>focus</strong> of the app to the <strong>Player Region</strong>.
-            (Chords can be played, though some note combinations may '<a href="https://en.wikipedia.org/wiki/Rollover_(key)" target="_blank">ghost</a>' -
-            this is a hardware issue, not a bug in Toneflow.) To the left of the display, the <strong>Octave</strong>
-            can be changed as well as the keyboard <strong>Layout</strong>.
-            Pressing the arrow keys while playing the Qwerty will bend the pitch.
-            To return focus to the <strong>Track Region</strong>, press <em>shift-a</em>.
-            You can also use the mouse to play tones by clicking on the Qwerty keyboard display.
-            By default, the Player Region has a polyphonic synthesizer sound, which along with other parameters
-            can be adjusted.
-          </p>
-          <br>
-          <p>
             You can add tracks with <em>Add Track</em> button, or by pressing <em>ctrl-enter</em> when the Track Region is focused.
             (You can add multiple tracks, though performance degrades eventually.)
-            <em>Up and down arrow keys</em> move the editing cursor up and down tracks.
+            <em>Up and down arrow keys</em> move the editing cursor between tracks.
             The dotted outline indicates what note on each track is currently playing;
             to reset the tracks, click the "Reset Scene" button or press <em>shift-r</em>.
             Tracks can be rearranged by dragging.
@@ -115,39 +120,73 @@
             (The lead track cannot be deleted.)
           </p>
           <br>
+          <p>
+            <strong class="underline">QWERTY Player</strong><br>
+            When the Qwerty Player region is focused (<em>shift-z</em>), the app can be played as an instrument without entering pitches to a track.
+            (You can also use the mouse to play tones by clicking on the Qwerty keyboard display, regardless of which region is selected.)
+            By default, the Player Region has a polyphonic synthesizer sound, which along with other parameters
+            can be adjusted. The PolySynth and sampler can play chords, though some note combinations may
+            '<a href="https://en.wikipedia.org/wiki/Rollover_(key)" target="_blank">ghost</a>' -
+            this is a hardware issue, not a bug in Toneflow.) To the left of the display, the <strong>Octave</strong>
+            can be changed as well as the keyboard <strong>Layout</strong>.
+            Pressing the arrow keys while playing the Qwerty will bend the pitch.
+
+            Like on tracks, the instrument and sound settings can be adjusted with the adjacent fields and knobs.
+            You can save these <strong>Settings</strong> to Qwerty Player region, with the numbered buttons in the left hand side.
+            To do so, right-click on a button or press <em>ctrl-shift-(number key)</em> in a sequence
+            (one at a time, not simultaneously.)
+            The button is blue when a setting has been saved. To switch settings, left-click a button or press
+            <em>shift-(number)</em>. ("0" restores the default settings.) The current setting is highlighted with a green border.
+
+          </p>
+          <br><br>
           <h1>Randomizing & Track Controls</h1>
           <p>
-            To add random notes, press the <em>backtick (`)</em> key with the cursor at the end of a track.
-            Notice that these notes are circular.
-            Pressing the backtick while the cursor is on a note affects the shape, indicating the <strong>change status</strong> of that note.
-            Square notes are fixed and never change; circular notes are subject to <strong>auto-change</strong> and may be a rest;
-            squares with rounded corners will auto-change but will never be a rest.
-            Pressing <em>shift-`</em>(shift-backtick) on a note will pick a new random pitch.
+            The <strong class="underline">Piano Selector</strong>
+            is used to specify which of the 12 chromatic pitches are picked for note randomization - selected pitches are green.
+            This selection applies to all tracks, though each track can have a different range.
+            Click on the piano keys to change the selection, or focus the piano with <em>shift-q</em>
+            and use the Qwerty keys.
             <br><br>
-            The <strong>number of notes</strong> that change, and <strong>frequency</strong>
+            To add random notes to a track, press the <em>backtick (`)</em> key when the cursor is at the end of a track.
+            Pressing <em>shift-`</em>(shift-backtick) while the cursor is on a note will pick a new random pitch.
+            The <strong>Fill</strong> and <strong>Distribute</strong> buttons (dashboard left).
+            Generate a new expression for the track which currently has the cursor.
+            Fill length is in a field by the button,
+            and also changes automatically with the length of the lead track.
+            The distribute feature will use every pitch in the Piano Selector once.
+            (You can also use <em>shift-f</em> to Fill a track.)
+            <br><br>
+            Notes in a track can change automatically, depending on their <strong>auto-change status</strong>,
+            (indicated by shape).
+            To change a note's auto-change status, press the backtick (`) while the cursor is on that note.
+            Square notes are fixed and never auto-change;
+            circular notes are subject to <strong>auto-change</strong> and may be a rest;
+            squares with rounded corners will auto-change but will never be a rest.
+            <br><br>
+
+            The <strong>number of notes</strong> that auto-change, and <strong>frequency</strong>
             of auto-change (in track cycles) can be adjusted in the <strong>track controls</strong>
             section using the input fields to the right of the <strong>Change</strong> button.
-            Clicking this button will cause the track to change immediately, and <em>shift-g</em> will change the track that currently has the cursor.
-            This will work even if the change-frequency field is set to 0.
+            Clicking this button will cause the track to change immediately,
+            and <em>shift-g</em> will change the track that currently has the cursor.
+            (This will work even if the change-frequency field is set to 0.)
+            <br><br>
+            The <strong>range</strong> of pitches from which random notes are picked can be adjusted by the
+            <strong>lo</strong> and <strong>hi</strong> selection fields.
+            <br><br>
+            The <strong>percentage(%)</strong> field determines the odds that a
+            randomized note will be a pitch (rather than a rest) when it changes.
+            (This field also determines track density when using the Fill and Distribute functions.)
             Auto-changes can be disabled for all tracks by clicking the <strong>Changes Active</strong>
             button or pressing <em>shift-\</em>.
             <br><br>
-            The <strong>range</strong> of pitches from which random notes are picked can be adjusted by the
-            <strong>lo</strong> and <strong>hi</strong> selection fields. The <strong>Piano Selector</strong> (in the middle of the dashboard)
-            is used to specify which of the 12 chromatic pitches are used (selected pitches are green.) This selection applies to all tracks,
-            though each track can have a different range. Click on the piano keys to change the selection, or focus the piano with <em>shift-q</em>
-            and use the Qwerty keys. When <strong>Filter On</strong> (dashboard right) is selected, any changeable
-            note in the track which is not selected in the piano will be randomly assigned a new note.
-
+            The <strong>Remember</strong> and <strong>Return</strong> buttons can set and then return a track
+            to a remembered expression after it has changed.
+            These buttons are also available on the dashboard (left), where they affect all tracks at once.
+            Tracks will also reset to their remembered states when a scene loads
+            if the "on scene change" box is checked.
             <br><br>
-            The <strong>percentage (%)</strong> field detemines the odds that a randomized note will be a pitch (rather than a rest) when it changes.
-            This field also determines track density when using the <strong>Fill</strong> and <strong>Distribute</strong> buttons (dashboard left).
-            Fill length is in a field by the button, and also changes automatically with the length of the lead track.
-            The distribute feature will use every pitch in the Piano Selector once.
-            <br><br>
-            The <strong>Remember</strong> and <strong>Return</strong> buttons can be used to allow a track to evolve randomly and return to its original state.
-            These buttons are also available on the dashboard, where they affect all tracks.
-            (Tracks can be reset to their remembered states when a scene loads.)
             Further features of the Track Controls sections include the track number,
             a <strong>Hide/Show</strong> button for track pitches (useful in ear training),
             a <strong>Mute</strong> button (<strong>M</strong>),
@@ -159,30 +198,41 @@
             Toneflow can have multiple <strong>scenes</strong>, each with their own tracks and different settings.
             They can be played independently, or chained sequentially for a compositional flow.
             Scenes are assigned randomized titles, which can be changed in the entry field below the "Play" button.
-            To add a new scene, click the "<strong>+</strong>" button to the right of the <strong>scene tab</strong> (in line with the Play button.)
+            To add a new scene, click the "<strong>+</strong>" button to the right of the <strong>scene tab</strong>
+            (in line with the Play button), or use <em>ctrl-alt-s</em>.
+
+            <br><br>
             Scenes can be "benched" to the right by clicking on the "<strong>-</strong>" button.
             This removes them from the composition flow; benched scenes do not play.
             They can be deleted with "<strong>-</strong>" or returned to the flow with "<strong>+</strong>".
             The order of scenes in the flow can be rearranged by mouse-dragging.
+
             <br><br>
             You can switch to a scene by clicking on the scene's tab, or move one scene at a time through the composition flow
             with <em>shift-e</em> (forward) and <em>shift-w</em> (backward). Scenes change immediately if the app is not playing.
-            If the app is playing, and <strong>Chain: Off</strong> is selected, the scene will change at the end of the current Lead Track cycle,
+            The "Scene change on:" selector specifies what increment will pass before changing scenes if the app is playing.
+            If <strong>Chain: Off</strong> is selected, the scene will change at the end of the selected increment,
             and stay on that scene until another is selected.
-            If <strong>Chain: On</strong> is selected, the scene will play the Lead Track the number of times selected in the
-            <strong>Chain Reps</strong> input field and the advance. After playing all scenes in the flow, the
+            If <strong>Chain: On</strong> is selected, the scene will repeat the increment the number of times selected in the
+            <strong>Chain Reps</strong> input field, and then advance. After playing all scenes in the flow, the
             composition will reset to the first scene and either restart or stop depending on
             whether <strong>Loop</strong> or <strong>Once</strong> is selected. When a scene change is forthcoming, a blue bar fills to track the
             time until the change and the name of the next scene appears after the arrow.
+            <strong>Load qwerty</strong> can be used to specify a setting for the player region (see below) to load along with the new scene.
           </p>
           <br><br>
           <h1>Modulation</h1>
           <p>
-            There are a variety of options to modulate the pitches in the Piano Selector.
+            The right-hand side of the dashboard provides options for modulating the pitches in the Piano Selector.
             There are two modulation styles: <strong>Drift</strong> and <strong>Form</strong>. In the Drift style,
-            a new <strong>mode</strong> (or scale) is chosen randomly every time, whereas in the Form style,
-            modulations follow a determined structure. Clicking the <strong>Modulate</strong> button will prompt the next modualtion.
-            When <strong>Auto On</strong> is selected, the next modulation will happen along with the note-changing cycles of the Lead Track.
+            a new <strong>mode</strong> (scale) is chosen randomly every time, whereas in the Form style,
+            modulations follow a determined structure. Clicking the <strong>Modulate</strong>
+            button will prompt the next modulation.
+            When <strong>Auto On</strong> is selected,
+            the next modulation will happen along with the note-changing cycles of the Lead Track.
+            When <strong>Filter On</strong> is selected, any changeable
+            note on any track that is not also a pitch in the Piano Selector will be randomly assigned a new note.
+
             <br><br>
             Toneflow recognizes eighteen types of modes and chord structures. Modes available are:
             Diatonic (Dia) - ie: the natural major scale, Melodic Minor (Mel), Harmonic Minor (Har),
@@ -191,6 +241,7 @@
             and "G Myxolydian" are all "C Diatonic".) You can also select Major (Maj), Minor (Min), and Suspended (Sus) triads;
             Major 7th (Ma7), Dominant 7th (Dom), Minor 7th (Mi7), Half-Diminished (Hdm) and Diminished 7th (Dm7) chords;
             Blues (Blu) and minor Pentatonic (Pen) scales; or a simple Fifth (Fth) or single note (One).
+
             <br><br>
             The odds that one of these types of modes will be picked at random can be altered in the
             <strong>Modulation Weights</strong> section. For example, if "Dia" is set to "2" and "Mel" is set to "1",
@@ -198,9 +249,11 @@
             Right-clicking on the name of a mode will re-set all other weights to 0; left-clicking on the name will
             modulate the piano to that mode or queue it as upcoming if "Auto" is selected.
             <strong>+ Types</strong> increments the weight of all modes.
+
             <br><br>
             It is possible to limit the root-note options from which Toneflow will choose a mode;
             left-click on the pitch names (above the mode names) to toggle this, or right-click to select only one root pitch.
+
             <br><br>
             You can click in the <strong>Form Entry</strong> field, to use text to enter specific modes.
             Only lowercase letters are accepted, sharps are always used (no flats), and modes should be separated by spaces.
@@ -209,6 +262,7 @@
             For example, <strong>f#\edia</strong> modulates to E diatonic and fixes a F# to the first note, likely yielding an F#-Dorian flavor.
             The current <strong>Modulation Step</strong> will be highlighed - note that when a form is chosen, it does not automatically
             advance to the first mode in the form. Click the Modulation button (or press <em>shift-p</em>) to begin the form.
+
             <br><br>
             It is also possible to enter a "general" form for modulations,
             and allow Toneflow to pick the specific modes (based on the modulation weights.)
@@ -220,20 +274,23 @@
             pick random modes for the last two steps.
           </p>
           <br><br>
-          <h1>Sounds and Synths</h1>
+          <h1>Sounds</h1>
           <p>
-            Toneflow's sounds are made by basic subtractive synthesis and a few special effects.
-            The options are the same for both Tracks and for the Qwerty keyboard, though the tracks have additional tools for manipulating
-            the more complicated AM, FM, Fat, and Pusle types of synth sounds.
+            Toneflow's uses instrument samples and synthesizers, both of which can be shaped and altered in various ways.
+            The same sound options are available for Tracks and for the Qwerty keyboard.
+            'PolySynth' can play multiple pitches at once, whereas 'MonoSynth' can only play one note at a time,
+            but has the <strong>Portamento</strong> option for gliding the pitch between notes.
+            The basic synthesizer <a href="https://en.wikipedia.org/wiki/Waveform" target="_blank">wave types</a>
+            are sine, triangle, sawtooth, and square. More complex synthesizers (AM, FM, Fat, and PWM)
+            waveforms are also available - these types open up additional controls when selected.
+
             <br><br>
-            You can learn more about <strong>Wave Type</strong>s on <a href="https://en.wikipedia.org/wiki/Waveform" target="_blank">Wikipedia</a>.
+            <strong class="underline">Sound Shaping & Effects</strong><br>
             The <strong>Gain</strong> is the magnitide of the signal, similar to volume.
-            When <strong>Delay On</strong> is active, <strong>Delay Time & Delay Feedback</strong> affect the repeat or echo of notes.
-            <strong>Distortion</strong> is basically digital fuzz on the signal.
-            <br><br>
             <strong>Attack, Decay, Sustain, Release</strong> are elements of the the "envelope" of the sound's volume,
             <a href="https://github.com/Tonejs/Tone.js/wiki/Envelope" target="_blank">described with a diagram here</a>.
-            <br><br>
+            When <strong>Delay On</strong> is active, <strong>Delay Time & Delay Feedback</strong> affect the repeat or echo of notes.
+            <strong>Distortion</strong> is basically digital fuzz on the signal.
             The tone of the synth can be adjusted with a Filter, which cuts out specified frequencies.
             <strong>Wet</strong> affects how much of the filtered sound (vs. unfiltered sound) is sent to the output.
             <strong>Filter Type</strong> refers to the nature of signal subtraction relative to the
@@ -242,12 +299,15 @@
             <strong>Rolloff</strong> is the drop in decibels per octave after the cutoff frequency.
             <strong>Q</strong> apparently makes <a href="https://en.wikipedia.org/wiki/Q_factor" target="_blank">
             flying saucer noises</a>.
+
             <br><br>
             The filter can be modulated by a Low Frequency Oscillator (LFO). This periodically change the
-            filter's Base Frequency setting according to another wave type which has it's own frequency (generally below 20Hz.)
-            <strong>Octaves</strong> determines the range of sweep of the modulating wave above and below the Base Frequency,
-            whereas <strong>Depth</strong> determines the depth of that sweep (ie: whether the sweep reaches maximum range,
-            or only some fraction.)
+            filter's Base Frequency setting according to another wave type which has it's own frequency
+            (generally below 20Hz.)
+            <strong>Octaves</strong> determines the range of sweep of the modulating wave
+            above and below the Base Frequency,
+            whereas <strong>Depth</strong> determines the depth of that sweep
+            (ie: whether the sweep reaches maximum range, or only some fraction.)
             <br><br>
           </p>
           <h1>Saving & Loading</h1>
@@ -257,11 +317,14 @@
             These are displayed in the drop-down menu adjacent to the <strong>Load</strong> button;
             scenes are labeled with the prefix <em>"S_"</em>, and will be added to the current composition when loaded.
             <br><br>
-            However, Local Storage does not transfer between browsers, and the files cannot be transfered or backed up.
+            However, Local Storage does not transfer between browsers.
             <strong>Download</strong> (or <strong>Download Scene</strong>) will
             export a copy of the current composition or scene as a <em>.json</em> file. These are prefixed
             <em>TF3_</em> for compositions and <em>TF3_S_</em> for scenes.
             The <strong>Choose File</strong> button then allows you to locate and upload that file.
+            For greater control over browser local storage, I recommend the
+            <a href="https://chrome.google.com/webstore/detail/localstorage-manager/fkhoimdhngkiicbjobkinobjkoefhkap?hl=en-US" target="_blank">
+              Local Storage Manager</a> plugin for Google Chrome.
             <br><br>
           </p>
       </div>
@@ -456,5 +519,11 @@ li {
    list-style-type: disc;
    list-style-position: outside;
 }
+
+.underline {
+  text-decoration: underline;
+}
+
+
 
 </style>

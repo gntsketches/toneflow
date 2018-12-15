@@ -183,7 +183,7 @@ export let AudioManager = {
             "C5" : "piano1_C5.mp3",
             "C6" : "piano1_C6.mp3",
           }, {
-            'baseUrl' : 'src/tones/piano1/'
+            'baseUrl' : 'assets/tones/piano1/'
           })
           break
         case 'elecPno1':
@@ -192,11 +192,11 @@ export let AudioManager = {
             "C2" : "elecPno1_C2.mp3",
             "C3" : "elecPno1_C3.mp3",
             "C4" : "elecPno1_C4.mp3",
-            "G5" : "elecPno1_C5.mp3",
+            "C5" : "elecPno1_C5.mp3",
             "C6" : "elecPno1_C6.mp3",
             "C7" : "elecPno1_C7.mp3",
           }, {
-            'baseUrl' : 'src/tones/elecPno1_mp3s/'
+            'baseUrl' : 'assets/tones/elecPno1_mp3s/'
           })
           break
         case 'elecPno2':
@@ -205,11 +205,11 @@ export let AudioManager = {
             "C2" : "elecPno2_C2.mp3",
             "C3" : "elecPno2_C3.mp3",
             "C4" : "elecPno2_C4.mp3",
-            "G5" : "elecPno2_C5.mp3",
+            "C5" : "elecPno2_C5.mp3",
             "C6" : "elecPno2_C6.mp3",
             "C7" : "elecPno2_C7.mp3",
           }, {
-            'baseUrl' : 'src/tones/elecPno2_mp3s/'
+            'baseUrl' : 'assets/tones/elecPno2_mp3s/'
           })
           break
         case 'elecPno3':
@@ -217,11 +217,11 @@ export let AudioManager = {
             "C2" : "elecPno3_C2.mp3",
             "C3" : "elecPno3_C3.mp3",
             "C4" : "elecPno3_C4.mp3",
-            "G5" : "elecPno3_C5.mp3",
+            "C5" : "elecPno3_C5.mp3",
             "C6" : "elecPno3_C6.mp3",
             "C7" : "elecPno3_C7.mp3",
           }, {
-            'baseUrl' : 'src/tones/elecPno3_mp3s/'
+            'baseUrl' : 'assets/tones/elecPno3_mp3s/'
           })
           break
         case 'gtrSwell':
@@ -232,7 +232,7 @@ export let AudioManager = {
             "C5" : "gtrSwell_C5.mp3",
             "C6" : "gtrSwell_C6.mp3",
           }, {
-            'baseUrl' : 'src/tones/gtrSwell_mp3s/'
+            'baseUrl' : 'assets/tones/gtrSwell_mp3s/'
           })
           break
         case 'gtrMute':
@@ -243,7 +243,7 @@ export let AudioManager = {
             "C5" : "gtrMute_C4.mp3",
             "C6" : "gtrMute_C5.mp3",
           }, {
-            'baseUrl' : 'src/tones/gtrMute_mp3s/'
+            'baseUrl' : 'assets/tones/gtrMute_mp3s/'
           })
           break
         case 'bassGtr':
@@ -254,7 +254,7 @@ export let AudioManager = {
             "C4" : "bassGtr_C4.mp3",
             "E4" : "bassGtr_E4.mp3",
           }, {
-            'baseUrl' : 'src/tones/bassGtr_mp3s/'
+            'baseUrl' : 'assets/tones/bassGtr_mp3s/'
           })
           break
         case 'marimba':
@@ -268,7 +268,7 @@ export let AudioManager = {
             "C6" : "marimba_C6.mp3",
             "C7" : "marimba_C7.mp3",
           }, {
-            'baseUrl' : 'src/tones/marimba_mp3s/'
+            'baseUrl' : 'assets/tones/marimba_mp3s/'
           })
           break
         case 'strings':
@@ -281,7 +281,7 @@ export let AudioManager = {
             "C6" : "stringSection_C5.mp3",
             "C7" : "stringSection_C6.mp3",
           }, {
-            'baseUrl' : 'src/tones/stringSection_mp3s/'
+            'baseUrl' : 'assets/tones/stringSection_mp3s/'
           })
           break
       }

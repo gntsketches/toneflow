@@ -8,7 +8,7 @@
 			 					v-model:value="rangeLow"
 			 					@focus="focusFunction"
        					@change="changeFunction($event)"
-                @blur="cahngeFunction($event)"
+                @blur="changeFunction($event)"
        >
 				 <option v-for="pitch in lowerRangeOptions" :key="Math.random().toString().slice(2)" >{{ pitch }}</option>
 			 </select>
