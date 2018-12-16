@@ -38,7 +38,7 @@
 
     <br>
 
-    <span>Load qwerty:</span>
+    <span>Load Qwerty:</span>
 
     <select id="qwertySettingOnSceneChange"
       v-model:value="qwertySettingOnSceneChange"
@@ -49,7 +49,7 @@
       <option v-for="setting in qwertySettings">{{ setting }}</option>
     </select>
 
-    <span>Scene change on:</span>
+    <span>Change scene on:</span>
     <select id="sceneChangeIncrement"
       v-model:value="sceneChangeIncrement"
       @focus="focusFunction"

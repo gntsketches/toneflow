@@ -32,11 +32,12 @@
             There are many improvements and expansions I hope to make during the next year:
             <br><br>
             <ul>
-              <li>Improved performance: better audio quality, responsiveness, and capacity to handle faster changes and more tracks</li>
               <li>Recording of MP3 and MIDI</li>
+              <li>Improved performance: better audio quality, responsiveness, and capacity to handle faster changes and more tracks</li>
               <li>More responsive and elegant design and user-interface</li>
-              <li>Expanded features for compositional and harmonic structure</li>
-              <li>Educational tutorials and 'games' for ear training and music theory</li>
+              <li>Improved useability on mobile</li>
+              <li>Expanded features for ease of composition & improvisation</li>
+              <li>Online video tutorials and tutorial features on the app</li>
             </ul>
           </p>
           <br>
@@ -83,12 +84,13 @@
                 allows you to specify which pitches will be chosen from upon when the app picks random notes.
                 Focus this with <em>shift-q</em>.</li>
               <li>The <strong>General Inputs</strong> such as number fields and drop-down menus which change app settings.
-                Focus these with mouse-click or one of various shortcuts (such as <em>shift-t</em> to change the tempo/BPM).
+                Focus these by mouse-click or with one of various shortcuts (such as <em>shift-t</em> to change the tempo/BPM).
                 You can move forward or backward through these input fields by pressing <em>tab</em> or <em>shift-tab</em>.
                 Drop-down menues can be opened and selected with the <em>enter</em> key.</li>
-              Each region (or the specific general input) becomes highlighted when focused.
-              Entering a value into an input will return focus to the QWERTY player, Track Entry, or Piano Selector (whichever was previously focused.)
             </ul>
+            <br>
+            Each region (or the specific general input) becomes highlighted when focused.
+            Entering a value into an input will return focus to the QWERTY player, Track Entry, or Piano Selector (whichever was previously focused.)
 
             <br><br>
             <strong class="underline">Track Entry</strong><br>
@@ -102,13 +104,13 @@
             You can toggle the editing cursor between <strong>overwrite</strong> and
             <strong>insert</strong> modes with the button in the upper right,
             or by pressing the <em>insert</em> key. The tempo can be changed in the <strong>BPM</strong> input.
-            By default tracks play a sample of an acoustic guitar swell; this and other sound parameters can be changed in the track
+            By default, tracks play a sample of an acoustic guitar swell; this and other sound parameters can be changed in the track
             <strong>Sound Panel</strong> below the notes. (Toneflow's sounds are discussed below.)
           </p>
           <br>
           <p>
-            You can add tracks with <em>Add Track</em> button, or by pressing <em>ctrl-enter</em> when the Track Region is focused.
-            (You can add multiple tracks, though performance degrades eventually.)
+            You can add tracks with the <strong>Add Track</strong> button, or by pressing <em>ctrl-enter</em> when the Track Region is focused.
+            (You can add as many tracks as you want, though performance degrades eventually.)
             <em>Up and down arrow keys</em> move the editing cursor between tracks.
             The dotted outline indicates what note on each track is currently playing;
             to reset the tracks, click the "Reset Scene" button or press <em>shift-r</em>.
@@ -125,12 +127,12 @@
             When the Qwerty Player region is focused (<em>shift-z</em>), the app can be played as an instrument without entering pitches to a track.
             (You can also use the mouse to play tones by clicking on the Qwerty keyboard display, regardless of which region is selected.)
             By default, the Player Region has a polyphonic synthesizer sound, which along with other parameters
-            can be adjusted. The PolySynth and sampler can play chords, though some note combinations may
+            can be adjusted. The polySynth and sampler can play chords, though some note combinations may
             '<a href="https://en.wikipedia.org/wiki/Rollover_(key)" target="_blank">ghost</a>' -
             this is a hardware issue, not a bug in Toneflow.) To the left of the display, the <strong>Octave</strong>
-            can be changed as well as the keyboard <strong>Layout</strong>.
+            can be changed (<em>shift-x/c</em>) as well as the keyboard <strong>Layout</strong> (<em>shift-b</em>).
             Pressing the arrow keys while playing the Qwerty will bend the pitch.
-
+            <br><br>
             Like on tracks, the instrument and sound settings can be adjusted with the adjacent fields and knobs.
             You can save these <strong>Settings</strong> to Qwerty Player region,
             with the numbered buttons in the left hand side.
@@ -146,53 +148,57 @@
           <p>
             The <strong class="underline">Piano Selector</strong>
             is used to specify which of the 12 chromatic pitches are picked for note randomization - selected pitches are green.
-            This selection applies to all tracks, though each track can have a different range.
+            Only the letter name of the pitch is selected - not the octave.
+            This letter-name selection applies to all tracks; the note-range is specified in the track controls.
             Click on the piano keys to change the selection, or focus the piano with <em>shift-q</em>
             and use the Qwerty keys.
             <br><br>
             To add random notes to a track, press the <em>backtick (`)</em> key when the cursor is at the end of a track.
             Pressing <em>shift-`</em>(shift-backtick) while the cursor is on a note will pick a new random pitch.
-            The <strong>Fill</strong> and <strong>Distribute</strong> buttons (dashboard left).
-            Generate a new expression for the track which currently has the cursor.
+            The <strong>Fill</strong> and <strong>Distribute</strong> buttons (dashboard left)
+            generate a new expression for the track which currently has the cursor.
             Fill length is in a field by the button,
             and also changes automatically with the length of the lead track.
-            The distribute feature will use every pitch in the Piano Selector once.
             (You can also use <em>shift-f</em> to Fill a track.)
+            The Distribute feature will use every pitch in the Piano Selector once.
             <br><br>
-            Notes in a track can change automatically, depending on their <strong>auto-change status</strong>,
+            Notes in a track can change automatically, depending on their <strong>auto-change</strong> status,
             (indicated by shape).
             To change a note's auto-change status, press the backtick (`) while the cursor is on that note.
             Square notes are fixed and never auto-change;
-            circular notes are subject to <strong>auto-change</strong> and may be a rest;
+            circular notes are subject to auto-change and may be a rest;
             squares with rounded corners will auto-change but will never be a rest.
             <br><br>
 
-            The <strong>number of notes</strong> that auto-change, and <strong>frequency</strong>
-            of auto-change (in track cycles) can be adjusted in the <strong>track controls</strong>
-            section using the input fields to the right of the <strong>Change</strong> button.
+            The number of notes that auto-change, and frequency
+            of auto-change (per number of track cycles) can be adjusted in the <strong>track controls</strong>
+            using the input fields to the right of the <strong>Change</strong> button.
             Clicking this button will cause the track to change immediately,
             and <em>shift-g</em> will change the track that currently has the cursor.
             (This will work even if the change-frequency field is set to 0.)
+            Use <em>shift-}</em> to apply a change to every track;
+            <em>ctrl-shift-}</em> will change all changeable note on every track.
             <br><br>
-            The <strong>range</strong> of pitches from which random notes are picked can be adjusted by the
+            The range of pitches from which random notes are picked can be adjusted by the
             <strong>lo</strong> and <strong>hi</strong> selection fields.
             <br><br>
-            The <strong>percentage(%)</strong> field determines the odds that a
+            The percentage <strong>(%)</strong> field determines the odds that a
             randomized note will be a pitch (rather than a rest) when it changes.
             (This field also determines track density when using the Fill and Distribute functions.)
-            Auto-changes can be disabled for all tracks by clicking the <strong>Changes Active</strong>
-            button or pressing <em>shift-\</em>.
             <br><br>
-            The <strong>Remember</strong> and <strong>Return</strong> buttons can set and then return a track
+            Auto-changes can be disabled for all tracks by clicking the <strong>Changes Active</strong>
+            button in the dashboard(right) or by pressing <em>shift-\</em>.
+            <br><br>
+            The track's <strong>Remember</strong> and <strong>Return</strong> buttons can set and then return a track
             to a remembered expression after it has changed.
-            These buttons are also available on the dashboard (left), where they affect all tracks at once.
-            Tracks will also reset to their remembered states when a scene loads
-            if the "on scene change" box is checked.
+            The <strong>Remember Tracks</strong> and <strong>Return Tracks</strong> on the dashboard (left), affect all tracks at once.
+            Tracks will reset to their remembered states when a scene loads
+            if the "on scene change" box is checked. (The <em>shift-{</em> shortcut will also return all tracks.)
             <br><br>
             Further features of the Track Controls sections include the track number,
             a <strong>Hide/Show</strong> button for track pitches (useful in ear training),
             a <strong>Mute</strong> button (<strong>M</strong>),
-            and a carrot-selector to open and close the panel of knobs that control the track's synthesizer.
+            and a carrot-selector to open and close the panel of knobs that control the track sounds.
           </p>
           <br><br>
           <h1>Changing Scenes and Compostion</h1>
@@ -204,23 +210,26 @@
             (in line with the Play button), or use <em>ctrl-alt-s</em>.
 
             <br><br>
-            Scenes can be "benched" to the right by clicking on the "<strong>-</strong>" button.
-            This removes them from the composition flow; benched scenes do not play.
-            They can be deleted with "<strong>-</strong>" or returned to the flow with "<strong>+</strong>".
             The order of scenes in the flow can be rearranged by mouse-dragging.
+            A scene can be "benched" (to the right) by clicking on the "<strong>-</strong>" button on the scene's tab.
+            This removes them from the composition flow; benched scenes do not play.
+            From there can be deleted with "<strong>-</strong>" or returned to the flow with "<strong>+</strong>".
 
             <br><br>
             You can switch to a scene by clicking on the scene's tab, or move one scene at a time through the composition flow
             with <em>shift-e</em> (forward) and <em>shift-w</em> (backward). Scenes change immediately if the app is not playing.
-            The "Scene change on:" selector specifies what increment will pass before changing scenes if the app is playing.
+            The <strong>Scene change on:</strong> selector specifies what increment will pass
+            before changing scenes if the app is playing.
+            (Note that if "Modulation" or "Form" is selected, the scene will only change if automodulation or a form is in use - see below.)
+            <br><br>
             If <strong>Chain: Off</strong> is selected, the scene will change at the end of the selected increment,
             and stay on that scene until another is selected.
             If <strong>Chain: On</strong> is selected, the scene will repeat the increment the number of times selected in the
             <strong>Chain Reps</strong> input field, and then advance. After playing all scenes in the flow, the
             composition will reset to the first scene and either restart or stop depending on
-            whether <strong>Loop</strong> or <strong>Once</strong> is selected. When a scene change is forthcoming, a blue bar fills to track the
-            time until the change and the name of the next scene appears after the arrow.
-            <strong>Load qwerty</strong> can be used to specify a setting for the player region (see below) to load along with the new scene.
+            whether <strong>Loop</strong> or <strong>Once</strong> is selected. When a scene change is forthcoming,
+            a blue bar fills to show the time until the change and the name of the next scene appears after the arrow.
+            <strong>Load Qwerty</strong> can be used to specify the setting Player Region that loads along with the scene.
           </p>
           <br><br>
           <h1>Modulation</h1>
@@ -231,7 +240,8 @@
             modulations follow a determined structure. Clicking the <strong>Modulate</strong>
             button will prompt the next modulation.
             When <strong>Auto On</strong> is selected,
-            the next modulation will happen along with the note-changing cycles of the Lead Track.
+            the next modulation will happen along with the note-changing cycles of the Lead Track,
+            according to the frequency in the adjacent input field ("per").
             When <strong>Filter On</strong> is selected, any changeable
             note on any track that is not also a pitch in the Piano Selector will be randomly assigned a new note.
 
@@ -260,7 +270,7 @@
             You can click in the <strong>Form Entry</strong> field, to use text to enter specific modes.
             Only lowercase letters are accepted, sharps are always used (no flats), and modes should be separated by spaces.
             For example, <strong>cdia d#dia</strong> will modulate between C diatonic and D#(Eb) diatonic.
-            To suggest a root pitch, you can specify the first note of the track by prefixing the mode with a letter name and a backslash.
+            You can specify the first note of the tracks by prefixing the mode with a letter name and a backslash.
             For example, <strong>f#\edia</strong> modulates to E diatonic and fixes a F# to the first note, likely yielding an F#-Dorian flavor.
             The current <strong>Modulation Step</strong> will be highlighed - note that when a form is chosen, it does not automatically
             advance to the first mode in the form. Click the Modulation button (or press <em>shift-p</em>) to begin the form.
@@ -283,8 +293,8 @@
             'PolySynth' can play multiple pitches at once, whereas 'MonoSynth' can only play one note at a time,
             but has the <strong>Portamento</strong> option for gliding the pitch between notes.
             The basic synthesizer <a href="https://en.wikipedia.org/wiki/Waveform" target="_blank">wave types</a>
-            are sine, triangle, sawtooth, and square. More complex synthesizers (AM, FM, Fat, and PWM)
-            waveforms are also available - these types open up additional controls when selected.
+            are sine, triangle, sawtooth, and square. More complex synthesizer sounds (AM, FM, Fat, and PWM)
+            are also available - these types open up additional controls when selected.
 
             <br><br>
             <strong class="underline">Sound Shaping & Effects</strong><br>
@@ -303,11 +313,10 @@
             flying saucer noises</a>.
 
             <br><br>
-            The filter can be modulated by a Low Frequency Oscillator (LFO). This periodically change the
+            The filter can be modulated by a Low Frequency Oscillator (LFO). This periodically changes the
             filter's Base Frequency setting according to another wave type which has it's own frequency
             (generally below 20Hz.)
-            <strong>Octaves</strong> determines the range of sweep of the modulating wave
-            above and below the Base Frequency,
+            <strong>Octaves</strong> determines the range of sweep above and below the Base Frequency,
             whereas <strong>Depth</strong> determines the depth of that sweep
             (ie: whether the sweep reaches maximum range, or only some fraction.)
             <br><br>
@@ -348,11 +357,11 @@
           <br><br>
           <h1>Arrow Keys</h1>
           <p>
-            <strong>when QWERTY player is focused</strong>: bend pitch<br>
             <strong>ctrl-left/right</strong>: moves cursor left/right 8 notes<br>
             <strong>alt-left/right</strong>: sets cursor to track start/end<br>
             <strong>ctrl-up/down</strong>: shifts editing note up/down in selected pitches<br>
             <strong>alt-up/down</strong>: shifts editing note up/down by an octave<br>
+            <strong>when QWERTY player is focused</strong>: bend pitch<br>
           </p>
           <br><br>
           <h1>Shifted QWERTY</h1>
@@ -363,7 +372,7 @@
             <strong>W</strong>: shift scene backward<br>
             <strong>E</strong>: shift scene forward<br>
             <strong>R</strong>: reset scene tracks<br>
-            <strong>T</strong>: focus BPM input<br>
+            <strong>T</strong>: focus tempo (BPM) input<br>
             <strong>Y</strong>: toggle scene chaining<br>
             <strong>U</strong>: toggle scene-chain looping<br>
             <strong>I</strong>: toggle modulation style<br>
@@ -401,13 +410,12 @@
           <p>
             <strong>ctrl-b</strong>: set track line groupings (for better arrangement of longer tracks)<br>
             <strong>ctrl-space</strong>: hold ctrl and press space repeatedly to set track color alternation (for alternate meters)<br>
-            <strong>ctrl-shift-p</strong>: toggle the editing track's sound panel<br>
             <strong>ctrl-shift-w</strong>: cancel scene change<br>
             <strong>ctrl-shift-e</strong>: cancel scene change<br>
+            <strong>ctrl-shift-p</strong>: toggle the editing track's sound panel<br>
             <strong>ctrl-shift-}</strong>: change all changeable notes of all tracks<br>
-            <strong>ctrl-shift-s</strong>: interpolate notes of editing track with rests)<br>
+            <strong>ctrl-shift-s</strong>: interpolate notes of editing track with rests<br>
             <strong>ctrl-shift-d</strong>: double the tune of the editing track<br>
-            <strong>ctrl-shift-f</strong>: change all changeable notes of all tracks<br>
             <strong>ctrl-shift-x</strong>: shift all editing track notes and range down an octave<br>
             <strong>ctrl-shift-c</strong>: shift all editing track notes and range up an octave<br>
             <strong>ctrl-shift-m</strong>: focus the "modulate per" input field<br>
