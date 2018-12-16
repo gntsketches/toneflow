@@ -686,16 +686,9 @@ export const store = new Vuex.Store({
         })
         scene.tracks[scene.editingTrackNumber].tune.push( {pitch:"_",random:'fixed'} )
       },
-      deleteNote: (state, change) => {
+      deleteNote: (state, payload) => {
         let scene = state.scenes[state.editingSceneNumber]
-        if (change === 'fromEndcap') {
-          if (scene.editingIndex > 0) {
-            scene.tracks[scene.editingTrackNumber].tune.splice(scene.editingIndex-1, 1)
-            scene.editingIndex--
-          }
-        } else if (change === 'currentNote') {
-          scene.tracks[scene.editingTrackNumber].tune.splice(scene.editingIndex, 1);
-        }
+        scene.tracks[payload.trackNumber].tune.splice(payload.noteIndex, 1)
       },
       toggleNoteRandom: (state) => {  // random what?
         let scene = state.scenes[state.editingSceneNumber]
@@ -1283,11 +1276,34 @@ export const store = new Vuex.Store({
         }
       },
       deleteNote: (context, change) => {
-        context.commit('deleteNote', change)
-        let scene = context.state.scenes[context.state.editingSceneNumber]
+        const scene = context.state.scenes[context.state.editingSceneNumber]
+        if (change === 'fromEndcap') {
+          if (scene.editingIndex > 0) {
+            context.commit('deleteNote', { trackNumber: scene.editingTrackNumber, noteIndex: scene.editingIndex-1 } )
+            context.commit('changeEditingIndex', 'decrement')
+          }
+        } else if (change === 'currentNote') {
+          context.commit('deleteNote', {trackNumber: scene.editingTrackNumber, noteIndex: scene.editingIndex } )
+        }
         if (scene.editingTrackNumber === context.getters.leadTrackNumber) {
           context.commit('updateSelectedLength', context.getters.toneTunes[context.getters.leadTrackNumber].length)
         }
+      },
+      deleteNoteFromAllTracks: (context) => {
+        const scene = context.state.scenes[context.state.editingSceneNumber]
+        scene.tracks.forEach( (track, index) => {
+          if (index === scene.editingTrackNumber) {
+            if (track.tune.length > 1) {
+              context.commit('deleteNote', {trackNumber: index, noteIndex: track.tune.length - 2})
+              if (scene.editingIndex >= track.tune.length) {
+                context.commit('changeEditingIndex', 'endcap')
+              }
+            }
+            context.commit('updateSelectedLength', track.tune.length-1)
+          } else {
+            context.commit('deleteNote', {trackNumber: index, noteIndex: track.tune.length - 1})
+          }
+        })
       },
       noteShift: (context, shift) => {
         let scene= context.state.scenes[context.state.editingSceneNumber]

@@ -115,6 +115,11 @@ listener.register_combo({
   "on_keydown"        : function() { this.$store.dispatch('addRandomNoteToAllTracks') },
   "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
 });
+  listener.register_combo({
+    "keys"              : "control shift -",
+    "on_keydown"        : function() { this.$store.dispatch('deleteNoteFromAllTracks') },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+  });
 listener.register_combo({
   "keys"              : "control shift z",
   "on_keydown"        : function() { console.log("*") },

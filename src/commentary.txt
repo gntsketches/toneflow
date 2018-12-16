@@ -13,10 +13,11 @@ Settings > Plugin > Browse Repositories > Keypromoter (prompts when you do a mou
 
 Reddit: Use the IDEs refactor > rename function when renaming files.
 
+Autocomplete
+  - with camel casing, document.gebi -> document.getElementById
+  - alt-/ brings up hippie completion
 
-- check Vue forum post re: keyup.enter for selects
-  - note that you probably don't want to do that anyway because if you're tabbing through inputs, you'll need to use Enter to open the dropdowns (unless you want to install something like https://stackoverflow.com/questions/6210800/javascript-force-select-element-to-dropdown )
-
+https://blog.jetbrains.com/webstorm/2015/06/10-webstorm-shortcuts-you-need-to-know/
 
 ********************************************************************************************************************
 * CURRENT CODING
@@ -26,11 +27,8 @@ Reddit: Use the IDEs refactor > rename function when renaming files.
 
 OBS: https://www.youtube.com/watch?v=DTk99mHDX_I
 
-  - shortcut to remove last from all tracks (ctrl shift -)
-    - need to use payload to optionally specify trackindex to commit
+- sleep "min" breaks the layout on website...?
 
-
-- sleep "min" breaks the layout on website
 
 - nicer settings for initial load-up
 
@@ -61,6 +59,10 @@ OBS: https://www.youtube.com/watch?v=DTk99mHDX_I
 
   Easier:
     - Make track-all-rests shortcut
+      - all tracks all rests...
+    - double each note
+      - on all tracks
+      - also option to spread all tracks
 
   More Involved:
     - function to clear all sounds. option on scene change & shortcut shift - minus!)
@@ -572,6 +574,9 @@ GITHUB
   - lengthen and shorten note duration of each note with shift-arrows
       - use gradient to show note stretch behind other notes
       - will it accept, say, 3 8n ? or how does that work?
+
+  - group sets of notes on a track and have them change in tandem (to same new pitch, or by same step/skip/leap within the key)
+    - ?the UI on this?
 
   - edit scene without changing/playing it (previous scene still plays in the background)
 
