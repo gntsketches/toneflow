@@ -24,28 +24,24 @@ Reddit: Use the IDEs refactor > rename function when renaming files.
 ---> needs some overall housekeeping in the store!
 
 
-TODO:
-
 OBS: https://www.youtube.com/watch?v=DTk99mHDX_I
 
+  - shortcut to remove last from all tracks (ctrl shift -)
+    - need to use payload to optionally specify trackindex to commit
 
-- if you arrow up to increase sleep from 0 it stops right away (sometimes...!)
+
 - sleep "min" breaks the layout on website
 
 - nicer settings for initial load-up
 
 
 ---> for Yotam...
-  - https://github.com/Tonejs/Tone.js/issues/404
   - multi-track tester: https://codepen.io/anon/pen/zLJzdq
     - https://codepen.io/anon/pen/LMpegy?editors=1010
   - https://cdnjs.com/libraries/tone
 
 
 - https://www.reddit.com/r/vuejs/comments/a5apqr/strategiesbest_practices_for_dev_vs_live_folder/
-
-
-- likewise adjust gain for player-qwerty
 
 
 - Test with save & load
@@ -56,11 +52,6 @@ OBS: https://www.youtube.com/watch?v=DTk99mHDX_I
   - (ok...) will track.instrumentType crash compositions established without it? (not if I did it right...)
   - (ok...) test qwerty updates with updatePlayerStuff()
 
-****************************************************************************
-BEAUTIFY
-******************************************************
-- working with distortions .wet.value = 0.5
-- try compression? as recommended: https://www.reddit.com/r/webaudio/comments/8uxg8j/understanding_performance_with_webaudio_and_tonejs/
 
 
 ************************************************************************************************/
@@ -69,18 +60,17 @@ BEAUTIFY
 {
 
   Easier:
-    - shortcut to add random to all tracks or remove last from all tracks (ctrl shift +/-)
     - Make track-all-rests shortcut
 
   More Involved:
-    - new algorithm for rest notes - so that a track with low pitch% always changes _something_
-    - one mouse click on note brings editing cursor - if you click a qwerty it'll change to that note...
-    - change note curvature on mouse double click (for better mobile use)
     - function to clear all sounds. option on scene change & shortcut shift - minus!)
     - option to apply portamento only when multiple keys are pressed
       - why does the non-app version do that by default?!
       - can you pass in ' ' or 0 to synth to clear the last note?
+    - new algorithm for rest notes - so that a track with low pitch% always changes _something_
     - record options: mp3 & MIDI export (& soundcloud upload...)
+    - one mouse click on note brings editing cursor - if you click a qwerty it'll change to that note...
+    - change note curvature on mouse double click (for better mobile use)
       - will require a rebuild of GlobalControls - to incorporate dropdowns
     - change size of info box... https://www.npmjs.com/pac/vue-draggable-resizable
     - option to make all first notes the same in drift modulation
@@ -247,7 +237,8 @@ TRANsSMISSION (advanceAndPlayTrack)
 * AUDIO DESIGN
 ********************************************************************************************************/
   - what is the difference between gain and volume? (in terms of ToneJS)
-
+  - working with distortions .wet.value = 0.5
+  - try compression? as recommended: https://www.reddit.com/r/webaudio/comments/8uxg8j/understanding_performance_with_webaudio_and_tonejs/
 
 ******************************************************************************************************
 * DESIGN & UI HMMM

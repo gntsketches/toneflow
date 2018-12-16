@@ -132,11 +132,13 @@
             Pressing the arrow keys while playing the Qwerty will bend the pitch.
 
             Like on tracks, the instrument and sound settings can be adjusted with the adjacent fields and knobs.
-            You can save these <strong>Settings</strong> to Qwerty Player region, with the numbered buttons in the left hand side.
+            You can save these <strong>Settings</strong> to Qwerty Player region,
+            with the numbered buttons in the left hand side.
             To do so, right-click on a button or press <em>ctrl-shift-(number key)</em> in a sequence
             (one at a time, not simultaneously.)
             The button is blue when a setting has been saved. To switch settings, left-click a button or press
-            <em>shift-(number)</em>. ("0" restores the default settings.) The current setting is highlighted with a green border.
+            <em>shift-(number)</em>. ("0" restores the default settings.)
+            The current setting is highlighted with a green border.
 
           </p>
           <br><br>
@@ -276,7 +278,7 @@
           <br><br>
           <h1>Sounds</h1>
           <p>
-            Toneflow's uses instrument samples and synthesizers, both of which can be shaped and altered in various ways.
+            Toneflow uses instrument samples and synthesizers, both of which can be shaped and altered in various ways.
             The same sound options are available for Tracks and for the Qwerty keyboard.
             'PolySynth' can play multiple pitches at once, whereas 'MonoSynth' can only play one note at a time,
             but has the <strong>Portamento</strong> option for gliding the pitch between notes.
@@ -341,11 +343,12 @@
             <strong>+</strong>: Toggle note-entry sound<br>
             <strong>Tab</strong>: Change focus to next input field<br>
             <strong>Shift-Tab</strong>: Change focus to previous input field<br>
-            <strong>Enter</strong>: Adds a new track<br>
+            <strong>Ctrl-Enter</strong>: Adds a new track<br>
           </p>
           <br><br>
           <h1>Arrow Keys</h1>
           <p>
+            <strong>when QWERTY player is focused</strong>: bend pitch<br>
             <strong>ctrl-left/right</strong>: moves cursor left/right 8 notes<br>
             <strong>alt-left/right</strong>: sets cursor to track start/end<br>
             <strong>ctrl-up/down</strong>: shifts editing note up/down in selected pitches<br>
@@ -354,6 +357,8 @@
           <br><br>
           <h1>Shifted QWERTY</h1>
           <p>
+            <strong>0-9</strong>: load QWERTY Player settings (0 is default)
+            <br><br>
             <strong>Q</strong>: focus Piano-Selector<br>
             <strong>W</strong>: shift scene backward<br>
             <strong>E</strong>: shift scene forward<br>
@@ -363,7 +368,7 @@
             <strong>U</strong>: toggle scene-chain looping<br>
             <strong>I</strong>: toggle modulation style<br>
             <strong>O</strong>: toggle auto-modulation<br>
-            <strong>P</strong>: modulate Piano-Selector<br>
+            <strong>P</strong>: modulate or queue modulation<br>
             <strong>{</strong>: return all tracks to remembered tunes<br>
             <strong>}</strong>: apply changes to all tracks<br>
             <strong>|</strong>: toggle changes-active<br>
@@ -394,13 +399,32 @@
           <br><br>
           <h1>Ctrl Key</h1>
           <p>
-            <strong>ctrl-d</strong> : double editing track<br>
-            <strong>ctrl-s</strong>: interpolate notes of editing track with rests<br>
-            <strong>ctrl-b</strong> : set track line groupings (for better arrangement of longer tracks)<br>
+            <strong>ctrl-b</strong>: set track line groupings (for better arrangement of longer tracks)<br>
             <strong>ctrl-space</strong>: hold ctrl and press space repeatedly to set track color alternation (for alternate meters)<br>
+            <strong>ctrl-shift-p</strong>: toggle the editing track's sound panel<br>
+            <strong>ctrl-shift-w</strong>: cancel scene change<br>
+            <strong>ctrl-shift-e</strong>: cancel scene change<br>
+            <strong>ctrl-shift-}</strong>: change all changeable notes of all tracks<br>
+            <strong>ctrl-shift-s</strong>: interpolate notes of editing track with rests)<br>
+            <strong>ctrl-shift-d</strong>: double the tune of the editing track<br>
+            <strong>ctrl-shift-f</strong>: change all changeable notes of all tracks<br>
             <strong>ctrl-shift-x</strong>: shift all editing track notes and range down an octave<br>
             <strong>ctrl-shift-c</strong>: shift all editing track notes and range up an octave<br>
+            <strong>ctrl-shift-m</strong>: focus the "modulate per" input field<br>
           </p>
+
+          <br><br>
+          <h1>Sequence Shortcuts</h1>
+          <p>
+            (Press the keys one at a time, not together)<br>
+            <strong>ctrl-shift-(number)</strong>: save QWERTY Player settings (default cannot be overwritten)<br>
+            <strong>ctrl-shift-+</strong>: add a random note to all tracks<br>
+            <strong>ctrl-shift--</strong>: delete the last note of all tracks<br>
+            <strong>ctrl-shift-i</strong>: reset the app's audio (may help with errors) <br>
+            <strong>ctrl-shift-s</strong>: add a new scene<br>
+          </p>
+
+          <br><br>
 
       </div>
 

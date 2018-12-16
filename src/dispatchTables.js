@@ -6,6 +6,26 @@ export function keypress() {
 
   // CTRL-SHIFT-
   listener.register_combo({
+    "keys"              : "control shift w",
+    "on_keydown"        : function() { this.$store.commit('setSceneAdvanceCued', false) },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
+  });
+  listener.register_combo({
+    "keys"              : "control shift e",
+    "on_keydown"        : function() { this.$store.commit('setSceneAdvanceCued', false) },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
+  });
+  listener.register_combo({
+    "keys"              : "control shift p",
+    "on_keydown"        : function() { this.$store.commit('toggleSoundPanel', this.editingTrackNumber) },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
+  });
+  listener.register_combo({
+    "keys"              : "control shift }",
+    "on_keydown"        : function() { this.$store.dispatch('changeAll', 'all')},
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
+  });
+  listener.register_combo({
     "keys"              : "control shift s",
     "on_keydown"        : function() { this.$store.dispatch('spreadTune') },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
@@ -31,23 +51,8 @@ export function keypress() {
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
   listener.register_combo({
-    "keys"              : "control shift w",
-    "on_keydown"        : function() { this.$store.commit('setSceneAdvanceCued', false) },
-    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
-  });
-  listener.register_combo({
-    "keys"              : "control shift e",
-    "on_keydown"        : function() { this.$store.commit('setSceneAdvanceCued', false) },
-    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
-  });
-  listener.register_combo({
     "keys"              : "control shift m",
     "on_keydown"        : function() { findAndFocus.call(this, '#modulatePerLeadChanges') },
-    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
-  });
-  listener.register_combo({
-    "keys"              : "control shift }",
-    "on_keydown"        : function() { this.$store.dispatch('changeAll', 'all')},
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
   });
 
@@ -106,6 +111,11 @@ listener.register_combo({
   "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
 });
 listener.register_combo({
+  "keys"              : "control shift =",
+  "on_keydown"        : function() { this.$store.dispatch('addRandomNoteToAllTracks') },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
   "keys"              : "control shift z",
   "on_keydown"        : function() { console.log("*") },
   "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
@@ -116,24 +126,16 @@ listener.register_combo({
   "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
 });
 listener.register_combo({
-  "keys"              : "control shift p",
-  "on_keydown"        : function() { this.$store.commit('toggleSoundPanel', this.editingTrackNumber) },
-  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
-});
-listener.register_combo({
   "keys"              : "control shift i",
   "on_keydown"        : function() { this.$store.dispatch('initializeSceneAudio', this.$store.state.editingSceneNumber) },
   "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
 });
+listener.register_combo({
+  "keys"              : "control shift s",
+  "on_keydown"        : function() { this.$store.dispatch('setUpNewScene') },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
 
-
-
-  // CTRL-ALT
-  listener.register_combo({
-    "keys"              : "control alt s",
-    "on_keydown"        : function() { this.$store.dispatch('setUpNewScene') },
-    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
-  });
 
 
 
@@ -157,16 +159,6 @@ listener.register_combo({
       "this": this,  "prevent_default": false, "prevent_repeat": false, "is_counting": true,
   });
   listener.register_combo({
-    "keys"              : "alt left",
-    "on_keydown"        : function() { this.$store.commit('changeEditingIndex', 'zero') },
-    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
-  });
-  listener.register_combo({
-    "keys"              : "alt right",
-    "on_keydown"        : function() { this.$store.commit('changeEditingIndex', 'endcap') },
-    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
-  });
-  listener.register_combo({
     "keys"              : "control left",
     "on_keydown"        : function() { this.$store.commit('changeEditingIndex', 'minusEight') },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
@@ -186,6 +178,18 @@ listener.register_combo({
     "on_keydown"        : function() { this.$store.dispatch('noteShift', 'pitchSetFullRange-down') },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
+
+  // ALT-
+  listener.register_combo({
+    "keys"              : "alt left",
+    "on_keydown"        : function() { this.$store.commit('changeEditingIndex', 'zero') },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
+  });
+  listener.register_combo({
+    "keys"              : "alt right",
+    "on_keydown"        : function() { this.$store.commit('changeEditingIndex', 'endcap') },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
+  });
   listener.register_combo({
     "keys"              : "alt up",
     "on_keydown"        : function() { this.$store.dispatch('noteShift', 'octave-up') },
@@ -199,13 +203,6 @@ listener.register_combo({
 
 }
 
-// taken:
-  // ctr-sh-s,
-  // ctr-sh-x, ctr-sh-c
-
-  // ctr-d
-  // ctr-b
-  // ctr-space
 
 
 

@@ -713,7 +713,12 @@ export const store = new Vuex.Store({
       },
       spliceNoteIntoTune: (state, payload) => {
         let scene = state.scenes[state.editingSceneNumber]
-        scene.tracks[scene.editingTrackNumber].tune.splice(payload.start, payload.delete, payload.insert)
+        if (payload.trackIndex || payload.trackIndex === 0){
+          console.log(scene.tracks[payload.trackIndex].tune)
+          scene.tracks[payload.trackIndex].tune.splice(payload.start, payload.delete, payload.insert)
+        } else {
+          scene.tracks[scene.editingTrackNumber].tune.splice(payload.start, payload.delete, payload.insert)
+        }
       },
       updateTrackNote: (state, payload) => {
         let scene = state.scenes[state.editingSceneNumber]
@@ -1246,6 +1251,16 @@ export const store = new Vuex.Store({
         if (scene.editingTrackNumber === context.getters.leadTrackNumber) {
           context.commit('updateSelectedLength', context.getters.toneTunes[context.getters.leadTrackNumber].length)
         }
+      },
+      addRandomNoteToAllTracks: (context) => {
+        let scene = context.state.scenes[context.state.editingSceneNumber]
+        scene.tracks.forEach( (track, index) => {
+          const pitch = randomElement(context.getters.pitchSets[index]);
+          const note = { pitch: pitch, random: 'rests' }
+          const start = scene.editingTrackNumber === index ? -1 : scene.tracks[index].tune.length
+          context.commit('spliceNoteIntoTune', { start:start, delete:0, insert:note, trackIndex: index })
+        })
+        context.commit('updateSelectedLength', context.getters.toneTunes[context.getters.leadTrackNumber].length)
       },
       noteEntry: (context, payload) => {
         let scene = context.state.scenes[context.state.editingSceneNumber]
