@@ -191,7 +191,6 @@ export default {
 
       let leadTrack = this.scene.tracks[this.leadTrackNumber]
       let leadTrackTune = this.toneTunes[this.leadTrackNumber]
-      console.log('tTI', leadTrack.toneTuneIndex)
 
       switch (this.scene.sceneChangeIncrement){
           case 'Lead Cycle':

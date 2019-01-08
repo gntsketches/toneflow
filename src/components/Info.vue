@@ -267,6 +267,7 @@
             left-click on the pitch names (above the mode names) to toggle this, or right-click to select only one root pitch.
 
             <br><br>
+            <strong>Modulation Form</strong><br>
             You can click in the <strong>Form Entry</strong> field, to use text to enter specific modes.
             Only lowercase letters are accepted, sharps are always used (no flats), and modes should be separated by spaces.
             For example, <strong>cdia d#dia</strong> will modulate between C diatonic and D#(Eb) diatonic.

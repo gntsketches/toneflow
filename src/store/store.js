@@ -889,6 +889,7 @@ export const store = new Vuex.Store({
 
       // SCENE MANAGEMENT
       setUpNewScene: context => {
+        console.log('setting up new scene')
         const newScene = JSON.parse(JSON.stringify(context.state.newSceneDefaults))
         let sceneIdNumber = Math.random().toString().slice(2)
         newScene.id = sceneIdNumber
@@ -1533,7 +1534,6 @@ export const store = new Vuex.Store({
         }
       },
       updateTrackSoundParams: (context, payload) => {
-        console.log('payload', payload)
         if (payload.value === '' || (typeof payload.value === 'string' && payload.value.slice(0,1) === '.') ) { return }
         context.dispatch('setTrackAMSoundParams',  { param: payload.param, sceneTitle: context.getters.activeSceneTitle, trackNumber: payload.trackNumber, value: payload.value, track: payload.track } )
         context.commit('updateTrackSoundParams', { param: payload.param, trackNumber: payload.trackNumber, value: payload.value })
@@ -1615,26 +1615,30 @@ export const store = new Vuex.Store({
         track.tune.forEach( (note, index) => {
           if ( (note.random === 'rests' || note.random === 'noRests') && note.pitch != '_') { changeableNoteIndexes.push(index) }
         })
-        shuffle(changeableNoteIndexes)
-        let changeTotal = payload.all ? context.getters.maxChangeables[payload.trackIndex] : track.changeTotal
-        for (let i=0; i < changeTotal; i++) {
-          let prevPitch = track.tune[changeableNoteIndexes[i]].pitch
-          let newPitch = ''
-          if (pitchSet.length > 1) {
-            do {
-              newPitch = randomElement(pitchSet)
-            } while (newPitch === prevPitch)
-          } else {
-            newPitch = pitchSet[0]
-          }
-          if (track.tune[changeableNoteIndexes[i]].random === 'rests' &&  Math.random()*100 > track.pitchPercent) { newPitch = ' ' }
+        if (changeableNoteIndexes.length > 0) {
+          shuffle(changeableNoteIndexes)
+          let changeTotal = payload.all ? context.getters.maxChangeables[payload.trackIndex] : track.changeTotal
+          for (let i = 0; i < changeTotal; i++) {
+            let prevPitch = track.tune[changeableNoteIndexes[i]].pitch
+            let newPitch = ''
+            if (pitchSet.length > 1) {
+              do {
+                newPitch = randomElement(pitchSet)
+              } while (newPitch === prevPitch)
+            } else {
+              newPitch = pitchSet[0]
+            }
+            if (track.tune[changeableNoteIndexes[i]].random === 'rests' && Math.random() * 100 > track.pitchPercent) {
+              newPitch = ' '
+            }
             // why is this after the doWhile? shouldn't this be first and doWhile be in an else?
             // && (prevPitch != ' ' || pitchSet.length === 1) // see commentary
-          context.commit('changeTuneNote', {
-            trackIndex: payload.trackIndex,
-            tuneIndex: changeableNoteIndexes[i],
-            pitch: newPitch
-          } )
+            context.commit('changeTuneNote', {
+              trackIndex: payload.trackIndex,
+              tuneIndex: changeableNoteIndexes[i],
+              pitch: newPitch
+            })
+          }
         }
         if (scene.filterPitchesOnChange && payload.trackIndex === context.getters.leadTrackNumber){
           scene.tracks.forEach( (track, index) => {

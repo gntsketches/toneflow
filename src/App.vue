@@ -310,50 +310,52 @@ export default {
 
     methods : {
 
-      advanceAndPlayTrack(track, index, time){
-        //console.log('track', index, track.changeTriggered)
+      checkForTrackChanges(track, index){
+        //console.log(index, "ttI", track.toneTuneIndex)
         if (this.scene.started === false) { this.$store.commit('startScene') }
 
         // IF LEAD TRACK, CHECK CHANGE AND MODULATION TRIGGERS
         if (track.id === this.scene.leadTrackId){
-            if (track.toneTuneIndex === 0 && this.scene.modulationTriggered){
-                this.$store.dispatch('morphSelectedNotes')
-                this.$store.commit('toggleModulationTriggered', false)
+          if (track.toneTuneIndex === 0 && this.scene.modulationTriggered){
+            this.$store.dispatch('morphSelectedNotes')
+            this.$store.commit('toggleModulationTriggered', false)
+          }
+          if (track.toneTuneIndex === 0 && track.changeTriggered){
+            this.$store.dispatch('changeTune', { trackIndex: index, all: false } )
+            this.$store.commit('toggleTrackChangeTriggered', { index: index, bool: false } )
+          }
+          if (this.$store.state.sceneAdvanceTriggered){
+            this.$store.commit('resetScene')
+            if (this.scene.resetRememberedOnSceneChange) {
+              this.$store.dispatch('returnAllTunes')
             }
-            if (track.toneTuneIndex === 0 && track.changeTriggered){
-                this.$store.dispatch('changeTune', { trackIndex: index, all: false } )
-                this.$store.commit('toggleTrackChangeTriggered', { index: index, bool: false } )
+            if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
+              this.$store.state.chain && this.$store.state.chainLoop === false) {
+              this.togglePlay()
+              // there is some reason these have to come after in this if-block, why?
+              this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & sceneAdvanceTriggered biz
+              this.$store.dispatch('changeScene')
+              this.$store.commit('setSceneAdvanceTriggered', false)
+              return
             }
-            if (this.$store.state.sceneAdvanceTriggered){
-                this.$store.commit('resetScene')
-                if (this.scene.resetRememberedOnSceneChange) {
-                  console.log('reseting remembered')
-                  this.$store.dispatch('returnAllTunes')
-                }
-                if (this.$store.state.editingSceneNumber >= this.$store.state.scenes.length-1 &&
-                  this.$store.state.chain && this.$store.state.chainLoop === false) {
-                    this.togglePlay()
-                    // there is some reason these have to come after in this if-block, why?
-                    this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & sceneAdvanceTriggered biz
-                    this.$store.dispatch('changeScene')
-                    this.$store.commit('setSceneAdvanceTriggered', false)
-                    return
-                }
-                this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & sceneAdvanceTriggered biz
-                this.$store.dispatch('changeScene')
-                console.log('app tTI', this.leadTrack.toneTuneIndex)
-                this.$store.commit('setSceneAdvanceTriggered', false)
-            }
-            if (this.$store.state.chain && this.$store.state.sceneChangeNumber === this.$store.state.editingSceneNumber) {
-              this.$store.dispatch('setUpSceneChange', 'forward')
-            }
+            this.$store.commit('updateFormStep', 'zero')  // having this here feels rather cludgey. there must be a cleaner way to do this formStep & sceneAdvanceTriggered biz
+            console.log("changing scene")
+            this.$store.dispatch('changeScene')
+            this.$store.commit('setSceneAdvanceTriggered', false)
+          }
+          if (this.$store.state.chain && this.$store.state.sceneChangeNumber === this.$store.state.editingSceneNumber) {
+            this.$store.dispatch('setUpSceneChange', 'forward')
+          }
         } else {
           // CHANGE OTHER TRACKS
           if (track.toneTuneIndex === 0 && track.changeTriggered){
-              this.$store.dispatch('changeTune', { trackIndex: index, all: false } )
-              this.$store.commit('toggleTrackChangeTriggered', { index: index, bool: false } )
+            this.$store.dispatch('changeTune', { trackIndex: index, all: false } )
+            this.$store.commit('toggleTrackChangeTriggered', { index: index, bool: false } )
           }
         }
+      },
+
+      advanceAndPlayTrack(track, index, time){
 
         // ESTABLISH TONETUNE
         let toneTune = this.toneTunes[index] // 'pass-by-reference', more complicated than I thought. When this is above CHECK CHANGE ANS MODULATION TIGEERS, play function gets the old array after change... https://stackoverflow.com/questions/7744611/pass-variables-by-reference-in-javascript
@@ -367,7 +369,6 @@ export default {
             AM.scenes[this.scene.title].instruments[index].triggerAttackRelease(pitch, track.noteDuration, time)
           }
         }
-
 
         // ADVANCE TRACK STEP and TRIGGERS CASCADE
         if (track.toneTuneIndex < toneTune.length-1) {
@@ -399,11 +400,8 @@ export default {
                       this.$store.dispatch('checkAdvanceCueVsChangeIncrement', { track: track, increment: 'Modulation', index: index } )
                     }
                 }
-
             }
-
         }
-
       },
 
       playEntryPitch(pitch){
@@ -417,7 +415,6 @@ export default {
         this.$store.commit('toggleEntrySound')
       },
       togglePlay(){
-        console.log('toggling play')
         this.$store.commit('togglePlay')
       },
   		play(){
@@ -701,10 +698,14 @@ export default {
 
       // TONE SETUP
   		this.scheduleId = Tone.Transport.scheduleRepeat(time => {  // ;console.log("scheduleRepeat")  // Cleared below
-        this.advanceAndPlayTrack(this.tracks[this.$store.getters.leadTrackNumber], this.$store.getters.leadTrackNumber, time)
+  		  this.tracks.forEach( (track, index) => {
+  		    this.checkForTrackChanges(track, index)
+        })
+        //this.advanceAndPlayTrack(this.tracks[this.$store.getters.leadTrackNumber], this.$store.getters.leadTrackNumber, time)
         this.tracks.forEach( (track, index) => {
-          if (index === this.$store.getters.leadTrackNumber) { return }
-          else { this.advanceAndPlayTrack(track, index, time) }
+          //if (index === this.$store.getters.leadTrackNumber) { return }
+          //else { this.advanceAndPlayTrack(track, index, time) }
+          this.advanceAndPlayTrack(track, index, time)
         })
         const d = new Date
         this.$store.commit('updateCurrentTime', d.getTime())

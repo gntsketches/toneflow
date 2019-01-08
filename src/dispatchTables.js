@@ -26,11 +26,6 @@ export function keypress() {
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
   });
   listener.register_combo({
-    "keys"              : "control shift s",
-    "on_keydown"        : function() { this.$store.dispatch('spreadTune') },
-    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
-  });
-  listener.register_combo({
     "keys"              : "control shift d",
     "on_keydown"        : function() { this.$store.dispatch('doubleTune') },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
