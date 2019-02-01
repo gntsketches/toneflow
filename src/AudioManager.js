@@ -284,6 +284,19 @@ export let AudioManager = {
             'baseUrl' : 'assets/tones/stringSection_mp3s/'
           })
           break
+        case 'digiHarp':
+          instrument = new Tone.Sampler({
+            "C1" : "digiHarp_C0.mp3",
+            "C2" : "digiHarp_C1.mp3",
+            "C3" : "digiHarp_C2.mp3",
+            "C4" : "digiHarp_C3.mp3",
+            "C5" : "digiHarp_C4.mp3",
+            "C6" : "digiHarp_C5.mp3",
+            "C7" : "digiHarp_C6.mp3",
+          }, {
+            'baseUrl' : 'assets/tones/digiHarp_mp3s/'
+          })
+          break
       }
     }
     return instrument

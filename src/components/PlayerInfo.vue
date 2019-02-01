@@ -132,7 +132,7 @@
         <div class="player-controls">
           <div>Release</div>
           <knob-control class="knob-control" v-model="playerRelease"  :min="0" :max="30" :stepSize="0.1" :size="40" ></knob-control>
-          <input type="number" v-model.lazy="playerRelease" :min="0" :max="30" :step="0.05" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
+          <input id="playerRelease" type="number" v-model.lazy="playerRelease" :min="0" :max="30" :step="0.05" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
 
         <div class="player-controls" v-if="this.$store.state.playerParams.instrumentType === 'monoSynth'">
@@ -228,7 +228,7 @@ export default {
   data: () => ({
     QWERTYDisplayOptions: ['Rows-Octave', 'Rows-Fifth', 'Clusters'],
     instrumentTypeOptions: ['monoSynth', 'polySynth', 'sampler'],
-    sampleOptions: ['gtrSwell', 'gtrMute', 'bassGtr', 'piano', 'elecPno1', 'elecPno2', 'elecPno3', 'marimba', 'strings'],
+    sampleOptions: ['gtrSwell', 'gtrMute', 'bassGtr', 'piano', 'elecPno1', 'elecPno2', 'elecPno3', 'digiHarp', 'marimba', 'strings'],
     waveNameOptions: [
       'sine','triangle','sawtooth','square',
       'amsine','amtriangle','amsawtooth','amsquare',

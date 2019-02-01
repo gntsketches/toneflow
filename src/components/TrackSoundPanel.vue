@@ -89,8 +89,8 @@
                     this.track.waveType === 'fmsawtooth' || this.track.waveType === 'fmsquare' ) "
         >
           <div>Harmonicity</div>
-          <knob-control class="knob-control" v-model="harmonicity"  :min="0" :max="4" :stepSize="0.01" :size="40" ></knob-control>
-          <input type="number" v-model.lazy="harmonicity" :min="0" :max="4" :step="0.01" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
+          <knob-control class="knob-control" v-model="harmonicity"  :min="0" :max="4" :stepSize="0.001" :size="40" ></knob-control>
+          <input type="number" v-model.lazy="harmonicity" :min="0" :max="4" :step="0.001" @focus="focusFunction" @keyup.enter="enterFunction($event)" @blur="enterFunction($event)" />
         </div>
 
         <div class="track-controls"
@@ -241,11 +241,11 @@ export default {
 
   data: () => ({
     instrumentTypes: ['monoSynth', 'polySynth', 'sampler'],
-    sampleOptions: ['gtrSwell', 'gtrMute', 'bassGtr', 'piano', 'elecPno1', 'elecPno2', 'elecPno3', 'marimba', 'strings'],
+    sampleOptions: ['gtrSwell', 'gtrMute', 'bassGtr', 'piano', 'elecPno1', 'elecPno2', 'elecPno3', 'digiHarp', 'marimba', 'strings'],
     waveNameOptions: [
       'sine','triangle','sawtooth','square', 'amsine','amtriangle','amsawtooth','amsquare',
-      'fmsine','fmtriangle','fmsawtooth','fmsquare', 'fatsine','fattriangle','fatsawtooth','fatsquare', 'pwm',
-    ],
+    'fmsine','fmtriangle','fmsawtooth','fmsquare', 'fatsine','fattriangle','fatsawtooth','fatsquare', 'pwm',
+],
     modulationTypes: ['sine', 'triangle', 'sawtooth', 'square'],
     relativeDurations: ['32n', '16n', '8n', '4n', '2n', '1m', '2m', '4m'],
     filterTypes: ['lowpass', 'highpass', 'bandpass', 'notch', 'allpass'],
@@ -288,7 +288,7 @@ export default {
       set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'modulationType', trackNumber: this.trackNumber, value:value, track:this.track }) },
     },
     harmonicity: {
-      get(){ return Math.round(this.track.harmonicity*100)/100 },
+      get(){ return Math.round(this.track.harmonicity*1000)/1000 },
       set(value){ this.$store.dispatch('updateTrackSoundParams', { param:'harmonicity', trackNumber: this.trackNumber, value:value, track:this.track }) },
     },
     modulationIndex: {

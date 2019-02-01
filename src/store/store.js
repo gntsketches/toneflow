@@ -600,8 +600,13 @@ export const store = new Vuex.Store({
         scene.tracks[payload.trackNumber].waveType = payload.wave
       },
       updateTrackSoundParams: (state, payload) => {
-        let scene = state.scenes[state.editingSceneNumber]
+        console.log('uTSP commit payload', payload)
+        let sceneNumber = payload.sceneNumber ? payload.sceneNumber : state.editingSceneNumber
+        let scene = state.scenes[sceneNumber]
+        console.log('scene.title', scene.title)
+        console.log('scene.tracks', scene.tracks)
         let track = scene.tracks[payload.trackNumber]
+        console.log('track', track)
         track[payload.param] = payload.value
         if (payload.param === 'gain' && track.muted) { track.muted = false }
       },
@@ -977,8 +982,8 @@ export const store = new Vuex.Store({
         }
       },
       initializeSceneAudio: (context, sceneNumber) => {
-          console.log('initializing scene audio')
-          let title = context.state.scenes[sceneNumber].title
+        let title = context.state.scenes[sceneNumber].title
+        console.log('initializing scene audio for ', sceneNumber, title)
           let sceneAudio = AM.scenes[title]
           for (let nodeList in sceneAudio){
             sceneAudio[nodeList].forEach( (nodeListItem, index) => {
@@ -1018,7 +1023,7 @@ export const store = new Vuex.Store({
                 case 'sampler': return track.samplerGainDefault
               }
             })()
-            context.dispatch('updateTrackSoundParams', { param:'gain', trackNumber: tracksIndex, value:gainValue, track: track })
+            context.dispatch('updateTrackSoundParams', { param:'gain', sceneNumber: sceneNumber, title: title, trackNumber: tracksIndex, value:gainValue, track: track })
 
           })
           //AM.scenes[title].instruments.forEach( (synth, i) => synth.toMaster() )
@@ -1429,7 +1434,10 @@ export const store = new Vuex.Store({
       },
 
       // TRACK CONTROLS
-      changeTrackInstrumentOrSample: (context, payload) => {  // this may actually be confusing/problematic to not have two different functions for this, even though they would be the same
+      changeTrackInstrumentOrSample: (context, payload) => {
+        // this may actually be confusing/problematic to not have two different functions for this, even though they would be the same
+        // also: note that this does not pass the scene title in the payload. currently this is found by ternary in updateTrackSoundParams
+        // likewise, it does not pass the sceneNumber, this is also found by ternary
         if ( (payload.value === 'polySynth' || payload.value === 'monoSynth') && payload.track.instrumentType ==='sampler' ) {
           context.commit('changeTrackNoteDuration', { trackNumber: payload.trackNumber, duration: '8n' } )
         } else if (payload.value === 'sampler' && (payload.track.instrumentType === 'monoSynth' || payload.track.instrumentType === 'polySynth') ) {
@@ -1445,6 +1453,7 @@ export const store = new Vuex.Store({
         })
       },
       setTrackAMSoundParams: (context, payload) => {
+        console.log('setTrackAMSoundParams', payload)
         switch (payload.param){
           case 'gain':
             AM.scenes[payload.sceneTitle].gains[payload.trackNumber].gain.value = payload.value
@@ -1534,9 +1543,11 @@ export const store = new Vuex.Store({
         }
       },
       updateTrackSoundParams: (context, payload) => {
+        console.log('uTSP dispatch payoad', payload)
+        let title = payload.title ? payload.title : context.getters.activeSceneTitle
         if (payload.value === '' || (typeof payload.value === 'string' && payload.value.slice(0,1) === '.') ) { return }
-        context.dispatch('setTrackAMSoundParams',  { param: payload.param, sceneTitle: context.getters.activeSceneTitle, trackNumber: payload.trackNumber, value: payload.value, track: payload.track } )
-        context.commit('updateTrackSoundParams', { param: payload.param, trackNumber: payload.trackNumber, value: payload.value })
+        context.dispatch('setTrackAMSoundParams',  { param: payload.param, sceneTitle: title, trackNumber: payload.trackNumber, value: payload.value, track: payload.track } )
+        context.commit('updateTrackSoundParams', { param: payload.param, sceneNumber: payload.sceneNumber, trackNumber: payload.trackNumber, value: payload.value })
       },
       toggleTrackMute: (context, trackNumber) => {
         let scene = context.state.scenes[context.state.editingSceneNumber]

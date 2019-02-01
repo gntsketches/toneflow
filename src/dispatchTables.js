@@ -6,16 +6,6 @@ export function keypress() {
 
   // CTRL-SHIFT-
   listener.register_combo({
-    "keys"              : "control shift w",
-    "on_keydown"        : function() { this.$store.commit('setSceneAdvanceCued', false) },
-    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
-  });
-  listener.register_combo({
-    "keys"              : "control shift e",
-    "on_keydown"        : function() { this.$store.commit('setSceneAdvanceCued', false) },
-    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
-  });
-  listener.register_combo({
     "keys"              : "control shift p",
     "on_keydown"        : function() { this.$store.commit('toggleSoundPanel', this.editingTrackNumber) },
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
@@ -24,6 +14,11 @@ export function keypress() {
     "keys"              : "control shift }",
     "on_keydown"        : function() { this.$store.dispatch('changeAll', 'all')},
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": false,
+  });
+  listener.register_combo({
+    "keys"              : "control shift s",
+    "on_keydown"        : function() { this.$store.dispatch('spreadTune') },
+    "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true,
   });
   listener.register_combo({
     "keys"              : "control shift d",
@@ -116,6 +111,16 @@ listener.register_combo({
     "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
   });
 listener.register_combo({
+  "keys"              : "control shift w",
+  "on_keydown"        : function() { this.$store.commit('setSceneAdvanceCued', false) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
+  "keys"              : "control shift e",
+  "on_keydown"        : function() { this.$store.commit('setSceneAdvanceCued', false) },
+  "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
+});
+listener.register_combo({
   "keys"              : "control shift z",
   "on_keydown"        : function() { console.log("*") },
   "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
@@ -131,7 +136,7 @@ listener.register_combo({
   "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
 });
 listener.register_combo({
-  "keys"              : "control shift s",
+  "keys"              : "control shift n",
   "on_keydown"        : function() { this.$store.dispatch('setUpNewScene') },
   "this": this, "prevent_default": false, "prevent_repeat": true, "is_unordered": true, "is_sequence": true,
 });
@@ -263,7 +268,7 @@ export let generalKeyDispatchTable = {
   "V"       : function() { this.$store.commit('toggleDelayActive') },
   "B"       : function() { this.$store.dispatch('toggleQwertyDisplay') },
   "N"       : function() { findAndFocus.call(this, '#playerGain') },
-  "M"       : function() { findAndFocus.call(this, '#playerPortamento') },
+  "M"       : function() { findAndFocus.call(this, '#playerRelease') },
   "<"       : function() { findAndFocus.call(this, '#playerFilterWet') },
   ">"       : function() { findAndFocus.call(this, '#playerLFOFrequency') },
   "?"       : function() { this.$store.commit('toggleInfoMenu') },

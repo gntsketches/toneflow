@@ -401,7 +401,7 @@
             <strong>V</strong>: toggle Delay On/Off<br>
             <strong>B</strong>: toggle Qwerty layout<br>
             <strong>N</strong>: focus Qwerty gain knob<br>
-            <strong>M</strong>: focus Qwerty attack knob<br>
+            <strong>M</strong>: focus Qwerty release knob<br>
             <strong><</strong>: focus Qwerty filter-wet knob<br>
             <strong>></strong>: focus Qwerty filter LFO frequency<br>
             <strong>?</strong>: toggle this info menu<br>
@@ -430,7 +430,7 @@
             <strong>ctrl-shift-+</strong>: add a random note to all tracks<br>
             <strong>ctrl-shift--</strong>: delete the last note of all tracks<br>
             <strong>ctrl-shift-i</strong>: reset the app's audio (may help with errors) <br>
-            <strong>ctrl-shift-s</strong>: add a new scene<br>
+            <strong>ctrl-shift-n</strong>: add a new scene<br>
           </p>
 
           <br><br>

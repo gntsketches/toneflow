@@ -432,7 +432,7 @@ export default {
       *******************************************************************************************************************/
 
       onkeydown(e) {
-  	    //console.log(e.key);
+        //console.log(e)
         if(e.key === ' ' && !this.scene.editingForm) {
           e.preventDefault()
           //return  /* return prevents spacebar from playing previous pitch (gives error, but can be used musically) */
@@ -517,6 +517,7 @@ export default {
   	  },
 
   	  onkeyup(e){
+        //console.log(e, e.key)
   	    if(this.down.indexOf(e.key) > -1) {
   	      let newdown = remove(this.down, e.key)
           let capitals = ['~', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '|', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?']
@@ -596,6 +597,7 @@ export default {
             case 'gtrMute': this.playerInstrument = AM.instrument('sampler', 'gtrMute'); break
             case 'bassGtr': this.playerInstrument = AM.instrument('sampler', 'bassGtr'); break
             case 'piano': this.playerInstrument = AM.instrument('sampler', 'piano'); break
+            case 'digiHarp': this.playerInstrument = AM.instrument('sampler', 'digiHarp'); break
             case 'elecPno1': this.playerInstrument = AM.instrument('sampler', 'elecPno1'); break
             case 'elecPno2': this.playerInstrument = AM.instrument('sampler', 'elecPno2'); break
             case 'elecPno3': this.playerInstrument = AM.instrument('sampler', 'elecPno3'); break
