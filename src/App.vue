@@ -448,16 +448,26 @@ export default {
 
           for (var k in generalKeyDispatchTable) {
             if (generalKeyDispatchTable.hasOwnProperty(k) && this.down.indexOf(k) > -1) {
-              generalKeyDispatchTable[k].bind(this)()
+              generalKeyDispatchTable[k].bind(this)() // use call?
             }
           }
 
   	      switch (this.activeRegion) {
   		      case "tune-entry":
+
+  		        if (e.key === 'Backspace') {
+                if (this.editingIndex === this.editingTune.length-1 ) {
+                  this.$store.dispatch('deleteNote', 'fromEndcap')
+                } else {
+                  this.$store.dispatch('deleteNote', 'currentNote')
+                }
+                break
+              }
+
               for (var k in tuneEntryDispatchTable) {
                 // https://www.reddit.com/r/vuejs/comments/8j84cv/vuejs_and_keyboard_input_data_structure/?st=jh9vg13f&sh=4140f0ad // https://jsperf.com/hasownproperty-overkill/1
                 if (tuneEntryDispatchTable.hasOwnProperty(k) && this.down.indexOf(k) > -1) {
-                  tuneEntryDispatchTable[k].bind(this)()
+                  tuneEntryDispatchTable[k].bind(this)() // use call?
                   break
                 }
               }

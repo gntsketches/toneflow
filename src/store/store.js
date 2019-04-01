@@ -115,6 +115,9 @@ export const store = new Vuex.Store({
             }
           }
         }
+        if (state.activeRegion === 'tune-entry') {
+          qwertyVals['Backspace'] = 'Delete'
+        }
         return qwertyVals
       },
       activeSceneTitle: state => {

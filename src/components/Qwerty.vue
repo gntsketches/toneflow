@@ -3,7 +3,7 @@
   <div id="qwerty" :class="{ activeRegion: activeRegion === 'qwerty-player' }" >
     <!-- <textarea id="write" rows="6" cols="60"></textarea> -->
     <ul id="keyboard">
-      <li :class="{ active: allDown.indexOf('`') >-1 || down.indexOf('~') >-1 }" class="symbol">R</li>
+      <li :class="{ active: allDown.indexOf('`') >-1 || down.indexOf('~') >-1 }" class="symbol">Rand</li>
       <li :class="{ active: allDown.indexOf('1') >-1 || allDown.indexOf('!') >-1 }" @mousedown="startPitch('1')" @mouseup="stopPitch('1')" @mouseleave="stopPitch('1')" class="symbol">{{ qwertyVals["1"] }}</li>
       <li :class="{ active: allDown.indexOf('2') >-1 || allDown.indexOf('@') >-1 }" @mousedown="startPitch('2')" @mouseup="stopPitch('2')" @mouseleave="stopPitch('2')" class="symbol">{{ qwertyVals["2"] }}</li>
       <li :class="{ active: allDown.indexOf('3') >-1 || allDown.indexOf('#') >-1 }" @mousedown="startPitch('3')" @mouseup="stopPitch('3')" @mouseleave="stopPitch('3')" class="symbol">{{ qwertyVals["3"] }}</li>
@@ -45,7 +45,7 @@
       <li :class="{ active: allDown.indexOf('l') >-1 || allDown.indexOf('L') >-1 }" @mousedown="startPitch('l')" @mouseup="stopPitch('l')" @mouseleave="stopPitch('l')" class="letter">{{ qwertyVals["l"] }}</li>
       <li :class="{ active: allDown.indexOf(';') >-1 || allDown.indexOf(':') >-1 }" @mousedown="startPitch(';')" @mouseup="stopPitch(';')" @mouseleave="stopPitch(';')" class="symbol">{{ qwertyVals[";"] }}</li>
       <li :class="{ active: allDown.indexOf('\'') >-1 || allDown.indexOf('\'') >-1 }" @mousedown="startPitch('\'')" @mouseup="stopPitch('\'')" @mouseleave="stopPitch('\'')" class="symbol">{{ qwertyVals["'"] }}</li>
-      <li :class="{ active: allDown.indexOf('Enter') >-1 }" class="return lastitem">Enter</li>
+      <li :class="{ active: allDown.indexOf('Enter') >-1 }" class="return lastitem"></li>
 
       <li :class="{ active: allDown.indexOf('Shift') >-1 }" class="left-shift"></li>
       <li :class="{ active: allDown.indexOf('z') >-1 || allDown.indexOf('Z') >-1 }" @mousedown="startPitch('z')" @mouseup="stopPitch('z')" @mouseleave="stopPitch('z')" ref="qwerty-z" class="letter">{{ qwertyVals["z"] }}</li>
@@ -94,7 +94,7 @@
 
     methods: {
       startPitch(key){
-        // in-progress: getting the keys to light up on mousedown
+        if (this.$store.state.activeRegion === 'tune-entry' && key === 'Backspace') { return }
         this.playerInstrument.triggerAttack(this.qwertyVals[key], Tone.context.currentTime)
         this.mouseplaying.push(key)
       },
